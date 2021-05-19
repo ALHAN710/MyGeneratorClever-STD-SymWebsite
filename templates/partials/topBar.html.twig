@@ -3,13 +3,13 @@
 
     <!-- LOGO -->
     <div class="topbar-left">
-        <a href="../analytics/analytics-index.html" class="logo">
+        <a href="#" class="logo">
             <span>
-                <img src="/images/logo-sm.png" alt="logo-small" class="logo-sm">
+                <img src="/images/logo-CLETech.png" alt="logo-small" class="logo-sm">
             </span>
-            <span>
-                <img src="/images/logo.png" alt="logo-large" class="logo-lg">
-            </span>
+            {# <span>
+                <img src="/images/logo-CLETech.png" alt="logo-large" class="logo-lg">
+            </span> #}
         </a>
     </div>
     <!--end logo-->
@@ -90,6 +90,19 @@
                     <a class="dropdown-item" href="{{ path('app_logout') }}"><i class="dripicons-exit text-muted mr-2"></i> Déconnexion</a>
                 </div>
             </li>
+            {# <li class="dropdown">
+                <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
+                    aria-haspopup="false" aria-expanded="false">
+                    <img src=" {{ user.avatar != null  ? '/img/uploads/avatar/' ~ user.avatar : '/img/uploads/avatar/user.png' }}" alt="profile-user" class="rounded-circle" /> 
+                    <span class="ml-1 nav-user-name hidden-sm"> <i class="mdi mdi-chevron-down"></i> </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="{{ path('account_profile') }}"><i class="dripicons-user text-muted mr-2"></i> Profile</a>
+                    <a class="dropdown-item" href="{{ path('account_password') }}"><i class="fa fa-edit text-muted mr-2"></i> Edit Password</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ path('account_logout') }}"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
+                </div>
+            </li> #}
         </ul><!--end topbar-nav-->
 
         <ul class="list-unstyled topbar-nav mb-0">                        

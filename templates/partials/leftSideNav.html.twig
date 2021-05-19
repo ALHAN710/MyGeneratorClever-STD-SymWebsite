@@ -106,13 +106,39 @@
                     <h6 class="menu-title">Principal</h6>       
                 </div>
                 <ul class="nav">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
-                    {# <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
+                    {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
                     <li class="nav-item"><a class="nav-link" href="../analytics/analytics-reports.html"><i class="dripicons-document"></i>Reports</a></li>  #}
+                    
+                    {# {% for site in user.sites %}
+                        {% set url = path('sites_show',{'slug':site.slug}) %}
+                        <li class="nav-item">
+                            <a href="javascript: void(0);"><i class="mdi mdi-office-building"></i><span>{{site.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                            <ul class="nav-second-level" aria-expanded="false">
+                                <li class="active"><a href="{{url}}"><i class="mdi mdi-monitor"></i><span>Dashboard</span></a></li>
+                                {% set categorie = ['GRID', 'FUEL'] %}
+                                {% for cat in categorie %}
+                                    <li>
+                                        <a href="javascript: void(0);">{% if cat == 'GRID' %}<i class="mdi mdi-tower-beach"></i>{% else %}<i class="mdi mdi-engine"></i>{% endif %}{{ cat }} POWER <span class="menu-arrow left-has-menu"><i class="mdi mdi-chevron-right"></i></span></a>
+                                        <ul class="nav-second-level" aria-expanded="false">
+                                            {% for type in site.smartMods %}
+                                                
+                                                {% if type.modType == cat %}
+                                                    <li><a href="{{ path('show_mod_graphs', {'id': type.id}) }}">{{type.modName}}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>  
+                                {% endfor %}                              
+                                
+                            </ul>
+                        </li>
+                    {% endfor %} #}
                 </ul>
             </div><!-- end Principal -->
 
-            <div id="MenuBusiness" class="">
+            {# <div id="MenuBusiness" class="">
                 <div class="title-box">
                     <h6 class="menu-title">Business</h6>       
                 </div>
@@ -122,7 +148,7 @@
                     <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-mail"></i>Mes Demandes</a></li>
                     
                 </ul>
-            </div><!-- end Analytic -->
+            </div><!-- end Analytic --> #}
 
             <div id="MenuParameters" class="">
                 <div class="title-box">
