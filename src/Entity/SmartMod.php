@@ -53,13 +53,50 @@ class SmartMod
     private $site;
 
     /**
-     * @ORM\OneToMany(targetEntity=DataMod::class, mappedBy="smartMod")
+     * @ORM\OneToMany(targetEntity=DatetimeData::class, mappedBy="smartMod")
      */
-    private $dataMods;
+    private $datetimeData;
+
+    /**
+     * @ORM\OneToOne(targetEntity=NoDatetimeData::class, mappedBy="smartMod", cascade={"persist", "remove"})
+     */
+    private $noDatetimeData;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $fuelPrice;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $levelZone;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $nbPhases;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Zone::class, mappedBy="smartMods")
+     */
+    private $zones;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LoadDataEnergy::class, mappedBy="smartMod", orphanRemoval=true)
+     */
+    private $loadDataEnergies;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $subType;
 
     public function __construct()
     {
-        $this->dataMods = new ArrayCollection();
+        $this->datetimeData = new ArrayCollection();
+        $this->zones = new ArrayCollection();
+        $this->loadDataEnergies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,31 +153,153 @@ class SmartMod
     }
 
     /**
-     * @return Collection|DataMod[]
+     * @return Collection|DatetimeData[]
      */
-    public function getDataMods(): Collection
+    public function getDatetimeData(): Collection
     {
-        return $this->dataMods;
+        return $this->datetimeData;
     }
 
-    public function addDataMod(DataMod $dataMod): self
+    public function addDatetimeData(DatetimeData $datetimeData): self
     {
-        if (!$this->dataMods->contains($dataMod)) {
-            $this->dataMods[] = $dataMod;
-            $dataMod->setSmartMod($this);
+        if (!$this->datetimeData->contains($datetimeData)) {
+            $this->datetimeData[] = $datetimeData;
+            $datetimeData->setSmartMod($this);
         }
 
         return $this;
     }
 
-    public function removeDataMod(DataMod $dataMod): self
+    public function removeDatetimeData(DatetimeData $datetimeData): self
     {
-        if ($this->dataMods->removeElement($dataMod)) {
+        if ($this->datetimeData->removeElement($datetimeData)) {
             // set the owning side to null (unless already changed)
-            if ($dataMod->getSmartMod() === $this) {
-                $dataMod->setSmartMod(null);
+            if ($datetimeData->getSmartMod() === $this) {
+                $datetimeData->setSmartMod(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNoDatetimeData(): ?NoDatetimeData
+    {
+        return $this->noDatetimeData;
+    }
+
+    public function setNoDatetimeData(NoDatetimeData $noDatetimeData): self
+    {
+        // set the owning side of the relation if necessary
+        if ($noDatetimeData->getSmartMod() !== $this) {
+            $noDatetimeData->setSmartMod($this);
+        }
+
+        $this->noDatetimeData = $noDatetimeData;
+
+        return $this;
+    }
+
+    public function getFuelPrice(): ?float
+    {
+        return $this->fuelPrice;
+    }
+
+    public function setFuelPrice(?float $fuelPrice): self
+    {
+        $this->fuelPrice = $fuelPrice;
+
+        return $this;
+    }
+
+    public function getLevelZone(): ?int
+    {
+        return $this->levelZone;
+    }
+
+    public function setLevelZone(?int $levelZone): self
+    {
+        $this->levelZone = $levelZone;
+
+        return $this;
+    }
+
+    public function getNbPhases(): ?int
+    {
+        return $this->nbPhases;
+    }
+
+    public function setNbPhases(?int $nbPhases): self
+    {
+        $this->nbPhases = $nbPhases;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Zone[]
+     */
+    public function getZones(): Collection
+    {
+        return $this->zones;
+    }
+
+    public function addZone(Zone $zone): self
+    {
+        if (!$this->zones->contains($zone)) {
+            $this->zones[] = $zone;
+            $zone->addSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    public function removeZone(Zone $zone): self
+    {
+        if ($this->zones->removeElement($zone)) {
+            $zone->removeSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LoadDataEnergy[]
+     */
+    public function getLoadDataEnergies(): Collection
+    {
+        return $this->loadDataEnergies;
+    }
+
+    public function addLoadDataEnergy(LoadDataEnergy $loadDataEnergy): self
+    {
+        if (!$this->loadDataEnergies->contains($loadDataEnergy)) {
+            $this->loadDataEnergies[] = $loadDataEnergy;
+            $loadDataEnergy->setSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoadDataEnergy(LoadDataEnergy $loadDataEnergy): self
+    {
+        if ($this->loadDataEnergies->removeElement($loadDataEnergy)) {
+            // set the owning side to null (unless already changed)
+            if ($loadDataEnergy->getSmartMod() === $this) {
+                $loadDataEnergy->setSmartMod(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSubType(): ?string
+    {
+        return $this->subType;
+    }
+
+    public function setSubType(?string $subType): self
+    {
+        $this->subType = $subType;
 
         return $this;
     }

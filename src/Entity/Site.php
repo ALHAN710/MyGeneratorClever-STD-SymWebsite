@@ -48,17 +48,12 @@ class Site
      * @ORM\Column(type="float")
      * @Assert\NotBlank(message="Veuillez renseigner la puissance souscrite du Site")
      */
-    private $powerSubscribed;
+    private $powerSubscribed = 400;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="sites")
      */
     private $users;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $fuelPrice;
 
     /**
      * @ORM\Column(type="string", length=20)
@@ -80,6 +75,31 @@ class Site
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $mainsInterruptDayLimit;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $longitude;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Zone::class, mappedBy="site", orphanRemoval=true)
+     */
+    private $zones;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Tarification::class, mappedBy="site", cascade={"persist", "remove"})
+     */
+    private $tarification;
 
     /**
      * Permet d'initialiser le slug !
@@ -115,6 +135,7 @@ class Site
     {
         $this->users = new ArrayCollection();
         $this->smartMods = new ArrayCollection();
+        $this->zones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,18 +203,6 @@ class Site
         return $this;
     }
 
-    public function getFuelPrice(): ?float
-    {
-        return $this->fuelPrice;
-    }
-
-    public function setFuelPrice(?float $fuelPrice): self
-    {
-        $this->fuelPrice = $fuelPrice;
-
-        return $this;
-    }
-
     public function getCurrency(): ?string
     {
         return $this->currency;
@@ -256,6 +265,89 @@ class Site
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getMainsInterruptDayLimit(): ?int
+    {
+        return $this->mainsInterruptDayLimit;
+    }
+
+    public function setMainsInterruptDayLimit(?int $mainsInterruptDayLimit): self
+    {
+        $this->mainsInterruptDayLimit = $mainsInterruptDayLimit;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Zone[]
+     */
+    public function getZones(): Collection
+    {
+        return $this->zones;
+    }
+
+    public function addZone(Zone $zone): self
+    {
+        if (!$this->zones->contains($zone)) {
+            $this->zones[] = $zone;
+            $zone->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeZone(Zone $zone): self
+    {
+        if ($this->zones->removeElement($zone)) {
+            // set the owning side to null (unless already changed)
+            if ($zone->getSite() === $this) {
+                $zone->setSite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTarification(): ?Tarification
+    {
+        return $this->tarification;
+    }
+
+    public function setTarification(Tarification $tarification): self
+    {
+        // set the owning side of the relation if necessary
+        if ($tarification->getSite() !== $this) {
+            $tarification->setSite($this);
+        }
+
+        $this->tarification = $tarification;
 
         return $this;
     }

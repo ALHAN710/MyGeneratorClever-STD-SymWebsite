@@ -101,73 +101,6 @@
 
     <div class="main-menu-inner">
         <div class="menu-body slimscroll">
-            <div id="MenuPrincipal" class="">
-                <div class="title-box">
-                    <h6 class="menu-title">Principal</h6>       
-                </div>
-                <ul class="nav">
-                    {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../analytics/analytics-reports.html"><i class="dripicons-document"></i>Reports</a></li>  #}
-                    
-                    {# {% for site in user.sites %}
-                        {% set url = path('sites_show',{'slug':site.slug}) %}
-                        <li class="nav-item">
-                            <a href="javascript: void(0);"><i class="mdi mdi-office-building"></i><span>{{site.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li class="active"><a href="{{url}}"><i class="mdi mdi-monitor"></i><span>Dashboard</span></a></li>
-                                {% set categorie = ['GRID', 'FUEL'] %}
-                                {% for cat in categorie %}
-                                    <li>
-                                        <a href="javascript: void(0);">{% if cat == 'GRID' %}<i class="mdi mdi-tower-beach"></i>{% else %}<i class="mdi mdi-engine"></i>{% endif %}{{ cat }} POWER <span class="menu-arrow left-has-menu"><i class="mdi mdi-chevron-right"></i></span></a>
-                                        <ul class="nav-second-level" aria-expanded="false">
-                                            {% for type in site.smartMods %}
-                                                
-                                                {% if type.modType == cat %}
-                                                    <li><a href="{{ path('show_mod_graphs', {'id': type.id}) }}">{{type.modName}}</a>
-                                                    </li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    </li>  
-                                {% endfor %}                              
-                                
-                            </ul>
-                        </li>
-                    {% endfor %} #}
-                </ul>
-            </div><!-- end Principal -->
-
-            {# <div id="MenuBusiness" class="">
-                <div class="title-box">
-                    <h6 class="menu-title">Business</h6>       
-                </div>
-                <ul class="nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ path('product_index') }}"><i class="dripicons-shopping-bag"></i>Produits</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-stack"></i>Lots</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-mail"></i>Mes Demandes</a></li>
-                    
-                </ul>
-            </div><!-- end Analytic --> #}
-
-            <div id="MenuParameters" class="">
-                <div class="title-box">
-                    <h6 class="menu-title"><i class="fas fa-cogs mr-2"></i>Paramètres</h6>      
-                </div>
-                <ul class="nav metismenu" id="">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-user-group"></i>Utilisateurs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-gear"></i>Mon Compte</a></li>
-                    {# <li class="nav-item">  
-                        <a class="nav-link" href="#"><i class="dripicons-mail"></i><span class="w-100">Email</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li><a href="../others/email-inbox.html">Inbox</a></li>
-                            <li><a href="../others/email-read.html">Read Email</a></li>            
-                        </ul>            
-                    </li><!--end nav-item--> #}
-                    
-                </ul><!--end nav-->
-            </div><!-- end Others -->
-
             {# <div id="MetricaOthers" class="">
                 <div class="title-box">
                     <h6 class="menu-title">Others</h6>      
@@ -274,6 +207,93 @@
                 </ul><!--end nav-->
             </div><!-- end Others --> #}
 
+            <div id="MenuPrincipal" class="">
+                <div class="title-box">
+                    <h6 class="menu-title">Sites</h6>       
+                </div>
+                <ul class="nav metismenu main_menu_side_nav" id="">
+                    {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../analytics/analytics-reports.html"><i class="dripicons-document"></i>Reports</a></li>  #}
+                    
+                    {% for site in app.user.enterprise.sites %}{# path('sites_show',{'slug':site.slug}) #}
+                        {# {% set url = '' %} #}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="mdi mdi-office-building"></i><span class="w-100">{{site.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                            <ul class="nav-second-level" aria-expanded="false">
+                                {# <li class="active"><a href="{{url}}"><i class="mdi mdi-monitor"></i><span>Dashboard</span></a></li> #}
+                                {% set categorie = ['FUEL', 'GRID'] %}
+                                {% for cat in categorie %}
+                                    {% for type in site.smartMods %}
+                                        {% if type.modType == cat %}
+                                            <li><a href="{% if cat == 'FUEL' %}{{ path('genset_home', {'id':type.id}) }}{% else %}#{% endif %}">{{type.name}}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %} 
+
+                                {% if site.zones|length > 0 %}
+                                {# <ul class="nav metismenu main_menu_side_nav" id=""> #}
+                                    {% for zone in site.zones %}
+                                    <li class="nav ">{# <i class="mdi mdi-crop-free"></i> #}
+                                        <a class="" href="#"><span class="w-100">{{zone.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                        <ul class="nav-second-level metismenu main_menu_side_nav" aria-expanded="false">
+                                            {% set id = 0 %}
+                                            {% for modZone1 in zone.smartMods %}
+                                                {% if modZone1.levelZone == 1 %}
+                                                    {% set id = modZone1.id %}
+                                                {% endif %}
+                                            {% endfor %}           
+                                            <li><a href="{{ path('home_zone', {'zone':zone.id}) }}">Dashboard</a></li>
+                                            {% for modZone in zone.smartMods %}
+                                                {% if modZone.levelZone == 2 %}
+                                                    <li><a href="{{ path('load_meter', {'smartMod': modZone.id,'zone':zone.id}) }}">{{modZone.name}}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}           
+                                        </ul>            
+                                    </li><!--end nav-item--> 
+                                    {% endfor %}
+                                {# </ul> #}
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% endfor %} 
+                    
+                </ul>
+            </div><!-- end Principal -->
+
+            {# <div id="MenuBusiness" class="">
+                <div class="title-box">
+                    <h6 class="menu-title">Business</h6>       
+                </div>
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('product_index') }}"><i class="dripicons-shopping-bag"></i>Produits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-stack"></i>Lots</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-mail"></i>Mes Demandes</a></li>
+                    
+                </ul>
+            </div><!-- end Analytic --> #}
+
+            <div id="MenuParameters" class="">
+                <div class="title-box">
+                    <h6 class="menu-title">Paramètres</h6>   {# <i class="fas fa-cogs mr-2"></i> #}   
+                </div>
+                <ul class="nav metismenu" id="">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-user-group"></i>Utilisateurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-gear"></i>Mon Compte</a></li>
+                    {# <li class="nav-item">  
+                        <a class="nav-link" href="#"><i class="dripicons-mail"></i><span class="w-100">Email</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li><a href="../others/email-inbox.html">Inbox</a></li>
+                            <li><a href="../others/email-read.html">Read Email</a></li>            
+                        </ul>            
+                    </li><!--end nav-item--> #}
+                    
+                </ul><!--end nav-->
+            </div><!-- end Others -->
+
+            
             {# <div id="MetricaCrypto" class="">
                 <div class="title-box">
                     <h6 class="menu-title">Crypto</h6>

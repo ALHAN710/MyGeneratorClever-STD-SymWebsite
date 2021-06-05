@@ -152,6 +152,11 @@ class User implements UserInterface
         }
     }
 
+    public function fullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

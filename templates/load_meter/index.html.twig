@@ -1,0 +1,1295 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{#Genset {{smartMod.name|capitalize}} #}Home{% endblock %}
+
+{% block stylesheets %}
+    {#{{ encore_entry_link_tags('app') }}#}
+    <link href="/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+    <!-- Sweet Alert -->
+    <link href="/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css">
+
+    <!-- DataTables -->
+    <link href="/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
+
+{% endblock %}
+        
+{% block breadcrumbItem %}
+<li class="breadcrumb-item"><a href="javascript:void(0);">{{zone.name}}</a></li>
+{% if smartMod %}<li class="breadcrumb-item"><a href="javascript:void(0);">{{smartMod.name}}</a></li>{% endif %}
+<li class="breadcrumb-item active">Home</li>
+{% endblock %}
+
+{% block pageTitle %}Home{% endblock %}
+
+{% block body %}
+{# <div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body"> #}
+
+                {# <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#general" role="tab">General</a>
+                    </li>
+                    {% if type != 'load meter' %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#energybilling" role="tab">Energy Billing</a>
+                    </li>                                                
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#alarm" role="tab">Alarm</a>
+                    </li>                              
+                    {% endif %}
+                </ul> #}
+
+        <div class="row ">
+            <div class="col">
+                <label class="my-3">Pick Date Ranges</label>
+                <div class="input-group mb-3">  
+                    <input type="text" id="daterange" class="form-control" value="">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="dripicons-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-4"></h4>
+                        <div class="chart-demo">
+                            <div id="apex_mixed_energy" class="apex-charts"></div>
+                        </div>                                        
+                    </div><!--end card-body-->
+                </div><!--end card-->
+            </div><!--end col-->                            
+        </div><!--end row-->   
+
+        {% if smartMod %}
+            {% if smartMod.nbPhases == 3 %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-0 mb-4"></h4>
+                            <div class="chart-demo">
+                                <div id="apex_mixed_active_power" class="apex-charts"></div>
+                            </div>                                        
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end col-->                            
+            </div><!--end row-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-0 mb-4"></h4>
+                            <div class="chart-demo">
+                                <div id="apex_mixed_cosfi" class="apex-charts"></div>
+                            </div>                                        
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end col-->                            
+            </div><!--end row-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-0 mb-4"></h4>
+                            <div class="chart-demo">
+                                <div id="apex_mixed_voltage" class="apex-charts"></div>
+                            </div>                                        
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end col-->                            
+            </div><!--end row-->
+            {% elseif smartMod.nbPhases == 1 %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-0 mb-4"></h4>
+                            <div class="chart-demo">
+                                <div id="apex_mixed_PSCos" class="apex-charts"></div>
+                            </div>                                        
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end col-->                            
+            </div><!--end row-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-0 mb-4"></h4>
+                            <div class="chart-demo">
+                                <div id="apex_voltage" class="apex-charts"></div>
+                            </div>                                        
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end col-->                            
+            </div><!--end row-->
+            {% endif %}
+        {% endif %}
+                    
+                    
+                  
+
+        {# </div><!--end card-body-->
+    </div><!--end card-->
+</div><!--end col--> #}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/plugins/justgage/justgage.js"></script>
+    <script src="/plugins/justgage/raphael-2.1.4.min.js"></script>
+    {# <script src="/pages/jquery.justgage.init.js"></script> #}
+    {#{{ encore_entry_script_tags('app') }}#}
+
+    <script src="/plugins/moment/moment.js"></script>
+    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+    <!--  bootstrap-datetimepicker -->
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/pages/jquery.forms-advanced.js"> </script>
+
+    <script src="/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
+    <script src="/pages/jquery.apexcharts.init.js"></script>
+
+    <!-- Sweet-Alert  -->
+    <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
+
+    <!-- Required datatable js -->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Buttons examples -->
+    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables/jszip.min.js"></script>
+    <script src="/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+    <!-- Responsive examples -->
+    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    {# <script src="/pages/jquery.datatable.init.js"></script> #}
+    
+    {# <script src="/pages/jquery.crypto-dashboard.init.js"></script> #}
+
+    <script>
+        //var type = 'zone';
+        
+        //Mixed Energy charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [0, 0, 2],
+                curve: 'smooth'
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '70%'
+                }
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Active Energy',
+                type: 'column',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'Reactive Energy',
+                type: 'column',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }],
+            fill: {
+                opacity: [0.85, 1, 0.25],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "Active Energy zone (kWh)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "Reactive Energy (kVAR)",
+                    },
+                }
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + ""
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+
+        var MixedEnergy_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_energy"),
+            options
+        );
+
+        MixedEnergy_Linechart.render();
+
+        
+        {% if smartMod.nbPhases == 3 %}
+        //Mixed Active Power per phase charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '70%'
+                }
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'PA',
+                type: 'line',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'PB',
+                type: 'line',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }, {
+                name: 'PC',
+                type: 'line',
+                data: []
+                //data: [2.0, 2.9, 3.7, 3.6, 4.4, 4.5, 5.0, 5.8]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Active Power (kW)',
+                },
+            },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + " kW"
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+
+        var MixedActivePower_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_active_power"),
+            options
+        );
+
+        MixedActivePower_Linechart.render();
+
+        //Mixed Cosfi per phase charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '70%'
+                }
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'CosfiA',
+                type: 'line',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'CosfiB',
+                type: 'line',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }, {
+                name: 'CosfiC',
+                type: 'line',
+                data: []
+                //data: [2.0, 2.9, 3.7, 3.6, 4.4, 4.5, 5.0, 5.8]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Power Factor',
+                },
+            },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y + ""
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+
+        var MixedCosfi_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_cosfi"),
+            options
+        );
+
+        MixedCosfi_Linechart.render();
+
+        //Mixed Voltage per phase charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [3, 3, 3],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'VA',
+                type: 'line',
+                data: []
+                //data: [234, 237, 210, 180, 225, 228, 240, 236]
+            }, {
+                name: 'VB',
+                type: 'line',
+                data: []
+                //data: [230, 233, 225, 240, 234, 232, 236, 221]
+            }, {
+                name: 'VC',
+                type: 'line',
+                data: []
+                //data: [220, 229, 237, 256, 244, 235, 252, 228]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#40a0c0", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Voltage (V)',
+                },
+            },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + " V"
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }],
+            annotations: {
+                yaxis: [{
+                    y: 209,
+                    y2: 241,
+                    borderColor: '#000',
+                    fillColor: 'rgba(183,179,177,0.8)',
+                    opacity: 0.2,
+                    label: {
+                        borderColor: '#333',
+                        position: 'right',
+                        style: {
+                            fontSize: '10px',
+                            color: '#333',
+                            background: 'rgba(183,179,177,0.5)',
+                        },
+                        text: 'Plage de Tension Admissible',
+                    }
+                }],
+
+            }
+        }
+
+        var MixedVoltage_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_voltage"),
+            options
+        );
+
+        MixedVoltage_Linechart.render();
+        {% elseif smartMod.nbPhases == 1 %}
+        //Mixed Active Power per phase charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '70%'
+                }
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Active Power',
+                type: 'line',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'Apparent Power',
+                type: 'line',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }, {
+                name: 'Cosfi',
+                type: 'line',
+                data: []
+                //data: [2.0, 2.9, 3.7, 3.6, 4.4, 4.5, 5.0, 5.8]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "Active Power zone (kW)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "Apparent Power Zone (kVA)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "Cosfi"
+                    }
+                },
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + ""
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+
+        var MixedPSCos_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_PSCos"),
+            options
+        );
+
+        MixedPSCos_Linechart.render();
+
+        //Voltage charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Voltage',
+                type: 'line',
+                data: []
+                //data: [234, 237, 210, 180, 225, 228, 240, 236]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#40a0c0", "#77d0ba", "#e02040"],
+            xaxis: {
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Voltage (V)',
+                },
+            },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + " V"
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }],
+            annotations: {
+                yaxis: [{
+                    y: 209,
+                    y2: 241,
+                    borderColor: '#000',
+                    fillColor: 'rgba(183,179,177,0.8)',
+                    opacity: 0.2,
+                    label: {
+                        borderColor: '#333',
+                        position: 'right',
+                        style: {
+                            fontSize: '10px',
+                            color: '#333',
+                            background: 'rgba(183,179,177,0.5)',
+                        },
+                        text: 'Plage de Tension Admissible',
+                    }
+                }],
+
+            }
+        }
+
+        var Voltage_Linechart = new ApexCharts(
+            document.querySelector("#apex_voltage"),
+            options
+        );
+
+        Voltage_Linechart.render();
+        {% endif %}
+                
+    </script>
+
+    <script>
+        var _url = "{{ path('update_load_meter_graphs') }}";
+        var drp = $('#daterange').data('daterangepicker');
+        console.log('drp = ' + drp.startDate.format('YYYY-MM-DD'));
+        var startDate = drp.startDate.format('YYYY-MM-DD');
+        var endDate = drp.endDate.format('YYYY-MM-DD');
+        
+
+        $('#daterange').on('apply.daterangepicker', function (ev, picker) {
+            //console.log(picker.startDate.format('YYYY-MM-DD'));
+            //console.log(picker.endDate.format('YYYY-MM-DD'));
+        
+            startDate = picker.startDate.format('YYYY-MM-DD');
+            endDate = picker.endDate.format('YYYY-MM-DD');
+            
+            console.log('startDate = ' + startDate);
+            console.log('endDate = ' + endDate);
+            updateDashboard();
+            // block of code that runs when the click event triggers
+
+        });
+        
+        function displayNewData(chart, label, data, dateopt, multiple, xscale){
+            //chart.data.labels = [];
+            chart.updateOptions({
+                xaxis: {
+                    categories: []
+                },
+            });
+            /*chart.updateOptions({
+                xaxis: {
+                    categories: label
+                },
+            });*/
+            //chart.opts.labels = label;
+            chart.updateOptions({
+                labels: label
+                
+            });
+            if(multiple > 1){
+                var i = 0;
+                chart.opts.series.forEach((dataset) => {
+                    if( i < multiple){
+                        dataset.data = [];
+                        dataset.data = data[i++];
+                        console.log(dataset.name);
+                    }
+                });
+            }
+            else if(multiple == 1){
+                chart.updateSeries([{
+                    data: []
+                }]);
+            
+                chart.updateSeries([{
+                    data: data
+                }]);
+            }
+            if(xscale === 'day'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            //text: moment(dateopt).format('DD MMMM').toString(),
+                            text: moment(dateopt[0]).format('DD MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('DD MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            }
+            else if( xscale === 'month'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            text: moment(dateopt[0]).format('MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            }
+            //console.log(chart.options.scales.xAxes[0].scaleLabel.labelString);
+            //preloaderChart(id, false);
+            //chart.render();
+        }            
+
+        function updateDashboard(date){
+            
+            $data = JSON.stringify({
+                //"type": type, // tabGridId,
+                "startDate": startDate + ' 00:00:00',
+                "endDate": endDate + '23:59:59', 
+                "id":{{smartMod.id }},
+                {# "zoneId": {{zone.id}}, #}
+            });
+
+            // Danger
+
+            swal.queue([{
+                title: 'The graphs will be updated for the date range :',
+                confirmButtonText: 'Confirm',
+                text: 'From ' + startDate + ' To ' + endDate,
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger ml-2',
+                preConfirm: function () {
+                    return new Promise(function (resolve) { 
+                        
+                        $.ajax({
+                            type: "POST", // method type
+                            contentType: "application/json; charset=utf-8",
+                            url: _url, // /Target function that will be return result
+                            data: $data, // parameter pass data is parameter name param is value
+                            dataType: "json",
+                            timeout: 120000, // 64241
+                            success: function (result) {
+                                // $('.fa-sync').removeClass('fa-spin');
+                                console.log(result);
+                                
+                                swal({
+                                    type: 'success', 
+                                    title: 'The graphs have been updated !',
+                                    // html: 'Submitted email: ' + email
+                                });
+
+                                setTimeout(function () {
+                                    resolve()
+                                }, 2000);
+
+                                if( Object.keys(result).length > 0 ){
+                                    var dateLabel = Object.values(result['date']);
+                                    //console.log(Object.values(result['CourbeCroisé']));
+                                    console.log(result);
+                                                                        
+                                    
+                                    displayNewData(MixedEnergy_Linechart, Object.values(result['dateE']), Object.values(result['MixedEnergy']), [startDate, endDate], 2, 'day');
+                                    
+                                    {% if smartMod.nbPhases == 3 %}
+                                    displayNewData(MixedActivePower_Linechart, dateLabel, Object.values(result['MixedActivePower']), [startDate, endDate], 3, 'day');
+                                    displayNewData(MixedCosfi_Linechart, dateLabel, Object.values(result['MixedCosfi']), [startDate, endDate], 3, 'day');
+                                    displayNewData(MixedVoltage_Linechart, dateLabel, Object.values(result['MixedVoltage']), [startDate, endDate], 3, 'day');
+                                    
+                                    {% elseif smartMod.nbPhases == 1 %}
+                                    displayNewData(MixedPSCos_Linechart, dateLabel, Object.values(result['MixedPSCos']), [startDate, endDate], 3, 'day');
+                                    displayNewData(Voltage_Linechart, dateLabel, Object.values(result['Voltage']), [startDate, endDate], 1, 'day');
+                                    
+                                    {% endif %}
+                                                                                                            
+                                }
+                            },
+                            error: function (result) {
+                                // console.log("Error");
+                                // console.log(result);
+                                swal('Oops...', 'Something went wrong!', 'error'
+                                // footer: '<a href>Why do I have this issue?</a>'
+                                );
+
+                                setTimeout(function () {
+                                    resolve()
+                                }, 5000);
+                            }
+                        });
+                    })
+                },
+                allowOutsideClick: false
+            }]);
+        }
+
+    </script>
+
+
+        
+{% endblock %}

@@ -14,9 +14,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -49,7 +49,7 @@ class SecurityController extends AbstractController
         //dump($user->getRoles()[0]);
         if ($user !== NULL) {
             if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') return $this->redirectToRoute('admin_enterprises_index');
-            if ($user->getRoles()[0] === 'ROLE_SELLER') return $this->redirectToRoute('admin_enterprises_index');
+            if ($user->getRoles()[0] === 'ROLE_ADMIN') return $this->redirectToRoute('genset_home', ['id' => 1]);
             else return $this->redirectToRoute('product_index');
         } else {
             return $this->redirectToRoute('app_login');

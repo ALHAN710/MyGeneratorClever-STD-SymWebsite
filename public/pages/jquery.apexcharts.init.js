@@ -4,8 +4,343 @@
  * Apexcharts Js
  */
 
+//apex-column-2
 
-   
+/*
+var options = {
+    chart: {
+        height: 380,
+        type: 'bar',
+        toolbar: {
+            show: false
+        }
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                position: 'top', // top, center, bottom
+            },
+        }
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+            return val + "%";
+        },
+        offsetY: -20,
+        style: {
+            fontSize: '12px',
+            colors: ["#aeb4ce"]
+        }
+    },
+    colors: ["#4facfe"],
+    series: [{
+        name: 'Inflation',
+        data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
+    }],
+    xaxis: {
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        position: 'top',
+        labels: {
+            offsetY: -18,
+
+        },
+        axisBorder: {
+            show: false
+        },
+        axisTicks: {
+            show: false
+        },
+        crosshairs: {
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    colorFrom: '#D8E3F0',
+                    colorTo: '#BED1E6',
+                    stops: [0, 100],
+                    opacityFrom: 0.4,
+                    opacityTo: 0.5,
+                }
+            }
+        },
+        tooltip: {
+            enabled: true,
+            offsetY: -35,
+            theme: "dark",
+        }
+    },
+    fill: {
+        gradient: {
+            enabled: false,
+            shade: 'light',
+            type: "horizontal",
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [50, 0, 100, 100]
+        },
+    },
+    yaxis: {
+        axisBorder: {
+            show: false
+        },
+        axisTicks: {
+            show: false,
+        },
+        labels: {
+            show: false,
+            formatter: function (val) {
+                return val + "%";
+            }
+        }
+
+    },
+    title: {
+        text: 'Monthly Inflation in Argentina, 2002',
+        floating: true,
+        offsetY: 350,
+        align: 'center',
+        style: {
+            color: '#aeb4ce'
+        }
+    },
+    grid: {
+        row: {
+            colors: ['#202846', '#1a203a'], // takes an array which will be repeated on columns
+            opacity: 0.2
+        },
+        borderColor: '#f1f3fa'
+    },
+    tooltip: {
+        theme: "dark",
+    },
+}
+
+var chart = new ApexCharts(
+    document.querySelector("#apex_column2"),
+    options
+);
+
+chart.render();
+
+
+//Mixed-1
+var options = {
+    chart: {
+        height: 380,
+        type: 'line',
+        stacked: false,
+        toolbar: {
+            show: false
+        }
+    },
+    stroke: {
+        width: [0, 2, 4],
+        curve: 'smooth'
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '50%'
+        }
+    },
+    colors: ["#1ecab8", "#fbb624", "#f93b7a"],
+    series: [{
+        name: 'Team A',
+        type: 'column',
+        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+    }, {
+        name: 'Team B',
+        type: 'area',
+        data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+    }, {
+        name: 'Team C',
+        type: 'line',
+        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
+    }],
+    fill: {
+        opacity: [0.85, 0.25, 1],
+        gradient: {
+            inverseColors: false,
+            shade: 'light',
+            type: "vertical",
+            opacityFrom: 0.85,
+            opacityTo: 0.55,
+            stops: [0, 100, 100, 100]
+        }
+    },
+    labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+    markers: {
+        size: 0
+    },
+    legend: {
+        offsetY: -10,
+    },
+    xaxis: {
+        type: 'datetime'
+    },
+    yaxis: {
+        title: {
+            text: 'Points',
+        },
+    },
+    tooltip: {
+        shared: true,
+        intersect: false,
+        theme: "dark",
+        y: {
+            formatter: function (y) {
+                if (typeof y !== "undefined") {
+                    return y.toFixed(0) + " points";
+                }
+                return y;
+
+            }
+        }
+    },
+    grid: {
+        borderColor: '#f1f3fa'
+    }
+}
+
+var chart = new ApexCharts(
+    document.querySelector("#apex_mixed1"),
+    options
+);
+
+chart.render();
+
+//Mixed-2
+
+
+var options = {
+    chart: {
+        height: 380,
+        type: 'line',
+        stacked: false,
+        toolbar: {
+            show: false
+        }
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        width: [0, 0, 3]
+    },
+    series: [{
+        name: 'Income',
+        type: 'column',
+        data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+    }, {
+        name: 'Cashflow',
+        type: 'column',
+        data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+    }, {
+        name: 'Revenue',
+        type: 'line',
+        data: [20, 29, 37, 36, 44, 45, 50, 58]
+    }],
+    colors: ["#20016c", "#77d0ba", "#fa5c7c"],
+    xaxis: {
+        categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+    },
+    yaxis: [
+        {
+            axisTicks: {
+                show: true,
+            },
+            axisBorder: {
+                show: true,
+                color: '#20016c'
+            },
+            labels: {
+                style: {
+                    color: '#20016c',
+                }
+            },
+            title: {
+                text: "Income (thousand crores)"
+            },
+        },
+
+        {
+            axisTicks: {
+                show: true,
+            },
+            axisBorder: {
+                show: true,
+                color: '#77d0ba'
+            },
+            labels: {
+                style: {
+                    color: '#77d0ba',
+                },
+                offsetX: 10
+            },
+            title: {
+                text: "Operating Cashflow (thousand crores)",
+            },
+        },
+        {
+            opposite: true,
+            axisTicks: {
+                show: true,
+            },
+            axisBorder: {
+                show: true,
+                color: '#fa5c7c'
+            },
+            labels: {
+                style: {
+                    color: '#fa5c7c',
+                }
+            },
+            title: {
+                text: "Revenue (thousand crores)"
+            }
+        },
+
+    ],
+    tooltip: {
+        theme: "dark",
+        followCursor: true,
+        y: {
+            formatter: function (y) {
+                if (typeof y !== "undefined") {
+                    return y + " thousand crores"
+                }
+                return y;
+            }
+        }
+    },
+    grid: {
+        borderColor: '#f1f3fa'
+    },
+    legend: {
+        offsetY: -10,
+    },
+    responsive: [{
+        breakpoint: 600,
+        options: {
+            yaxis: {
+                show: false
+            },
+            legend: {
+                show: false
+            }
+        }
+    }]
+}
+
+var chart = new ApexCharts(
+    document.querySelector("#apex_mixed2"),
+    options
+);
+
+chart.render();
+
 var options = {
     chart: {
       height: 374,
@@ -77,7 +412,7 @@ var options = {
       borderColor: '#185a9d'
     },
     tooltip: {
-        theme: "dark",      
+        theme: "dark",
     },
     responsive: [{
       breakpoint: 600,
@@ -93,16 +428,16 @@ var options = {
       }
     }]
   }
-  
+
   var chart = new ApexCharts(
     document.querySelector("#apex_line1"),
     options
   );
-  
+
   chart.render();
 
     //line-2
-    
+
 var options = {
     chart: {
       height: 380,
@@ -167,7 +502,7 @@ var options = {
       offsetX: -5
     },
     tooltip: {
-        theme: "dark",      
+        theme: "dark",
     },
     responsive: [{
       breakpoint: 600,
@@ -183,16 +518,16 @@ var options = {
       }
     }]
   }
-  
+
   var chart = new ApexCharts(
     document.querySelector("#apex_line2"),
     options
   );
-  
+
   chart.render();
 
     // line-3
-  
+
 var ts2 = 1484418600000;
 var dates = [];
 var spikes = [5, -5, 3, -3, 8, -8]
@@ -418,7 +753,7 @@ for(var i=0; i<12; i++) {
       document.querySelector("#apex_area1"),
       options
   );
-  
+
   chart.render();
 
   //Area-2
@@ -736,7 +1071,7 @@ for(var i=0; i<12; i++) {
             [1361833200000,38.59],
             [1361919600000,39.60],
             ]
-            
+
         },
 
         ],
@@ -838,11 +1173,11 @@ for(var i=0; i<12; i++) {
 
     })
   })
-  
+
   //  Column Charts
 
   //colunm-1
-  
+
 var options = {
     chart: {
         height: 396,
@@ -919,126 +1254,7 @@ var chart = new ApexCharts(
 
 chart.render();
 
-//apex-column-2
 
-
-var options = {
-    chart: {
-        height: 380,
-        type: 'bar',
-        toolbar: {
-            show: false
-        }
-    },
-    plotOptions: {
-        bar: {
-            dataLabels: {
-                position: 'top', // top, center, bottom
-            },
-        }
-    },
-    dataLabels: {
-        enabled: true,
-        formatter: function (val) {
-            return val + "%";
-        },
-        offsetY: -20,
-        style: {
-            fontSize: '12px',
-            colors: ["#aeb4ce"]
-        }
-    },
-    colors: ["#4facfe"],
-    series: [{
-        name: 'Inflation',
-        data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
-    }],
-    xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        position: 'top',
-        labels: {
-            offsetY: -18,
-
-        },
-        axisBorder: {
-            show: false
-        },
-        axisTicks: {
-            show: false
-        },
-        crosshairs: {
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    colorFrom: '#D8E3F0',
-                    colorTo: '#BED1E6',
-                    stops: [0, 100],
-                    opacityFrom: 0.4,
-                    opacityTo: 0.5,
-                }
-            }
-        },
-        tooltip: {
-            enabled: true,
-            offsetY: -35,
-            theme: "dark",
-        }
-    },
-    fill: {
-        gradient: {
-            enabled: false,
-            shade: 'light',
-            type: "horizontal",
-            shadeIntensity: 0.25,
-            gradientToColors: undefined,
-            inverseColors: true,
-            opacityFrom: 1,
-            opacityTo: 1,
-            stops: [50, 0, 100, 100]
-        },
-    },
-    yaxis: {
-        axisBorder: {
-            show: false
-        },
-        axisTicks: {
-            show: false,
-        },
-        labels: {
-            show: false,
-            formatter: function (val) {
-                return val + "%";
-            }
-        }
-
-    },
-    title: {
-        text: 'Monthly Inflation in Argentina, 2002',
-        floating: true,
-        offsetY: 350,
-        align: 'center',
-        style: {
-            color: '#aeb4ce'
-        }
-    },
-    grid: {
-        row: {
-            colors: ['#202846', '#1a203a'], // takes an array which will be repeated on columns
-            opacity: 0.2
-        },
-        borderColor: '#f1f3fa'
-    },
-    tooltip: {
-        theme: "dark",      
-    },
-}
-
-var chart = new ApexCharts(
-    document.querySelector("#apex_column2"),
-    options
-);
-
-chart.render();
 
 //Apex Bar Charts
 
@@ -1076,7 +1292,7 @@ var options = {
         borderColor: '#f1f3fa'
     },
     tooltip: {
-        theme: "dark",      
+        theme: "dark",
     },
 }
 
@@ -1104,7 +1320,7 @@ var options = {
         bar: {
             horizontal: true,
             barHeight: '80%',
-            
+
         },
     },
     dataLabels: {
@@ -1136,7 +1352,7 @@ var options = {
     },
     tooltip: {
         shared: false,
-        theme: "dark", 
+        theme: "dark",
         x: {
             formatter: function(val) {
                 return val
@@ -1176,220 +1392,6 @@ chart.render();
 
 // Mixed All
 
-  //Mixed-1
-var options = {
-  chart: {
-      height: 380,
-      type: 'line',
-      stacked: false,
-      toolbar: {
-          show: false
-      }
-  },
-  stroke: {
-      width: [0, 2, 4],
-      curve: 'smooth'
-  },
-  plotOptions: {
-      bar: {
-          columnWidth: '50%'
-      }
-  },
-  colors: ["#1ecab8", "#fbb624", "#f93b7a"],
-  series: [{
-      name: 'Team A',
-      type: 'column',
-      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
-  }, {
-      name: 'Team B',
-      type: 'area',
-      data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
-  }, {
-      name: 'Team C',
-      type: 'line',
-      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
-  }],
-  fill: {
-      opacity: [0.85, 0.25, 1],
-      gradient: {
-          inverseColors: false,
-          shade: 'light',
-          type: "vertical",
-          opacityFrom: 0.85,
-          opacityTo: 0.55,
-          stops: [0, 100, 100, 100]
-      }
-  },
-  labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
-  markers: {
-      size: 0
-  },
-  legend: {
-      offsetY: -10,
-  },
-  xaxis: {
-      type: 'datetime'
-  },
-  yaxis: {
-      title: {
-          text: 'Points',
-      },
-  },
-  tooltip: {
-      shared: true,
-      intersect: false,
-      theme: "dark", 
-      y: {
-          formatter: function (y) {
-              if (typeof y !== "undefined") {
-                  return y.toFixed(0) + " points";
-              }
-              return y;
-
-          }
-      }
-  },
-  grid: {
-      borderColor: '#f1f3fa'
-  }
-}
-
-var chart = new ApexCharts(
-  document.querySelector("#apex_mixed1"),
-  options
-);
-
-chart.render();
-
-//Mixed-2
-
-
-var options = {
-  chart: {
-      height: 380,
-      type: 'line',
-      stacked: false,
-      toolbar: {
-          show: false
-      }
-  },
-  dataLabels: {
-      enabled: false
-  },
-  stroke: {
-      width: [0, 0, 3]
-  },
-  series: [{
-      name: 'Income',
-      type: 'column',
-      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-  }, {
-      name: 'Cashflow',
-      type: 'column',
-      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-  }, {
-      name: 'Revenue',
-      type: 'line',
-      data: [20, 29, 37, 36, 44, 45, 50, 58]
-  }],
-  colors: ["#20016c", "#77d0ba", "#fa5c7c"],
-  xaxis: {
-      categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-  },
-  yaxis: [
-      {
-          axisTicks: {
-              show: true,
-          },
-          axisBorder: {
-              show: true,
-              color: '#20016c'
-          },
-          labels: {
-              style: {
-                  color: '#20016c',
-              }
-          },
-          title: {
-              text: "Income (thousand crores)"
-          },
-      },
-
-      {
-          axisTicks: {
-              show: true,
-          },
-          axisBorder: {
-              show: true,
-              color: '#77d0ba'
-          },
-          labels: {
-              style: {
-                  color: '#77d0ba',
-              },
-              offsetX: 10
-          },
-          title: {
-              text: "Operating Cashflow (thousand crores)",
-          },
-      },
-      {
-          opposite: true,
-          axisTicks: {
-              show: true,
-          },
-          axisBorder: {
-              show: true,
-              color: '#fa5c7c'
-          },
-          labels: {
-              style: {
-                  color: '#fa5c7c',
-              }
-          },
-          title: {
-              text: "Revenue (thousand crores)"
-          }
-      },
-
-  ],
-  tooltip: {
-        theme: "dark", 
-        followCursor: true,
-      y: {
-          formatter: function (y) {
-              if (typeof y !== "undefined") {
-                  return y + " thousand crores"
-              }
-              return y;
-          }
-      }
-  },
-  grid: {
-      borderColor: '#f1f3fa'
-  },
-  legend: {
-      offsetY: -10,
-  },
-  responsive: [{
-      breakpoint: 600,
-      options: {
-          yaxis: {
-              show: false
-          },
-          legend: {
-              show: false
-          }
-      }
-  }]
-}
-
-var chart = new ApexCharts(
-  document.querySelector("#apex_mixed2"),
-  options
-);
-
-chart.render();
 
 // Mixed-3
 
@@ -1443,7 +1445,7 @@ var options = {
   tooltip: {
       shared: true,
       intersect: false,
-      theme: "dark", 
+      theme: "dark",
       y: {
           formatter: function (y) {
               if (typeof y !== "undefined") {
@@ -1553,7 +1555,7 @@ var options = {
       offsetY: -10,
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
     },
 }
 
@@ -1567,15 +1569,15 @@ chart.render();
 
 //apex-bubble2
 
-/*
+
 // this function will generate output in this format
-// data = [
+ data = [
   [timestamp, 23],
   [timestamp, 33],
   [timestamp, 12]
   ...
 ]
-*/
+// /
 function generateData1(baseval1, count, yrange) {
   var i = 0;
   var series = [];
@@ -1654,7 +1656,7 @@ var options2 = {
       borderColor: '#f1f3fa'
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
  },
 }
 
@@ -1706,7 +1708,7 @@ var options = {
       offsetY: -10,
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
  },
   responsive: [{
       breakpoint: 600,
@@ -1801,7 +1803,7 @@ var options = {
       max: 70
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
     },
   responsive: [{
       breakpoint: 600,
@@ -1825,7 +1827,7 @@ var chart = new ApexCharts(
 
 chart.render();
 
-/*
+// /
 // this function will generate output in this format
 // data = [
   [timestamp, 23],
@@ -1833,7 +1835,7 @@ chart.render();
   [timestamp, 12]
   ...
 ]
-*/
+// /
 function generateDayWiseTimeSeries(baseval, count, yrange) {
   var i = 0;
   var series = [];
@@ -1872,11 +1874,11 @@ var options = {
   series: [{
       data: seriesData
   }],
-  	
+
 stroke: {
   show: true,
   colors: '#f1f3fa',
-  width: [1,4]    
+  width: [1,4]
 },
   xaxis: {
       type: 'datetime'
@@ -1885,7 +1887,7 @@ stroke: {
     borderColor: '#f1f3fa'
 },
 tooltip: {
-    theme: "dark",      
+    theme: "dark",
 },
 }
 
@@ -1927,7 +1929,7 @@ var optionsCandlestick = {
     borderColor: '#f1f3fa'
 },
 tooltip: {
-    theme: "dark",      
+    theme: "dark",
 },
 }
 
@@ -1989,9 +1991,9 @@ var options = {
                       color: '#08aeb0'
                   }
               ],
-             
+
           },
-      }        
+      }
   },
   series: [{
       name: 'volume',
@@ -2012,7 +2014,7 @@ var options = {
     borderColor: '#f1f3fa'
 },
 tooltip: {
-    theme: "dark",      
+    theme: "dark",
 },
 }
 
@@ -2029,12 +2031,12 @@ chart.render();
 
   //apex-pie1
 
-  
+
 var options = {
   chart: {
       height: 320,
       type: 'pie',
-  }, 
+  },
   stroke: {
     show: true,
     width: 2,
@@ -2054,10 +2056,10 @@ var options = {
       offsetY: -10
   },
   tooltip: {
-    theme: "dark", 
+    theme: "dark",
     style: {
         color: '#fff',
-    }     
+    }
  },
   responsive: [{
       breakpoint: 600,
@@ -2086,7 +2088,7 @@ var options = {
   chart: {
       height: 320,
       type: 'donut',
-  }, 
+  },
   series: [44, 55, 41, 17, 15],
   legend: {
       show: true,
@@ -2162,7 +2164,7 @@ chart.render();
       opacity: 1,
       pattern: {
         enabled: true,
-        style: ['verticalLines', 'squares', 'horizontalLines', 'circles','slantedLines'], 
+        style: ['verticalLines', 'squares', 'horizontalLines', 'circles','slantedLines'],
       },
     },
     states: {
@@ -2288,7 +2290,7 @@ var options = {
             value: {
                 fontSize: '16px',
                 color: '#b9c2d6',
-            },          
+            },
           }
       },
   },
@@ -2317,7 +2319,7 @@ var options = {
   plotOptions: {
       radialBar: {
             track: {
-                background: '#394b7b',            
+                background: '#394b7b',
             },
           dataLabels: {
             name: {
@@ -2326,7 +2328,7 @@ var options = {
             value: {
                 fontSize: '16px',
                 color: '#b9c2d6',
-            },  
+            },
               total: {
                   show: true,
                   label: 'Total',
@@ -2340,7 +2342,7 @@ var options = {
   },
   series: [44, 55, 67, 83],
   labels: ['Apples', 'Oranges', 'Bananas', 'Berries'],
-  
+
 }
 
 var chart = new ApexCharts(
@@ -2364,7 +2366,7 @@ var options = {
           startAngle: -135,
           endAngle: 135,
           track: {
-            background: '#394b7b',            
+            background: '#394b7b',
          },
           dataLabels: {
               name: {
@@ -2584,7 +2586,7 @@ var spark1 = {
       }
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
  },
   subtitle: {
       text: 'Sales',
@@ -2629,7 +2631,7 @@ var spark2 = {
       }
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
  },
   subtitle: {
       text: 'Expenses',
@@ -2680,7 +2682,7 @@ var spark3 = {
       }
   },
   tooltip: {
-    theme: "dark",      
+    theme: "dark",
  },
   subtitle: {
       text: 'Profits',
@@ -3045,4 +3047,4 @@ new ApexCharts(document.querySelector("#chart4"), options4).render();
 new ApexCharts(document.querySelector("#chart5"), options5).render();
 new ApexCharts(document.querySelector("#chart6"), options6).render();
 new ApexCharts(document.querySelector("#chart7"), options7).render();
-new ApexCharts(document.querySelector("#chart8"), options8).render();
+new ApexCharts(document.querySelector("#chart8"), options8).render();*/

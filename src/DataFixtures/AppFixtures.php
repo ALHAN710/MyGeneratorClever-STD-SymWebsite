@@ -3,7 +3,9 @@
 namespace App\DataFixtures;
 
 use Faker;
+use App\Entity\Site;
 use App\Entity\User;
+use App\Entity\SmartMod;
 use App\Entity\Enterprise;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -29,6 +31,7 @@ class AppFixtures extends Fixture
         $enterprise->setSocialReason('ST DIGITAL CAMEROUN')
             ->setAddress('75 rue Alliance Française – Imm Entrelec Bali BP 32 Douala')
             ->setPhoneNumber('(+ 237) 243702420 / (+ 237) 696963163')
+            ->setCountry('Cameroon')
             ->setEmail('info@st.digital');
         $manager->persist($enterprise);
 
@@ -43,15 +46,16 @@ class AppFixtures extends Fixture
             ->setCountryCode('+237');
         $manager->persist($superAdminUser);
 
-        $superAdminUser->setEmail('cabrelmbakam@gmail.com')
+        $superAdminUser1 = new User();
+        $superAdminUser1->setEmail('cabrelmbakam@gmail.com')
             ->setFirstName('Cabrel')
             ->setLastName('MBAKAM')
-            ->setPassword($this->encoder->encodePassword($superAdminUser, 'password'))
+            ->setPassword($this->encoder->encodePassword($superAdminUser1, 'password'))
             ->setRoles(['ROLE_SUPER_ADMIN'])
             //->setVerified(true)
             ->setPhoneNumber('690304593')
             ->setCountryCode('+237');
-        $manager->persist($superAdminUser);
+        $manager->persist($superAdminUser1);
 
         $adminUser = new User();
         $adminUser->setEmail('jean-francis@st.digital')
@@ -64,6 +68,28 @@ class AppFixtures extends Fixture
             ->setPhoneNumber('695385802')
             ->setCountryCode('+237');
         $manager->persist($adminUser);
+
+        //Site de Douala du client SATC
+        $siteDouala = new Site();
+
+        $siteDouala->setName('Douala')
+            ->setCurrency('XAF')
+            ->setEnterprise($enterprise);
+
+        $manager->persist($siteDouala);
+
+        $smartMod = new SmartMod();
+        $modType = 'FUEL';
+        //$instaType = $faker->randomElement($instaTypes);
+        $nameMod = 'Livraison Groupe Electrogène';
+
+        $smartMod->setModuleId($faker->unique()->randomNumber($nbDigits = 8, $strict = false))
+            ->setSite($siteDouala)
+            ->setModType($modType)
+            ->setFuelPrice(575)
+            ->setName($nameMod);
+
+        $manager->persist($smartMod);
 
         $manager->flush();
     }
