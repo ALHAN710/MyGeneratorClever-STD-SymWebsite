@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use DateTime;
 use Faker;
+use DateTime;
+use DateInterval;
 use App\Entity\SmartMod;
 use App\Entity\DatetimeData;
 use App\Entity\NoDatetimeData;
@@ -41,6 +42,9 @@ class GensetController extends ApplicationController
         /*SELECT * 
 FROM `datetime_data` 
 WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021-05-21%')*/
+
+        //dump($date);
+
         $lastRecord = $manager->createQuery("SELECT d.p AS P, d.q AS Q, d.s AS S, d.cosfi AS Cosfi, d.totalRunningHours AS TRH,
                                         d.totalEnergy AS TEP, d.fuelInstConsumption AS FC, d.dateTime
                                         FROM App\Entity\DatetimeData d
@@ -103,7 +107,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($firstDatetimeDataDayRecord);
+        // dump($firstDatetimeDataDayRecord);
         $lastDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
@@ -116,7 +120,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($lastDatetimeDataDayRecord);
+        // dump($lastDatetimeDataDayRecord);
         $npsd = 0;
         $trhd = 0;
         $tepd = 0;
@@ -124,9 +128,9 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
             $npsd = intval($lastDatetimeDataDayRecord[0]['NPS']) - intval($firstDatetimeDataDayRecord[0]['NPS']);
             $trhd = intval($lastDatetimeDataDayRecord[0]['TRH']) - intval($firstDatetimeDataDayRecord[0]['TRH']);
             $tepd = intval($lastDatetimeDataDayRecord[0]['TEP']) - intval($firstDatetimeDataDayRecord[0]['TEP']);
-            dump($npsd);
-            dump($trhd);
-            dump($tepd);
+            // dump($npsd);
+            // dump($trhd);
+            // dump($tepd);
         }
 
         $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -141,7 +145,8 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($firstDatetimeDataMonthRecord);
+        // dump($firstDatetimeDataMonthRecord);
+
         $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
@@ -154,7 +159,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($lastDatetimeDataMonthRecord);
+        // dump($lastDatetimeDataMonthRecord);
         $npsm = 0;
         $trhm = 0;
         $tepm = 0;
@@ -162,9 +167,9 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
             $npsm = intval($lastDatetimeDataMonthRecord[0]['NPS']) - intval($firstDatetimeDataMonthRecord[0]['NPS']);
             $trhm = intval($lastDatetimeDataMonthRecord[0]['TRH']) - intval($firstDatetimeDataMonthRecord[0]['TRH']);
             $tepm = intval($lastDatetimeDataMonthRecord[0]['TEP']) - intval($firstDatetimeDataMonthRecord[0]['TEP']);
-            dump($npsm);
-            dump($trhm);
-            dump($tepm);
+            // dump($npsm);
+            // dump($trhm);
+            // dump($tepm);
         }
 
         $firstDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -179,7 +184,8 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($firstDatetimeDataYearRecord);
+
+        //dump($firstDatetimeDataYearRecord);
         $lastDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
@@ -192,7 +198,8 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($lastDatetimeDataYearRecord);
+        //dump($lastDatetimeDataYearRecord);
+
         $npsy = 0;
         $trhy = 0;
         $tepy = 0;
@@ -200,9 +207,9 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
             $npsy = intval($lastDatetimeDataYearRecord[0]['NPS']) - intval($firstDatetimeDataYearRecord[0]['NPS']);
             $trhy = intval($lastDatetimeDataYearRecord[0]['TRH']) - intval($firstDatetimeDataYearRecord[0]['TRH']);
             $tepy = intval($lastDatetimeDataYearRecord[0]['TEP']) - intval($firstDatetimeDataYearRecord[0]['TEP']);
-            dump($npsy);
-            dump($trhy);
-            dump($tepy);
+            // dump($npsy);
+            // dump($trhy);
+            // dump($tepy);
         }
         //dump($lastRecord);
 
@@ -219,7 +226,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($FCD);
+        //dump($FCD);
         if ($tepd > 0) $poe[] = ($FCD[0]['FC'] * 1.0) / $tepd;
         else $poe[] = 0;
 
@@ -235,7 +242,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($FCM);
+        // dump($FCM);
         if ($tepm > 0) $poe[] = ($FCM[0]['FC'] * 1.0) / $tepm;
         else $poe[] = 0;
 
@@ -251,11 +258,115 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        dump($FCY);
+        // dump($FCY);
         if ($tepy > 0) $poe[] = ($FCY[0]['FC'] * 1.0) / $tepy;
         else $poe[] = 0;
 
         $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $id->getId()]) ?? new NoDatetimeData();
+        $yesterday = new DateTime('now');
+        $interval = new DateInterval('P1D'); //P10D P1M
+        $yesterday->sub($interval);
+        dump($yesterday);
+        $lastMonth = new DateTime('now');
+        $interval = new DateInterval('P1M'); //P10D P1M
+        $lastMonth->sub($interval);
+        dump($lastMonth);
+        $lastYear = new DateTime('now');
+        $interval = new DateInterval('P1Y'); //P10D P1M
+        $lastYear->sub($interval);
+        dump($lastYear);
+        $precDayLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $yesterday->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $precDayFirstTEPRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT min(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $yesterday->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevMonthFirstTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT min(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastMonth->format("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevMonthLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastMonth->format("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevYearFirstTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT min(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastYear->format("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevYearLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastYear->format("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+
+        $prev_tepd = 0;
+        if (count($precDayLastTEPRecord) && count($precDayFirstTEPRecord)) {
+            $prev_tepd = intval($precDayFirstTEPRecord[0]['TEP']) - intval($precDayLastTEPRecord[0]['TEP']);
+            dump($prev_tepd);
+        }
+        $prev_tepm = 0;
+        if (count($prevMonthFirstTEPRecord) && count($prevMonthLastTEPRecord)) {
+            $prev_tepm = intval($prevMonthLastTEPRecord[0]['TEP']) - intval($prevMonthFirstTEPRecord[0]['TEP']);
+            dump($prev_tepm);
+        }
+        $prev_tepy = 0;
+        if (count($prevYearFirstTEPRecord) && count($prevYearLastTEPRecord)) {
+            $prev_tepy = intval($prevYearLastTEPRecord[0]['TEP']) - intval($prevYearFirstTEPRecord[0]['TEP']);
+            dump($prev_tepy);
+        }
+
+        $prev_poe = [];
+        if ($prev_tepd > 0) $prev_poe[] = ($FCD[0]['FC'] * 1.0) / $prev_tepd;
+        else $prev_poe[] = 0;
+        if ($prev_tepm > 0) $prev_poe[] = ($FCM[0]['FC'] * 1.0) / $prev_tepm;
+        else $prev_poe[] = 0;
+        if ($prev_tepy > 0) $prev_poe[] = ($FCY[0]['FC'] * 1.0) / $prev_tepy;
+        else $prev_poe[] = 0;
+        dump($prev_poe);
 
         return $this->json([
             'code'    => 200,
@@ -271,6 +382,7 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
             'TRH'    => [$lastRecord[0]['TRH'] ?? 0, $trhd, $trhm, $trhy],
             'FC'    => [$FCD[0]['FC'] ?? 0, $FCM[0]['FC'] ?? 0, $FCY[0]['FC'] ?? 0],
             'POE'   => $poe,
+            'prevPOE' => $prev_poe,
             'Freq'    => $noDatetimeData->getFreq() ?? 0,
             'Idiff'   => $noDatetimeData->getIDiff() ?? 0,
             'Level'       => [$noDatetimeData->getFuelLevel() ?? 0, $noDatetimeData->getWaterLevel() ?? 0, $noDatetimeData->getOilLevel() ?? 0],

@@ -11,6 +11,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
 
+    <!-- DataTables -->
+    <link href="/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
+
 {% endblock %}
         
 {% block breadcrumbItem %}
@@ -344,6 +350,94 @@
 
                     <div class="tab-pane p-3" id="energy" role="tabpanel">
                         <div class="row">
+                            <h5 class="mt-0 mb-3 "><a href="#" id="histo" class="text-decoration"><u>Consult History</u> <i class="dripicons-arrow-up"></i></a></h5>
+                            <h5 class="mt-0 mb-3 d-none"><a href="#" id="home" class="text-decoration"><u>Back</u></a></h5>
+                        </div>
+
+                        <div class="row rowHisto d-none">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+        
+                                        <h4 class="mt-0 header-title">History of the last 12 months</h4>
+                                        
+                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Months</th>
+                                                    <th>Running Time</th>
+                                                    <th>Fuel consummed</th>
+                                                    <th>Energy produced</th>
+                                                    <th>PoE</th>
+                                                </tr>
+                                            </thead>
+        
+        
+                                            <tbody>
+                                                <tr>
+                                                    <th>Jan-2020</th>
+                                                    <td class="text-center">7500</td>
+                                                    <td class="text-center">11</td>
+                                                    <td class="text-center">5</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fév-2020</th>
+                                                    <td class="text-center">5500</td>
+                                                    <td class="text-center">8</td>
+                                                    <td class="text-center">3</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Mars-2020</th>
+                                                    <td class="text-center">6800</td>
+                                                    <td class="text-center">10</td>
+                                                    <td class="text-center">4</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Avr-2020</th>
+                                                    <td class="text-center">7200</td>
+                                                    <td class="text-center">10.5</td>
+                                                    <td class="text-center">3</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Mai-2020</th>
+                                                    <td class="text-center">7600</td>
+                                                    <td class="text-center">11.5</td>
+                                                    <td class="text-center">5</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Juin-2020</th>
+                                                    <td class="text-center">7100</td>
+                                                    <td class="text-center">9.5</td>
+                                                    <td class="text-center">3</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Juil-2020</th>
+                                                    <td class="text-center">6500</td>
+                                                    <td class="text-center">8.25</td>
+                                                    <td class="text-center">2.5</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Août-2020</th>
+                                                    <td class="text-center">7000</td>
+                                                    <td class="text-center">10.75</td>
+                                                    <td class="text-center">4</td>
+                                                    <td class="text-center">20</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>        
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+                        </div> <!-- end row -->
+
+                        <div class="row home">
                             <div class="col-lg-6">
                                 <div class="card card-eco">
                                     <div class="card-body">
@@ -379,7 +473,7 @@
                         
                         </div>
 
-                        <div class="row">
+                        <div class="row home">
                             <div class="col-lg-6">
                                 <div class="card card-eco">
                                     <div class="card-body">
@@ -402,12 +496,14 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between">
                                             <h4 class="title-text mt-0">Power Of Effectiveness (PoE)</h4>
-                                            <i class="dripicons-graph-line card-eco-icon text-primary align-self-center"></i>
+                                            {# <i class="dripicons-graph-line card-eco-icon text-primary align-self-center"></i> #}
+                                            <div class="data-icon">
+                                                <i class="mdi mdi-spa rounded-circle bg-soft-primary"></i>
+                                            </div>
                                         </div>                                     
                                         <p><h5 class="font-weight-bold">This day : <span class="mr-2" id="poed">0</span>|<span class="ml-2" id="poedProgVal">0</span> %<span><i class="mdi mdi-menu-down mdi-24px text-danger" id="poedProg"></i></span></h5></p>
                                         <p><h5 class="font-weight-bold">This month : <span class="mr-2" id="poem">0</span>|<span class="ml-2" id="poemProgVal">0</span> %<span><i class="mdi mdi-menu-down mdi-24px text-danger" id="poemProg"></i></span></h5></p>
                                         <p><h5 class="font-weight-bold">This year : <span class="mr-2" id="poey">0</span>|<span class="ml-2" id="poeyProgVal">0</span> %<span><i class="mdi mdi-menu-down mdi-24px text-danger" id="poeyProg"></i></span></h5></p>
-                                        <br/>
                                         {# <p><h4 class="font-weight-bold">Total : <span class="mr-2" id="tep"></span> kWh</h4></p> #}
                                         
                                     </div><!--end card-body-->
@@ -415,7 +511,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row home">
                             <div class="col-12">
                                 <label class="my-3">Pick Date Ranges</label>
                                 <div class="input-group mb-3">  
@@ -443,7 +539,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row home">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -482,7 +578,7 @@
                             </div><!--end col-->
                         </div><!--end row--> #}
 
-                        <div class="row">
+                        <div class="row home">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -759,6 +855,56 @@
     <!-- Sweet-Alert  -->
     <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
 
+    <!-- Required datatable js -->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Buttons examples -->
+    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables/jszip.min.js"></script>
+    <script src="/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+    <!-- Responsive examples -->
+    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    
+    <script>
+        //Buttons examples
+        var table = $('#datatable-buttons').DataTable({
+            //sDom: 'lrtip',
+            searching: false, 
+            paging: false, 
+            info: false,
+            ordering: false,
+            lengthChange: false,
+            //buttons: ['copy', 'excel', 'pdf', 'colvis']
+            buttons: ['excel', 'pdf']
+        });
+
+        table.buttons().container().appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
+
+        $('#histo').click(function(){
+            $(this).parent().addClass('d-none');
+            $('.home').addClass('d-none');
+
+            $('.rowHisto').removeClass('d-none');
+            $('#home').parent().removeClass('d-none');
+        })
+        
+        $('#home').click(function(){
+            $(this).parent().addClass('d-none');
+            $('.rowHisto').addClass('d-none');
+
+            $('.home').removeClass('d-none');
+            $('#histo').parent().removeClass('d-none');
+        })
+
+                
+    </script>
+
     <script>
         var fuel_level = new JustGage({
             id: "fuel_level",
@@ -1000,6 +1146,16 @@
                                     $('#poed').text( String( (result['POE'][0]).toFixed(2) ) )
                                     $('#poem').text( String( parseFloat(result['POE'][1]).toFixed(2) ) )
                                     $('#poey').text( String( parseFloat(result['POE'][2]).toFixed(2) ) )
+                                    
+                                    //Day 
+                                    prog = parseFloat(result['prevPOE'][0]) > 0 ? (parseFloat(result['POE'][0]) - parseFloat(result['prevPOE'][0])) * 100.0 / parseFloat(result['prevPOE'][0]) : parseFloat(result['POE'][0]);
+                                    progressVal($('#poedProgVal'), $('#poedProg'), prog, true, false);
+                                    //Month
+                                    prog = parseFloat(result['prevPOE'][1]) > 0 ? (parseFloat(result['POE'][1]) - parseFloat(result['prevPOE'][1])) * 100.0 / parseFloat(result['prevPOE'][1]) : parseFloat(result['POE'][1]);
+                                    progressVal($('#poemProgVal'), $('#poemProg'), prog, true, false);
+                                    //Year
+                                    prog = parseFloat(result['prevPOE'][2]) > 0 ? (parseFloat(result['POE'][2]) - parseFloat(result['prevPOE'][2])) * 100.0 / parseFloat(result['prevPOE'][2]) : parseFloat(result['POE'][2]);
+                                    progressVal($('#poeyProgVal'), $('#poeyProg'), prog, true, false);
 
                                     if(parseInt(result['CGCR'][0])){//CG = 1
                                         $('#cg').removeClass('badge-danger')
@@ -2048,7 +2204,51 @@
             }]);
         }
 
-        
+        function progressVal(selectorVal, selectorIcon, prog, posLogique, isTime) {
+            var DESC = 'mdi-menu-down';
+            var ASC = 'mdi-menu-up';
+            var greenColor = 'text-success';
+            var redColor = 'text-danger';
+            if (!isTime) {
+                selectorVal.html(prog === null ? 0 : prog > 0 ? '+' + prog.toFixed(1) : prog.toFixed(1));
+            }
+            else {
+                var diff = new Date(Math.abs(prog));
+                var $dat = new moment(diff).subtract(timeZoneOffset, 'hours');
+                var str = $dat.format('HH:mm:ss').toString()
+                selectorVal.html(prog === null ? 0 : prog > 0 ? '+' + str : '-' + str);
+            }
+            if (posLogique) {
+                if (prog > 0) {
+                    selectorIcon.removeClass(DESC).addClass(ASC);
+                    selectorIcon.removeClass(greenColor).addClass(redColor);
+                    /*if (selectorIcon.hasClass(oldClass)) {
+                        // it has class
+                    } else {
+                        // it doesn't have specified class
+                    }*/
+                }
+                else {
+                    selectorIcon.removeClass(ASC).addClass(DESC);
+                    selectorIcon.removeClass(redColor).addClass(greenColor);
+                }
+            }
+            else {
+                if (prog > 0) {
+                    selectorIcon.removeClass(DESC).addClass(ASC);
+                    selectorIcon.removeClass(redColor).addClass(greenColor);
+                    /*if (selectorIcon.hasClass(oldClass)) {
+                        // it has class
+                    } else {
+                        // it doesn't have specified class
+                    }*/
+                }
+                else {
+                    selectorIcon.removeClass(ASC).addClass(DESC);
+                    selectorIcon.removeClass(greenColor).addClass(redColor);
+                }
+            }
+        }
 
     </script>
 
