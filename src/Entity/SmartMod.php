@@ -92,11 +92,17 @@ class SmartMod
      */
     private $subType;
 
+    /**
+     * @ORM\OneToMany(targetEntity=AlarmReporting::class, mappedBy="smartMod")
+     */
+    private $alarmReportings;
+
     public function __construct()
     {
         $this->datetimeData = new ArrayCollection();
         $this->zones = new ArrayCollection();
         $this->loadDataEnergies = new ArrayCollection();
+        $this->alarmReportings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -300,6 +306,36 @@ class SmartMod
     public function setSubType(?string $subType): self
     {
         $this->subType = $subType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AlarmReporting[]
+     */
+    public function getAlarmReportings(): Collection
+    {
+        return $this->alarmReportings;
+    }
+
+    public function addAlarmReporting(AlarmReporting $alarmReporting): self
+    {
+        if (!$this->alarmReportings->contains($alarmReporting)) {
+            $this->alarmReportings[] = $alarmReporting;
+            $alarmReporting->setSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlarmReporting(AlarmReporting $alarmReporting): self
+    {
+        if ($this->alarmReportings->removeElement($alarmReporting)) {
+            // set the owning side to null (unless already changed)
+            if ($alarmReporting->getSmartMod() === $this) {
+                $alarmReporting->setSmartMod(null);
+            }
+        }
 
         return $this;
     }

@@ -649,7 +649,49 @@
         </div>
 
         <div class="tab-pane p-3" id="alarm" role="tabpanel">
-            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h4 class="mt-0 header-title">Alarm Reporting</h4>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label class="my-3">Pick Date Ranges</label>
+                                    <div class="input-group mb-3">  
+                                        <input type="text" id="daterangeAlarm" class="form-control" value="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="dripicons-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <table id="datatable-buttons-alarm" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Alarm Label</th>
+                                        <th class="text-center">Occurrence</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for alarm in alarms %}
+                                    <tr>
+                                        <th>{{alarm.label}}</th>
+                                        <td class="text-center" id="alarm_{{alarm.id}}">0</td>
+                                        <td class="text-center"><a href="#" class="alarmDetails text-decoration" data-alarm={{alarm.id}}><u>Details</u></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>        
+                        </div>
+                    </div>
+                </div> <!-- end col -->
+            </div> <!-- end row -->
         </div>                                                
                     
     </div>     
@@ -1561,4 +1603,132 @@
 
     </script>
    
+   {# Alarm panel script #}
+   <script>
+        var alarmTable = $('#datatable-buttons-alarm').DataTable({
+            //sDom: 'lrtip',
+            searching: true, 
+            paging: true, 
+            //info: false,
+            ordering: false,
+            lengthChange: false,
+            //buttons: ['copy', 'excel', 'pdf', 'colvis']
+            buttons: ['excel', 'pdf', 'colvis']
+        });
+
+        alarmTable.buttons().container().appendTo('#datatable-buttons-alarm_wrapper .col-md-6:eq(0)');
+        
+        var urlAlarmReport = "{{ path('update_alarm_report') }}";
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        function cb(start, end) {
+            $('#daterangeAlarm span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+
+        $('#daterangeAlarm').daterangepicker({
+            startDate: start,
+            endDate: end,
+            maxSpan: {
+                "days": 31
+            },
+            maxDate: moment().endOf('month'),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb);
+        
+        $('#daterangeAlarm').on('apply.daterangepicker', function (ev, picker) {
+            //console.log(picker.startDate.format('YYYY-MM-DD'));
+            //console.log(picker.endDate.format('YYYY-MM-DD'));
+        
+            startDate = picker.startDate.format('YYYY-MM-DD');
+            endDate = picker.endDate.format('YYYY-MM-DD');
+            
+            console.log('startDate = ' + startDate);
+            console.log('endDate = ' + endDate);
+            updateAlarmReport();
+            // block of code that runs when the click event triggers
+
+        });
+
+        function updateAlarmReport(){
+            
+            $data = JSON.stringify({
+                //"selectedDate": $dat,
+                "startDate": startDate + ' 00:00:00',
+                "endDate": endDate + ' 23:59:59',
+                //"type": "zone",
+                {# "id":{{smartMod.id ?? 0}}, #}
+                "zoneId": {{zone.id}},
+            });
+
+            // Danger
+
+            swal.queue([{
+                title: 'The report will be updated for the date range :',
+                confirmButtonText: 'Confirm',
+                text: 'From ' + startDate + ' To ' + endDate,
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger ml-2',
+                preConfirm: function () {
+                    return new Promise(function (resolve) { 
+                        
+                        $.ajax({
+                            type: "POST", // method type
+                            contentType: "application/json; charset=utf-8",
+                            url: urlAlarmReport, // /Target function that will be return result
+                            data: $data, // parameter pass data is parameter name param is value
+                            dataType: "json",
+                            timeout: 120000, // 64241
+                            success: function (result) {
+                                // $('.fa-sync').removeClass('fa-spin');
+                                console.log(result);
+                                
+                                swal({
+                                    type: 'success', 
+                                    title: 'The report have been updated !',
+                                    // html: 'Submitted email: ' + email
+                                });
+
+                                setTimeout(function () {
+                                    resolve()
+                                }, 2000);
+
+                                if( Object.keys(result).length > 0 ){
+                                    //var dateLabel = Object.values(result['date']);
+                                    //console.log(Object.values(result['CourbeCroisé']));
+                                    //console.log(result);
+                                    {# console.log(Object.values(result['SymI']));
+                                    console.log(Object.values(result['SymV'])); #}
+                                                              
+                                    
+                                }
+                            },
+                            error: function (result) {
+                                // console.log("Error");
+                                // console.log(result);
+                                swal('Oops...', 'Something went wrong!', 'error'
+                                // footer: '<a href>Why do I have this issue?</a>'
+                                );
+
+                                setTimeout(function () {
+                                    resolve()
+                                }, 5000);
+                            }
+                        });
+                    })
+                },
+                allowOutsideClick: false
+            }]);
+        }
+   </script>
 {% endblock %}
