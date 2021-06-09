@@ -5,8 +5,11 @@ namespace App\Controller;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\ApplicationController;
+use App\Entity\AlarmReporting;
+use App\Message\UserNotificationMessage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 //use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -27,7 +30,6 @@ class AlarmController extends ApplicationController
      *
      * @Route("/update/alarm/report", name="update_alarm_report")
      * 
-     * @param [SmartMod] $smartMod
      * @param EntityManagerInterface $manager
      * @return Response
      */
@@ -37,7 +39,7 @@ class AlarmController extends ApplicationController
         $paramJSON = $this->getJSONRequest($request->getContent());
 
         //$type = $paramJSON['type'];
-        //$smartMod = $manager->getRepository('App:Zone')->findOneBy(['id' => $paramJSON['id']]);
+        //$smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['id' => $paramJSON['id']]);
         $zone = $manager->getRepository('App:Zone')->findOneBy(['id' => $paramJSON['zoneId']]);
         $startDate = new DateTime($paramJSON['startDate']); // Ex : %2020-03-20%
         //$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['endDate']); // Ex : %2020-03-20%
@@ -140,6 +142,65 @@ class AlarmController extends ApplicationController
             return $this->json([
                 'code'    => 200,
 
+            ], 200);
+        }
+
+        return $this->json([
+            'code'         => 500,
+        ], 500);
+    }
+
+    /**
+     * Permet de notifier les utilisateurs d'une alarme déclenchée
+     *
+     * @Route("/alarm/notification", name="alarm_notification")
+     * 
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    public function alarmNotify(EntityManagerInterface $manager, Request $request, MessageBusInterface $messageBus): Response
+    {
+        /*$messageBus->dispatch(new UserNotificationMessage(5, "Coupure d'énergie", 'Email'));
+        //$messageBus->dispatch(new UserNotificationMessage(5, "Coupure d'énergie", 'SMS'));
+        return $this->json([
+            'code'    => 200,
+
+        ], 200);*/
+
+        //Récupération et vérification des paramètres au format JSON contenu dans la requête
+        $paramJSON = $this->getJSONRequest($request->getContent());
+
+        $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $paramJSON['id']]);
+        if ($smartMod) {
+            $alarmCode = $manager->getRepository('App:Alarm')->findOneBy(['code' => $paramJSON['code']]);
+            if ($alarmCode) {
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) !== false ? DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) : new DateTime('now');
+                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                $alarmReporting = new AlarmReporting();
+                $alarmReporting->setSmartMod($smartMod)
+                    ->setAlarm($alarmCode)
+                    ->setCreatedAt($date);
+
+
+                if ($smartMod->getSite()) $site = $smartMod->getSite();
+                else {
+                    foreach ($smartMod->getZones() as $zone) {
+                        $site = $zone->getSite();
+                        if ($site) break;
+                    }
+                }
+                $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+
+                foreach ($site->getContacts() as $contact) {
+                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'Email'));
+                    //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS'));
+                }
+                $manager->persist($alarmReporting);
+                $manager->flush();
+            }
+            return $this->json([
+                'code'    => 200,
+                'date'  => $date->format('d F Y H:i:s')
             ], 200);
         }
 

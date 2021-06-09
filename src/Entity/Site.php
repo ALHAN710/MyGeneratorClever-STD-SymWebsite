@@ -102,6 +102,11 @@ class Site
     private $tarification;
 
     /**
+     * @ORM\OneToMany(targetEntity=Contacts::class, mappedBy="site")
+     */
+    private $contacts;
+
+    /**
      * Permet d'initialiser le slug !
      *
      * @ORM\PrePersist
@@ -136,6 +141,7 @@ class Site
         $this->users = new ArrayCollection();
         $this->smartMods = new ArrayCollection();
         $this->zones = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -348,6 +354,36 @@ class Site
         }
 
         $this->tarification = $tarification;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Contacts[]
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contacts $contact): self
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts[] = $contact;
+            $contact->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contacts $contact): self
+    {
+        if ($this->contacts->removeElement($contact)) {
+            // set the owning side to null (unless already changed)
+            if ($contact->getSite() === $this) {
+                $contact->setSite(null);
+            }
+        }
 
         return $this;
     }

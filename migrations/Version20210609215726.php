@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210608031325 extends AbstractMigration
+final class Version20210609215726 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,13 +20,13 @@ final class Version20210608031325 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE alarm ADD type VARCHAR(20) NOT NULL');
-        //$this->addSql("UPDATE alarm SET type='Load Meter'");
+        $this->addSql('ALTER TABLE contacts ADD country_code VARCHAR(10) NOT NULL');
+        //$this->addSql("UPDATE contacts SET country_code='+237'");
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE alarm DROP type');
+        $this->addSql('ALTER TABLE contacts DROP country_code');
     }
 }

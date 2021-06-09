@@ -42,6 +42,17 @@ class Contacts
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $countryCode;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="contacts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $site;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +114,30 @@ class Contacts
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCountryCode(): ?string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(string $countryCode): self
+    {
+        $this->countryCode = $countryCode;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
 
         return $this;
     }
