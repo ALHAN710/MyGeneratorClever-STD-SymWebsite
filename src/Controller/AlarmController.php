@@ -193,7 +193,7 @@ class AlarmController extends ApplicationController
 
                 foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'Email'));
-                    //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS'));
+                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS'));
                 }
                 $manager->persist($alarmReporting);
                 $manager->flush();
