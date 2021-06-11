@@ -42,8 +42,7 @@ class UserNotificationHandler implements MessageHandlerInterface
                 $object = 'ALERTE My Energy Clever !!!';
                 $to = $contact->getUser() !== null ? $contact->getUser()->getEmail() : $contact->getEmail();
                 $email = (new Email())
-                    ->from('alhadoumpascal@gmail.com')
-                    //->from('donotreply@portal-myenergyclever.com')
+                    ->from('stdigital.powermon.alerts@gmail.com')
                     ->to($to)
                     //->addTo('cabrelmbakam@gmail.com')
                     //->cc('cabrelmbakam@gmail.com')
