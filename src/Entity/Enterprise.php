@@ -55,7 +55,7 @@ class Enterprise
     private $address;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=50)
      * @Assert\NotBlank(message="Numéro de téléphone obligatoire")
      * @Assert\Length(min=9, minMessage="Le numéro de téléphone doit contenir au moins 9 caractères !", maxMessage="Votre numéro de téléphone doit contenir au max 50 caractères !")
      */
