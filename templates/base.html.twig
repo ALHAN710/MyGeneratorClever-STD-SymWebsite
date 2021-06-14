@@ -55,19 +55,19 @@
                     </div>
                     <!-- end page title end breadcrumb -->
                     
-                    {# {% for label, messages in app.flashes %}
+                    {% for label, messages in app.flashes %}
                     <div class="alert alert-{{label}} alert-dismissible fade show" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                            <span aria-hidden="true"><i class="fa fa-times"></i></span>
                         </button>
                         <div class="d-flex align-items-center">
                             <div class="alert-icon width-3">
                                 <span class="icon-stack icon-stack-sm">
                                     {% if label == 'success' %}
                                     <i class="base-7 icon-stack-3x color-success-600"></i>
-                                    <i class="fal fa-check icon-stack-1x text-white"></i>
+                                    <i class="fa fa-check icon-stack-1x text-white"></i>
                                     {% elseif label == 'danger' %}
-                                    <i class="fal fa-exclamation-triangle"></i>
+                                    <i class="fa fa-exclamation-triangle"></i>
                                     {% endif %}
                                 </span>
                             </div>
@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}  #}
+                    {% endfor %} 
 
                       
                     {% block body %}{% endblock %}

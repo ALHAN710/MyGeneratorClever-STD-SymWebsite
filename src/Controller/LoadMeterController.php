@@ -12,12 +12,16 @@ use App\Controller\ApplicationController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+//use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class LoadMeterController extends ApplicationController
 {
     /**
      * @Route("/load/meter/{smartMod<\d+>}/{zone<\d+>}", name="load_meter")
+     * 
+     * @IsGranted("ROLE_USER")
+     * 
      */
     public function index(SmartMod $smartMod, Zone $zone, EntityManagerInterface $manager): Response
     {
@@ -118,6 +122,8 @@ class LoadMeterController extends ApplicationController
      * Permet de mettre à jour les graphes liés aux données d'un module load Meter
      *
      * @Route("/update/load-meter/mod/graphs/", name="update_load_meter_graphs")
+     * 
+     * @IsGranted("ROLE_USER")
      * 
      * @param [SmartMod] $smartMod
      * @param EntityManagerInterface $manager

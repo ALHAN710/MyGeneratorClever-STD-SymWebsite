@@ -37,3 +37,13 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+    
+    # La partie role_hierarchy contient la hiérarchie des rôles
+    # Un éditeur sera également utilisateur
+    # Un administrateur sera également éditeur et donc utilisateur
+    role_hierarchy:
+        ROLE_CUSTOMER: ROLE_USER
+        ROLE_MANAGER: ROLE_USER
+        ROLE_SUPERVISOR: ROLE_MANAGER
+        ROLE_ADMIN: ROLE_SUPERVISOR
+        ROLE_SUPER_ADMIN: ROLE_ADMIN

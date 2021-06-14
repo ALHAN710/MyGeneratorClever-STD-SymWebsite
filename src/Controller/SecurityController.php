@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -40,7 +41,7 @@ class SecurityController extends AbstractController
      * @Route("/", name="homepage")
      * 
      */
-    public function home()
+    public function home(EntityManagerInterface $manager)
     {
 
         $user = $this->getUser();
@@ -49,8 +50,22 @@ class SecurityController extends AbstractController
         //dump($user->getRoles()[0]);
         if ($user !== NULL) {
             if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') return $this->redirectToRoute('admin_enterprises_index');
-            if ($user->getRoles()[0] === 'ROLE_ADMIN') return $this->redirectToRoute('genset_home', ['id' => 1]);
-            else return $this->redirectToRoute('product_index');
+            else if ($user->getRoles()[0] === 'ROLE_CUSTOMER' || $user->getRoles()[0] === 'ROLE_MANAGER') {
+                $sites = $user->getSites();
+                if (count($sites) > 0) {
+                    $zones = $sites[0]->getZones();
+                    if (count($zones) > 0) {
+                        $smartMod = count($zones[0]->getSmartMods()) > 0 ? $zones[0]->getSmartMods()[0] : null;
+                        if ($smartMod !== null) return $this->redirectToRoute('load_meter', ['smartMod' => $smartMod->getId(), 'zone' => $zones[0]->getId()]);
+                        throw $this->createNotFoundException('No modules found');
+                    }
+                    throw $this->createNotFoundException('No zones found');
+                }
+                throw $this->createNotFoundException('No sites found');
+            } else {
+                $fuelMods = $manager->getRepository('App:SmartMod')->findBy(['modType' => 'FUEL']);
+                if (count($fuelMods) > 0) return $this->redirectToRoute('genset_home', ['id' => $fuelMods[0]->getId()]);
+            }
         } else {
             return $this->redirectToRoute('app_login');
         }

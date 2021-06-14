@@ -13,12 +13,17 @@ use App\Controller\ApplicationController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 //use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class GensetController extends ApplicationController
-{
+{ //
     /**
      * @Route("/genset/{id}", name="genset_home")
+     * 
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
+     * 
      */
     public function index(SmartMod $id): Response
     {
@@ -33,6 +38,8 @@ class GensetController extends ApplicationController
      *
      * @Route("/update/genset/mod/{id<\d+>}/display/",name="update_genset_display_data")
      * 
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
+     * 
      * @param [interger] $id
      * @param EntityManagerInterface $manager
      * @return Response
@@ -40,8 +47,8 @@ class GensetController extends ApplicationController
     public function updateDisplayNoDatetimeData(SmartMod $id, EntityManagerInterface $manager, Request $request): Response
     {
         /*SELECT * 
-FROM `datetime_data` 
-WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021-05-21%')*/
+            FROM `datetime_data` 
+            WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021-05-21%')*/
 
         //dump($date);
 
@@ -412,6 +419,8 @@ WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021
      * Permet de mettre à jour les graphes liés aux données d'un module genset
      *
      * @Route("/update/genset/mod/{smartMod<\d+>}/graphs/", name="update_genset_graphs")
+     * 
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_SUPERVISOR') and smartMod.getSite().getEnterprise() === user.getEnterprise() )" )
      * 
      * @param [SmartMod] $smartMod
      * @param EntityManagerInterface $manager
