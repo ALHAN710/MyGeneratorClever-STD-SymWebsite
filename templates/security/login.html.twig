@@ -81,9 +81,15 @@
                                 </div> <!--end auth-logo-text-->  
 
                                 
-                                <form class="form-horizontal auth-form my-4" method="post">
+                                <form class="form-horizontal auth-form my-4" id="login-form" method="post">
                                     {% if error %}
-                                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                        {# <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true"><i class="mdi mdi-close"></i></span>
+                                            </button>
+                                            <strong>An error has occurred, the username or password is invalid</strong> Change a few things up and try submitting again.
+                                        </div>
                                     {% endif %}
 
                                     {% if app.user %}
@@ -107,7 +113,7 @@
                                             <span class="auth-form-icon">
                                                 <i class="dripicons-lock"></i> 
                                             </span>                                                       
-                                            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Enter password" required >
+                                            <input type="password" name="password" id="password-field" class="form-control" placeholder="Enter password" required >
                                         </div>                               
                                     </div><!--end form-group--> 
                                     <input type="hidden" name="_csrf_token"
@@ -130,14 +136,21 @@
                                                 </div>
                                             }
                                         </div><!--end col-->  #}
-                                        <div class="col-sm-6 ">
-                                            <a href="auth-recover-pw.html" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot password?</a>                                    
+                                        <div class="col-sm-6 mb-2">
+                                            <span toggle="#password-field" class="fa fa-fw fa-eye-slash toggle-password mr-2"></span><span id="showPwd">Show</span> password
+                                            {# <span toggle="#password-field" class="fa fa-fw fa-eye-slash  mr-2"><span id="showPwd">Show</span> password #}
+                                            {# <a href="#" toggle="#password-field" class="toggle-password"><span id="eye" class="fa fa-fw fa-eye-slash mr-2"></span><span id="showPwd">Show</span> password</a>  #}
+                                        </div>
+                                        <div class="col-sm-6 text-md-right">
+                                            <a href="{{path('account_recoverpw')}}" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot password?</a>                                    
                                         </div><!--end col--> 
                                     </div><!--end form-group--> 
         
                                     <div class="form-group mb-0 row">
                                         <div class="col-12 mt-2">
-                                            <button class="btn btn-primary btn-round btn-block waves-effect waves-light" type="submit">Log In <i class="fas fa-sign-in-alt ml-1"></i></button>
+                                            <button class="btn btn-primary btn-round btn-block waves-effect waves-light" type="submit" id="LogInBtn">
+                                            <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+                                            Log In <i class="fas fa-sign-in-alt ml-1"></i></button>
                                         </div><!--end col--> 
                                     </div> <!--end form-group-->                           
                                 </form><!--end form-->
@@ -185,6 +198,66 @@
 
         <!-- App js -->
         <script src="/js/app.js"></script>
+
+        <script>
+            $(".toggle-password").click(function() {
+
+                $(this).toggleClass("fa-eye-slash fa-eye");
+                var input = $($(this).attr("toggle"));
+                if (input.attr("type") == "password") {
+                    input.attr("type", "text");
+                    $('#showPwd').html('Hide');
+                } else {
+                    input.attr("type", "password");
+                    $('#showPwd').html('Show');
+                }
+            });
+
+            /*$('input[type="checkbox"]').click(function(){
+                var input = $($(".toggle-password").attr("toggle"));
+                if($(this).prop("checked") == true){
+                    console.log("Checkbox is checked.");
+                    //$(".toggle-password").toggleClass("fa-eye-slash fa-eye");
+                    
+                    if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                    } 
+                }
+                else if($(this).prop("checked") == false){
+                    console.log("Checkbox is unchecked.");
+                    if(input.attr("type") == "text") {
+                        input.attr("type", "password");
+                    }
+                }
+            });*/
+
+            {# $('#LogInBtn').click(function(){
+                //block of code that runs when the click event triggers
+                $(this).children('i').addClass('d-none');
+                $(this).children('span').removeClass('d-none');
+                //$('#LogInBtn').prop('disabled', true);
+            }); #}
+            $("#LogInBtn").click(function(event)
+            {
+
+                // Fetch form to apply custom Bootstrap validation
+                var form = $("#login-form")
+
+                if (form[0].checkValidity() === false)
+                {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    console.log('form[0] = ' + form[0])
+                }
+                else{
+                    $(this).children('i').addClass('d-none');
+                    $(this).children('span').removeClass('d-none');
+
+                }
+                
+                form.addClass('was-validated');
+            });
+        </script>
 
     </body>
 </html>
