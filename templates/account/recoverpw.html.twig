@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>PowerMon web portal | Password Recover</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A template by CLETECH" name="description" />
+        <meta content="My Generator themes" name="Pascal ALHADOUM" />
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/images/logoCLETech.ico">
+
+        <!-- App css -->
+        <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/css/icons.css" rel="stylesheet" type="text/css" />
+        <link href="/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
+        <link href="/css/style.css" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="account-body accountbg">
+
+        <!-- Log In page -->
+        <div class="row vh-100 ">
+            <div class="col-12 align-self-center">
+                <div class="auth-page">
+                    <div class="card auth-card shadow-lg">
+                        <div class="card-body">
+                            <div class="px-3">
+                                <div class="auth-logo-box">
+                                    <a href="#" class="logo logo-admin"><img src="/images/ST_Digital.png" height="55" alt="logo" class="auth-logo"></a>
+                                </div><!--end auth-logo-box-->
+                                
+                                <div class="text-center auth-logo-text">
+                                    <h4 class="mt-0 mb-3 mt-5">Reset Password</h4>
+                                    <p class="text-muted mb-0">Enter your Email and instructions will be sent to you!</p>  
+                                </div> <!--end auth-logo-text-->  
+
+                                <div class="alert alert-danger alert-dismissible fade show d-none" role="alert" id="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true"><i class="mdi mdi-close"></i></span>
+                                    </button>
+                                    Sorry, <strong>the Email Address does not match any User or Invalid</strong> Change a few things up and try submitting again.
+                                </div>
+                                <div class="alert alert-danger alert-dismissible fade show d-none" role="alert" id="alertOups">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true"><i class="mdi mdi-close"></i></span>
+                                    </button>
+                                    Oups, <strong>something went wrong.</strong>
+                                </div>
+                                
+                                <form class="form-horizontal auth-form my-4" id="login-form" action="{{path('account_codeverification')}}">
+        
+                                    <div class="form-group">
+                                        <label for="useremail">Email</label>
+                                        <div class="input-group mb-3">
+                                            <span class="auth-form-icon">
+                                                <i class="dripicons-mail"></i> 
+                                            </span>                                                                                                              
+                                            <input type="email" required class="form-control" id="userEmail" placeholder="Enter Email">
+                                        </div>                                    
+                                    </div><!--end form-group-->        
+          
+                                    <div class="form-group mb-0 row">
+                                        <div class="col-12 mt-2">
+                                            <button class="btn btn-primary btn-block waves-effect waves-light" type="button" id="ResetBtn">
+                                                <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+                                                Reset <i class="fas fa-sign-in-alt ml-1"></i>
+                                            </button>
+                                        </div>
+                                    </div>                               
+                                </form><!--end form-->
+                            </div><!--end /div-->
+                            
+                            <div class="m-3 text-center text-muted">
+                                <p class="">Remember It ?  <a href="{{path('app_login')}}" class="text-primary ml-2">Sign in here</a></p>
+                            </div>
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div><!--end auth-page-->
+            </div><!--end col-->           
+        </div><!--end row-->
+
+        <!-- End Log In page -->
+    
+
+        <!-- jQuery  -->
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/metisMenu.min.js"></script>
+        <script src="/js/waves.min.js"></script>
+        <script src="/js/jquery.slimscroll.min.js"></script>
+
+        <!-- App js -->
+        <script src="/js/app.js"></script>
+
+        <script>
+            var $email = "";
+            var _url = "{{path('account_userverification')}}"; 
+            {# $('#ResetBtn').click(function(){
+                //block of code that runs when the click event triggers
+                $(this).children('i').addClass('d-none');
+                $(this).children('span').removeClass('d-none');
+                $email = $("#userEmail").val();
+                //_url += "/" + $email;
+                console.log("userVerification url : " + _url);
+                var urlCodeVerif = "{{path('account_codeverification')}}";
+                console.log("userCodeVerification url : " + urlCodeVerif);       
+                var $data = JSON.stringify({
+                    "email": $email,
+                    "codeVerif": 0
+                });
+
+                $.ajax({
+                    type: "POST",//method type
+                    contentType: "application/json; charset=utf-8",
+                    url: _url,///Target function that will be return result
+                    data: $data,//parameter pass data is parameter name param is value 
+                    dataType: "json",
+                    //timeout: 120000,//64241
+                    success: function (data) {
+                        //alert("Success");
+                        console.log(data);
+                        if(data.code === 200){
+                            window.location.href = urlCodeVerif;
+                        }
+                        else{
+                            $('#alert').removeClass('d-none');
+                            $('#ResetBtn').children('i').removeClass('d-none');
+                            $('#ResetBtn').children('span').addClass('d-none');
+                
+                        }
+                                    
+                    },
+                    error: function (result) {
+                        console.log("+++++++++++ Error +++++++++++");
+                        console.log(result);
+                    }
+                });
+            }); #}
+
+            $("#ResetBtn").click(function(event)
+            {
+
+                // Fetch form to apply custom Bootstrap validation
+                var form = $("#login-form")
+
+                if (form[0].checkValidity() === false)
+                {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    console.log('form[0] = ' + form[0])
+                }
+                else{
+                    $(this).children('i').addClass('d-none');
+                    $(this).children('span').removeClass('d-none');
+                    $email = $("#userEmail").val();
+                    console.log("email : " + $email);
+                    //_url += "/" + $email;
+                    console.log("userVerification url : " + _url);
+                    var urlCodeVerif = "{{path('account_codeverification')}}";
+                    console.log("userCodeVerification url : " + urlCodeVerif);       
+                    var $dt = JSON.stringify({
+                        "codeVerif": 0,
+                        "email": $email
+                    });
+                    console.log($dt);       
+
+                    $.ajax({
+                        type: "POST",//method type
+                        contentType: "application/json; charset=utf-8",
+                        url: _url,///Target function that will be return result
+                        data: $dt,//parameter pass data is parameter name param is value 
+                        dataType: "json",
+                        //timeout: 120000,//64241
+                        success: function (data) {
+                            //alert("Success");
+                            console.log(data);
+                            if(data.code === 200){
+                                window.location.href = urlCodeVerif;
+                            }
+                            else{
+                                $('#alert').removeClass('d-none');
+                                $('#ResetBtn').children('i').removeClass('d-none');
+                                $('#ResetBtn').children('span').addClass('d-none');
+                    
+                            }
+                                        
+                        },
+                        error: function (result) {
+                            console.log("+++++++++++ Error +++++++++++");
+                            console.log(result);
+                            $('#alertOups').removeClass('d-none');
+                            $('#ResetBtn').children('i').removeClass('d-none');
+                            $('#ResetBtn').children('span').addClass('d-none');
+                        }
+                    });
+                }
+                
+                form.addClass('was-validated');
+            });
+        </script>
+
+    </body>
+</html>

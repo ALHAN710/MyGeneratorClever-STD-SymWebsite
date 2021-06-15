@@ -2,17 +2,16 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\EqualTo;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 class PasswordUpdate
 {
+
     private $oldPassword;
 
     /**
-     *@Assert\Length(min=8, minMessage="Votre mot de passe doit faire au moins 8 caractères !")
+     *@Assert\Length(min=8, minMessage="Your password must be at least 8 characters long !")
      */
     private $newPassword;
 
@@ -20,7 +19,6 @@ class PasswordUpdate
      *@Assert\EqualTo(propertyPath="newPassword", message="Vous n'avez pas correctement confirmé votre mot de passe !")
      */
     private $confirmPassword;
-
 
     public function getOldPassword(): ?string
     {

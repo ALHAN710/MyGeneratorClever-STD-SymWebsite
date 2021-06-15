@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{#Genset {{smartMod.name|capitalize}} #}Home{% endblock %}
+
+{% block breadcrumbItem %}
+<li class="breadcrumb-item"><a href="javascript:void(0);">Profile</a></li>
+<li class="breadcrumb-item active">Modification</li>
+{% endblock %}
+
+{% block pageTitle %}Profile{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mt-0 header-title"></h4>
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.firstName, null, {'label_attr': {'class': ''}}) }}
+                        {{ form_widget(form.firstName, {'attr': {'class': "form-control"}}) }}
+                        <small class="form-text text-muted">* Obligatoire</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.lastName, null, {'label_attr': {'class': ''}}) }}
+                        {{ form_widget(form.lastName, {'attr': {'class': "form-control"}}) }}
+                        <small class="form-text text-muted">* Obligatoire</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.email, null, {'label_attr': {'class': ''}}) }}
+                        {{ form_widget(form.email, {'attr': {'class': "form-control"}}) }}
+                        <small class="form-text text-muted">* Obligatoire</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.phoneNumber, null, {'label_attr': {'class': ''}}) }}
+                        {{ form_widget(form.phoneNumber, {'attr': {'class': "form-control"}}) }}
+                        <small class="form-text text-muted">* Obligatoire</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.avatar, null, {'label_attr': {'class': ''}}) }}
+                        {{ form_widget(form.avatar, {'attr': {'class': "form-control"}}) }}
+                        {# <small class="form-text text-muted">* Obligatoire</small> #}
+                    </div>
+                    {# {{ form_widget(form) }} #}
+
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+                        Save changes
+                    </button>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $('#saveBtn').click(function(){
+            //block of code that runs when the click event triggers
+            $(this).children('i').addClass('d-none');
+            $(this).children('span').removeClass('d-none');
+            //$('#saveBtn').prop('disabled', true);
+        });
+    </script>
+{% endblock %}
