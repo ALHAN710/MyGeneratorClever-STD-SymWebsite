@@ -40,7 +40,7 @@ class ZoneController extends ApplicationController
         foreach ($smartMods as $smartMod) {
             $smartModsProduction[] = $smartMod['Id'];
         }
-        //dump($smartModsProduction);
+        // //dump($smartModsProduction);
         return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
             'smartModsProduction' => $smartModsProduction,
@@ -141,12 +141,12 @@ class ZoneController extends ApplicationController
             'forZone' => true,
         ]);
         $form->handleRequest($request);
-        dump($zone);
+        // dump($zone);
         $manager = $this->getDoctrine()->getManager();
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($zone->getUsers() as $user) {
 
-                //dump($user->getUserName());
+                // //dump($user->getUserName());
                 // $zone->addUser($user);
                 //$user->addZone($zone);
                 //Je vérifie si le produit est déjà existant en BDD pour éviter les doublons 
@@ -159,11 +159,11 @@ class ZoneController extends ApplicationController
                     //$user->addZone($zone);
                     //$manager->persist($user);
                     $zone->removeUser($user);
-                    //dump('user dont exists ');
+                    // //dump('user dont exists ');
                 } else {
-                    //dump('user exists with id = ' . $user_->getId());
+                    // //dump('user exists with id = ' . $user_->getId());
                     if (!$user_->getZones()->contains($zone)) {
-                        //dump("user don't have a zone " . $zone->getName());
+                        // //dump("user don't have a zone " . $zone->getName());
                         $zone->removeUser($user);
                         $user = $user_;
                         $user->addZone($zone);
@@ -217,10 +217,10 @@ class ZoneController extends ApplicationController
     {
         //$smartModRepo = $this->getDoctrine()->getRepository(SmartModRepository::class);
         //$smartMod = $smartModRepo->find($id);
-        //dump($smartModRepo);
-        //dump($smartMod->getModType());
+        // //dump($smartModRepo);
+        // //dump($smartMod->getModType());
         //$temps = DateTime::createFromFormat("d-m-Y H:i:s", "120");
-        //dump($temps);
+        // //dump($temps);
         //die();
         $date        = [];
         $EA_flow   = [];
@@ -245,18 +245,18 @@ class ZoneController extends ApplicationController
         $startDate = new DateTime($paramJSON['startDate']); // Ex : %2020-03-20%
         //$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['endDate']); // Ex : %2020-03-20%
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
-        dump($startDate->format('Y-m-d H:i:s'));
-        dump($endDate->format('Y-m-d H:i:s'));
+        // dump($startDate->format('Y-m-d H:i:s'));
+        // dump($endDate->format('Y-m-d H:i:s'));
         //$dat = "2020-02"; //'%' . $dat . '%'
         //$dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        //dump($dat);
+        // //dump($dat);
         //die();
         //$dat = $dat . '%';
 
         $dateparam = $request->get('selectedDate'); // Ex : %2020-03-20%
         //$dat = "2020-02"; //'%' . $dat . '%'
         $dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        //dump($dat);
+        // //dump($dat);
         //die();
         $dat = $dat . '%';
 
@@ -280,7 +280,7 @@ class ZoneController extends ApplicationController
                 ))
                 ->getResult();
 
-            dump($commonData);
+            // dump($commonData);
 
             //die();
             foreach ($commonData as $d) {
@@ -305,7 +305,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($InstantProductionEnergy);
+                // dump($InstantProductionEnergy);
 
                 $InstantTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kW
                                                     FROM App\Entity\LoadDataEnergy d
@@ -319,13 +319,13 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($InstantTotalEnergy);
+                // dump($InstantTotalEnergy);
                 $InstantPUE = 0;
                 if (count($InstantTotalEnergy) && count($InstantProductionEnergy)) {
                     $InstantPUE = $InstantProductionEnergy[0]['kW'] > 0 ? ($InstantTotalEnergy[0]['kW'] * 1.0) / $InstantProductionEnergy[0]['kW'] : 0;
                     $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
                 }
-                dump('InstantPUE = ' . $InstantPUE);
+                // dump('InstantPUE = ' . $InstantPUE);
 
                 $IntervalTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
                                                         FROM App\Entity\LoadDataEnergy d
@@ -342,7 +342,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($IntervalTotalEnergy);
+                // dump($IntervalTotalEnergy);
 
                 $IntervalProductionEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
                                                         FROM App\Entity\LoadDataEnergy d
@@ -359,14 +359,14 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($IntervalProductionEnergy);
+                // dump($IntervalProductionEnergy);
 
                 $IntervalPUE = 0;
                 if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
                     $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
                     $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
                 }
-                dump('IntervalPUE = ' . $IntervalPUE);
+                // dump('IntervalPUE = ' . $IntervalPUE);
 
                 if ($startDate->format('Y-m-d') !== $endDate->format('Y-m-d')) {
                     $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.ea) AS kWh
@@ -439,14 +439,14 @@ class ZoneController extends ApplicationController
                         ))
                         ->getResult();
                 }
-                dump($dataProductionEnergy);
+                // dump($dataProductionEnergy);
                 //die();
                 foreach ($dataProductionEnergy as $d) {
                     $dateE[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
                     $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
                 }
-                dump($dataTotalEnergy);
+                // dump($dataTotalEnergy);
                 //die();
                 foreach ($dataTotalEnergy as $d) {
                     //$dateE[] = $d['dt'];
@@ -456,12 +456,12 @@ class ZoneController extends ApplicationController
                 $pue =  array_map(function ($a, $b) {
                     return $b > 0 ? round($a / $b, 2) : 0;
                 }, $totalEA, $productionEA);
-                dump($pue);
+                // dump($pue);
 
                 $diffEnergy =  array_map(function ($a, $b) {
                     return number_format((float) ($a - $b), 2, '.', '');
                 }, $totalEA, $productionEA);
-                dump($diffEnergy);
+                // dump($diffEnergy);
             }
 
             return $this->json([
@@ -506,9 +506,9 @@ class ZoneController extends ApplicationController
         $startDate = new DateTime($paramJSON['startDate']); // Ex : %2020-03-20%
         //$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['endDate']); // Ex : %2020-03-20%
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
-        dump($zone);
-        dump($startDate->format('Y-m-d H:i:s'));
-        dump($endDate->format('Y-m-d H:i:s'));
+        // dump($zone);
+        // dump($startDate->format('Y-m-d H:i:s'));
+        // dump($endDate->format('Y-m-d H:i:s'));
 
         $interval = $endDate->diff($startDate);
         $nbDay = 0;
@@ -520,12 +520,12 @@ class ZoneController extends ApplicationController
             //return gettype($interval->format('d'));
             //return $interval->format('%R%a days'); // '+29 days'
             $nbDay = $interval->days; //Nombre de jour total de différence entre les dates
-            dump($nbDay);
+            // dump($nbDay);
             //return !$interval->invert; // 
             //return $this->isActivated;
         }
         $nbHours = 24 * $nbDay;
-        dump($nbHours);
+        // dump($nbHours);
         if ($zone) {
             $niv1 = 0;
             if ($smartMod) { //Recherche de l'existance  d'un module de type LOAD de niv = 1
@@ -565,7 +565,7 @@ class ZoneController extends ApplicationController
                         'smartModId'   => $manager->getRepository('App:SmartMod')->findOneBy(['site' => $zone->getSite(), 'modType' => 'FUEL'])->getId()
                     ))
                     ->getResult();
-                dump($GensetParams);
+                // dump($GensetParams);
                 $NHU_FUEL = $GensetParams[0]['TRH'] ?? 0;
                 $NHU_Grid = $nbHours - $NHU_FUEL;
                 /*
@@ -616,7 +616,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($Energy);
+                // dump($Energy);
                 $Duration = $manager->createQuery("SELECT SUM(CASE 
                                                             WHEN d.smoy <= :Ssous THEN 1
                                                             ELSE 0
@@ -640,7 +640,7 @@ class ZoneController extends ApplicationController
                         'Ssous'      => $zone->getPowerSubscribed(),
                     ))
                     ->getResult();
-                dump($Duration);
+                // dump($Duration);
                 $NHU_Psous = ($Duration[0]['NHU_Psous'] * 10.0) / 60.0;
                 $NHU_Psous = number_format((float) $NHU_Psous, 2, '.', '');
                 $NHD_Psous = ($Duration[0]['NHD_Psous'] * 10.0) / 60.0;
@@ -686,7 +686,7 @@ class ZoneController extends ApplicationController
                         //'smartModId'   => $smartMod->getId()
                     ))
                     ->getResult();
-                dump($PowerMax[0]);
+                // dump($PowerMax[0]);
                 $Smax = 0;
                 if (count($PowerMax)) {
                     if (count($PowerMax[0])) $Smax = number_format((float) $PowerMax[0]['Smoy'], 2, '.', '');
@@ -703,7 +703,7 @@ class ZoneController extends ApplicationController
                             'modId'   => $id
                         ))
                         ->getResult();*/
-                //dump($data);
+                // //dump($data);
                 /*foreach ($data as $d) {
                         $date[]    = $d['dat']->format('Y-m-d H:i:s');
                         $VA[]      = $d['va'];
@@ -740,7 +740,7 @@ class ZoneController extends ApplicationController
                         $kVarh[] = $d['kVarh'];
                     }*/
 
-                //dump($Energy);
+                // //dump($Energy);
                 //die();
 
                 return $this->json([

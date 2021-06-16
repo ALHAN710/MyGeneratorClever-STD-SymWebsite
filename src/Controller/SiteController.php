@@ -137,12 +137,12 @@ class SiteController extends AbstractController
             'forSite' => true,
         ]);
         $form->handleRequest($request);
-        dump($site);
+        // dump($site);
         $manager = $this->getDoctrine()->getManager();
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($site->getUsers() as $user) {
 
-                //dump($user->getUserName());
+                // //dump($user->getUserName());
                 // $site->addUser($user);
                 //$user->addSitee($site);
                 //Je vérifie si le produit est déjà existant en BDD pour éviter les doublons 
@@ -155,11 +155,11 @@ class SiteController extends AbstractController
                     //$user->addsite($site);
                     //$manager->persist($user);
                     $site->removeUser($user);
-                    //dump('user dont exists ');
+                    // //dump('user dont exists ');
                 } else {
-                    //dump('user exists with id = ' . $user_->getId());
+                    // //dump('user exists with id = ' . $user_->getId());
                     if (!$user_->getSites()->contains($site)) {
-                        //dump("user don't have a site " . $site->getName());
+                        // //dump("user don't have a site " . $site->getName());
                         $site->removeUser($user);
                         $user = $user_;
                         $user->addSite($site);

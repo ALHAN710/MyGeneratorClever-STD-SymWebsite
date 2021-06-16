@@ -52,7 +52,7 @@ class AccountController extends ApplicationController
         $filesystem = new Filesystem();
 
         $slugify = new Slugify();
-        //dump($this->getParameter('avatar_directory'));
+        // //dump($this->getParameter('avatar_directory'));
         $form = $this->createForm(UserProfileType::class, $user);
 
         $form->handleRequest($request);
@@ -184,9 +184,9 @@ class AccountController extends ApplicationController
     public function userVerification(Request $request, UserRepository $userRepo, EntityManagerInterface $manager, MessageBusInterface $messageBus): JsonResponse
     {
         $paramJSON = $this->getJSONRequest($request->getContent());
-        dump($request->getContent());
+        // dump($request->getContent());
         $email = $paramJSON['email'];
-        //dump($email);
+        // //dump($email);
         $user = $userRepo->findOneBy(['email' => $email]);
         if ($user != null) {
             $status = 200;
@@ -198,7 +198,7 @@ class AccountController extends ApplicationController
             $manager->persist($user);
             $manager->flush();
             $code = 'PowerMon-' . $codeVerification . $user->getId();
-            //dump($code);
+            // //dump($code);
             //$object = "PASSWORD RESET";
             $message = 'Your verification code is ' . $code;
             $message .= "\nWe heard that you lost your password. Sorry about that !
@@ -214,9 +214,9 @@ The ST DIGITAL Power Monitoring Team";
             $id = substr($Verificationcode, 5);
             $Verificationcode = substr($Verificationcode, 0, 5);
             $user = $userRepo->findOneBy(['id' => $id]);
-            //dump($id);
-            //dump($Verificationcode);
-            //dump($user);
+            // //dump($id);
+            // //dump($Verificationcode);
+            // //dump($user);
             if ($user != null && $user->getVerified() == false) {
                 $userCode = $user->getVerificationcode();
                 if ($userCode == $Verificationcode) {
@@ -259,9 +259,9 @@ The ST DIGITAL Power Monitoring Team";
 
         $user = $this->getUser();
         $id = $request->query->get('d');
-        //dump($id);
+        // //dump($id);
         $user = $userRepo->findOneBy(['id' => $id]);
-        //dump($user);
+        // //dump($user);
 
         $form = $this->createForm(PasswordUpdateType::class, $passwordUpdate);
 

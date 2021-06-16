@@ -25,7 +25,7 @@ class LoadMeterController extends ApplicationController
      */
     public function index(SmartMod $smartMod, Zone $zone, EntityManagerInterface $manager): Response
     {
-        //dump($id);
+        // //dump($id);
 
         return $this->render('load_meter/index.html.twig', [
             'zone' => $zone,
@@ -47,8 +47,8 @@ class LoadMeterController extends ApplicationController
     {
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
-        //dump($paramJSON);
-        //dump($content);
+        // //dump($paramJSON);
+        // //dump($content);
         //die();
 
         $datetimeData = new LoadDataEnergy();
@@ -59,14 +59,14 @@ class LoadMeterController extends ApplicationController
 
         if ($smartMod != null) { // Test si le module existe dans notre BDD
             //data:{"date": "2020-03-20 12:15:00", "sa": 1.2, "sb": 0.7, "sc": 0.85, "va": 225, "vb": 230, "vc": 231, "s3ph": 2.75, "kWh": 1.02, "kvar": 0.4}
-            //dump($smartMod);//Affiche le module
+            // //dump($smartMod);//Affiche le module
             //die();
 
             //$date = new DateTime($paramJSON['date']);
 
             //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-            //dump($date);
+            // //dump($date);
             //die();
 
             if ($smartMod->getModType() == 'Load') {
@@ -98,7 +98,7 @@ class LoadMeterController extends ApplicationController
                     ->setSmartMod($smartMod);
             }
 
-            //dump($datetimeData);
+            // //dump($datetimeData);
             //die();
             //Insertion de la nouvelle datetimeData dans la BDD
             $manager->persist($datetimeData);
@@ -133,10 +133,10 @@ class LoadMeterController extends ApplicationController
     {
         //$smartModRepo = $this->getDoctrine()->getRepository(SmartModRepository::class);
         //$smartMod = $smartModRepo->find($id);
-        //dump($smartModRepo);
-        //dump($smartMod->getModType());
+        // //dump($smartModRepo);
+        // //dump($smartMod->getModType());
         //$temps = DateTime::createFromFormat("d-m-Y H:i:s", "120");
-        //dump($temps);
+        // //dump($temps);
         //die();
         $date        = [];
         $VAmoy          = [];
@@ -189,18 +189,18 @@ class LoadMeterController extends ApplicationController
         $startDate = new DateTime($paramJSON['startDate']); // Ex : %2020-03-20%
         //$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['endDate']); // Ex : %2020-03-20%
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
-        dump($startDate->format('Y-m-d H:i:s'));
-        dump($endDate->format('Y-m-d H:i:s'));
+        // dump($startDate->format('Y-m-d H:i:s'));
+        // dump($endDate->format('Y-m-d H:i:s'));
         //$dat = "2020-02"; //'%' . $dat . '%'
         //$dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        //dump($dat);
+        // //dump($dat);
         //die();
         //$dat = $dat . '%';
 
         $dateparam = $request->get('selectedDate'); // Ex : %2020-03-20%
         //$dat = "2020-02"; //'%' . $dat . '%'
         $dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        //dump($dat);
+        // //dump($dat);
         //die();
         $dat = $dat . '%';
 
@@ -222,7 +222,7 @@ class LoadMeterController extends ApplicationController
                     'smartModId'     => $smartMod->getId()
                 ))
                 ->getResult();
-            dump($Energy);
+            // dump($Energy);
 
             //die();
             foreach ($Energy as $d) {
@@ -247,7 +247,7 @@ class LoadMeterController extends ApplicationController
                         'smartModId'     => $smartMod->getId()
                     ))
                     ->getResult();
-                dump($data);
+                // dump($data);
                 //die();
                 foreach ($data as $d) {
                     $date[] = $d['dt']->format('Y-m-d H:i:s');
@@ -275,7 +275,7 @@ class LoadMeterController extends ApplicationController
                         'smartModId'     => $smartMod->getId()
                     ))
                     ->getResult();
-                dump($data);
+                // dump($data);
                 //die();
                 foreach ($data as $d) {
                     $date[] = $d['dt']->format('Y-m-d H:i:s');

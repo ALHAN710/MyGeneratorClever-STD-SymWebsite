@@ -50,7 +50,7 @@ class GensetController extends ApplicationController
             FROM `datetime_data` 
             WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021-05-21%')*/
 
-        //dump($date);
+        // //dump($date);
 
         $lastRecord = $manager->createQuery("SELECT d.p AS P, d.q AS Q, d.s AS S, d.cosfi AS Cosfi, d.totalRunningHours AS TRH,
                                         d.totalEnergy AS TEP, d.fuelInstConsumption AS FC, d.dateTime
@@ -76,7 +76,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        //dump($NMIDay);
+        // //dump($NMIDay);
         $NMIMonth = $manager->createQuery("SELECT SUM(d.nbMainsInterruption) AS NMIM
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -88,7 +88,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        //dump($NMIMonth);
+        // //dump($NMIMonth);
         $NMIYear = $manager->createQuery("SELECT SUM(d.nbMainsInterruption) AS NMIY
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -100,7 +100,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        //dump($NMIYear);
+        // //dump($NMIYear);
 
         $firstDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
@@ -114,7 +114,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($firstDatetimeDataDayRecord);
+        // // dump($firstDatetimeDataDayRecord);
         $lastDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
@@ -127,7 +127,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($lastDatetimeDataDayRecord);
+        // // dump($lastDatetimeDataDayRecord);
         $npsd = 0;
         $trhd = 0;
         $tepd = 0;
@@ -135,9 +135,9 @@ class GensetController extends ApplicationController
             $npsd = intval($lastDatetimeDataDayRecord[0]['NPS']) - intval($firstDatetimeDataDayRecord[0]['NPS']);
             $trhd = intval($lastDatetimeDataDayRecord[0]['TRH']) - intval($firstDatetimeDataDayRecord[0]['TRH']);
             $tepd = intval($lastDatetimeDataDayRecord[0]['TEP']) - intval($firstDatetimeDataDayRecord[0]['TEP']);
-            // dump($npsd);
-            // dump($trhd);
-            // dump($tepd);
+            // // dump($npsd);
+            // // dump($trhd);
+            // // dump($tepd);
         }
 
         $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -152,7 +152,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($firstDatetimeDataMonthRecord);
+        // // dump($firstDatetimeDataMonthRecord);
 
         $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
@@ -166,7 +166,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($lastDatetimeDataMonthRecord);
+        // // dump($lastDatetimeDataMonthRecord);
         $npsm = 0;
         $trhm = 0;
         $tepm = 0;
@@ -174,9 +174,9 @@ class GensetController extends ApplicationController
             $npsm = intval($lastDatetimeDataMonthRecord[0]['NPS']) - intval($firstDatetimeDataMonthRecord[0]['NPS']);
             $trhm = intval($lastDatetimeDataMonthRecord[0]['TRH']) - intval($firstDatetimeDataMonthRecord[0]['TRH']);
             $tepm = intval($lastDatetimeDataMonthRecord[0]['TEP']) - intval($firstDatetimeDataMonthRecord[0]['TEP']);
-            // dump($npsm);
-            // dump($trhm);
-            // dump($tepm);
+            // // dump($npsm);
+            // // dump($trhm);
+            // // dump($tepm);
         }
 
         $firstDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -192,7 +192,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();
 
-        //dump($firstDatetimeDataYearRecord);
+        // //dump($firstDatetimeDataYearRecord);
         $lastDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
@@ -205,7 +205,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        //dump($lastDatetimeDataYearRecord);
+        // //dump($lastDatetimeDataYearRecord);
 
         $npsy = 0;
         $trhy = 0;
@@ -214,11 +214,11 @@ class GensetController extends ApplicationController
             $npsy = intval($lastDatetimeDataYearRecord[0]['NPS']) - intval($firstDatetimeDataYearRecord[0]['NPS']);
             $trhy = intval($lastDatetimeDataYearRecord[0]['TRH']) - intval($firstDatetimeDataYearRecord[0]['TRH']);
             $tepy = intval($lastDatetimeDataYearRecord[0]['TEP']) - intval($firstDatetimeDataYearRecord[0]['TEP']);
-            // dump($npsy);
-            // dump($trhy);
-            // dump($tepy);
+            // // dump($npsy);
+            // // dump($trhy);
+            // // dump($tepy);
         }
-        //dump($lastRecord);
+        // //dump($lastRecord);
 
         $poe = [];
         $FCD = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
@@ -233,7 +233,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        //dump($FCD);
+        // //dump($FCD);
         if ($tepd > 0) $poe[] = ($FCD[0]['FC'] * 1.0) / $tepd;
         else $poe[] = 0;
 
@@ -249,7 +249,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($FCM);
+        // // dump($FCM);
         if ($tepm > 0) $poe[] = ($FCM[0]['FC'] * 1.0) / $tepm;
         else $poe[] = 0;
 
@@ -265,7 +265,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
-        // dump($FCY);
+        // // dump($FCY);
         if ($tepy > 0) $poe[] = ($FCY[0]['FC'] * 1.0) / $tepy;
         else $poe[] = 0;
 
@@ -273,15 +273,15 @@ class GensetController extends ApplicationController
         $yesterday = new DateTime('now');
         $interval = new DateInterval('P1D'); //P10D P1M
         $yesterday->sub($interval);
-        dump($yesterday);
+        // dump($yesterday);
         $lastMonth = new DateTime('now');
         $interval = new DateInterval('P1M'); //P10D P1M
         $lastMonth->sub($interval);
-        dump($lastMonth);
+        // dump($lastMonth);
         $lastYear = new DateTime('now');
         $interval = new DateInterval('P1Y'); //P10D P1M
         $lastYear->sub($interval);
-        dump($lastYear);
+        // dump($lastYear);
         $precDayLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -353,17 +353,17 @@ class GensetController extends ApplicationController
         $prev_tepd = 0;
         if (count($precDayLastTEPRecord) && count($precDayFirstTEPRecord)) {
             $prev_tepd = intval($precDayFirstTEPRecord[0]['TEP']) - intval($precDayLastTEPRecord[0]['TEP']);
-            dump($prev_tepd);
+            // dump($prev_tepd);
         }
         $prev_tepm = 0;
         if (count($prevMonthFirstTEPRecord) && count($prevMonthLastTEPRecord)) {
             $prev_tepm = intval($prevMonthLastTEPRecord[0]['TEP']) - intval($prevMonthFirstTEPRecord[0]['TEP']);
-            dump($prev_tepm);
+            // dump($prev_tepm);
         }
         $prev_tepy = 0;
         if (count($prevYearFirstTEPRecord) && count($prevYearLastTEPRecord)) {
             $prev_tepy = intval($prevYearLastTEPRecord[0]['TEP']) - intval($prevYearFirstTEPRecord[0]['TEP']);
-            dump($prev_tepy);
+            // dump($prev_tepy);
         }
 
         $prev_poe = [];
@@ -373,7 +373,7 @@ class GensetController extends ApplicationController
         else $prev_poe[] = 0;
         if ($prev_tepy > 0) $prev_poe[] = ($FCY[0]['FC'] * 1.0) / $prev_tepy;
         else $prev_poe[] = 0;
-        dump($prev_poe);
+        // dump($prev_poe);
 
         return $this->json([
             'code'    => 200,
@@ -433,10 +433,10 @@ class GensetController extends ApplicationController
 
         //$smartModRepo = $this->getDoctrine()->getRepository(SmartModRepository::class);
         //$smartMod = $smartModRepo->find($id);
-        //dump($smartModRepo);
-        //dump($smartMod->getModType());
+        // //dump($smartModRepo);
+        // //dump($smartMod->getModType());
         //$temps = DateTime::createFromFormat("d-m-Y H:i:s", "120");
-        //dump($temps);
+        // //dump($temps);
         //die();
         $date       = [];
         $P          = [];
@@ -453,11 +453,11 @@ class GensetController extends ApplicationController
         $startDate = new DateTime($paramJSON['startDate']); // Ex : %2020-03-20%
         //$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['endDate']); // Ex : %2020-03-20%
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
-        dump($startDate->format('Y-m-d H:i:s'));
-        dump($endDate->format('Y-m-d H:i:s'));
+        // dump($startDate->format('Y-m-d H:i:s'));
+        // dump($endDate->format('Y-m-d H:i:s'));
         //$dat = "2020-02"; //'%' . $dat . '%'
         //$dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        //dump($dat);
+        // //dump($dat);
         //die();
         //$dat = $dat . '%';
 
@@ -478,7 +478,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $smartMod->getId()
             ))
             ->getResult();
-        dump($Energy);
+        // dump($Energy);
         //die();
         foreach ($Energy as $d) {
             $dateE[] = $d['jour'];
@@ -513,7 +513,7 @@ class GensetController extends ApplicationController
             ->getResult();
 
 
-        dump($data);
+        // dump($data);
         foreach ($data as $d) {
             $date[]    = $d['dat']->format('Y-m-d H:i:s');
             $P[]       = number_format((float) $d['p'], 2, '.', '');
@@ -550,8 +550,8 @@ class GensetController extends ApplicationController
     {
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
-        //dump($paramJSON);
-        //dump($content);
+        // //dump($paramJSON);
+        // //dump($content);
         //die();
 
 
@@ -618,7 +618,7 @@ class GensetController extends ApplicationController
                 ;
             }
 
-            //dump($dataMod);
+            // //dump($dataMod);
             //die();
             //Insertion de la nouvelle dataMod dans la BDD
             $manager->persist($dataMod);
@@ -652,8 +652,8 @@ class GensetController extends ApplicationController
     {
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
-        //dump($paramJSON);
-        //dump($content);
+        // //dump($paramJSON);
+        // //dump($content);
         //die();
 
         $datetimeData = new DatetimeData();
@@ -664,14 +664,14 @@ class GensetController extends ApplicationController
 
         if ($smartMod != null) { // Test si le module existe dans notre BDD
             //data:{"date": "2020-03-20 12:15:00", "sa": 1.2, "sb": 0.7, "sc": 0.85, "va": 225, "vb": 230, "vc": 231, "s3ph": 2.75, "kWh": 1.02, "kvar": 0.4}
-            //dump($smartMod);//Affiche le module
+            // //dump($smartMod);//Affiche le module
             //die();
 
             //$date = new DateTime($paramJSON['date']);
 
             //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-            //dump($date);
+            // //dump($date);
             //die();
 
             if ($smartMod->getModType() == 'FUEL') {
@@ -691,7 +691,7 @@ class GensetController extends ApplicationController
                     ->setSmartMod($smartMod);
             }
 
-            //dump($datetimeData);
+            // //dump($datetimeData);
             //die();
             //Insertion de la nouvelle datetimeData dans la BDD
             $manager->persist($datetimeData);
