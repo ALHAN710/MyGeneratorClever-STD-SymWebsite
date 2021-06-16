@@ -22,7 +22,7 @@ class GensetController extends ApplicationController
     /**
      * @Route("/genset/{id}", name="genset_home")
      * 
-     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_NOC_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
      * 
      */
     public function index(SmartMod $id): Response
@@ -38,7 +38,7 @@ class GensetController extends ApplicationController
      *
      * @Route("/update/genset/mod/{id<\d+>}/display/",name="update_genset_display_data")
      * 
-     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_NOC_SUPERVISOR') and id.getSite().getEnterprise() === user.getEnterprise() )" )
      * 
      * @param [interger] $id
      * @param EntityManagerInterface $manager
