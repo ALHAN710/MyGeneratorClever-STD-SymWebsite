@@ -206,16 +206,16 @@
                     </li><!--end nav-item-->
                 </ul><!--end nav-->
             </div><!-- end Others --> #}
-            
+            {% set nbZone = 0 %}
             <div id="MenuPrincipal" class="">
                 <div class="title-box">
-                    <h6 class="menu-title"></h6>       
+                    <h6 class="menu-title">Sites</h6>       
                 </div>
                 <ul class="nav metismenu main_menu_side_nav" id="">
                     {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
                     <li class="nav-item"><a class="nav-link" href="../analytics/analytics-reports.html"><i class="dripicons-document"></i>Reports</a></li>  #}
-                    {% if is_granted('ROLE_SUPERVISOR') %}
+                    {% if is_granted('ROLE_NOC_SUPERVISOR') %}
                         {% for site in app.user.enterprise.sites %}{# path('sites_show',{'slug':site.slug}) #}
                             {# {% set url = '' %} #}
                             <li class="nav-item">
@@ -233,6 +233,7 @@
                                     {% endfor %} 
 
                                     {% if site.zones|length > 0 %}
+                                    {% set nbZone = nbZone + site.zones|length %}
                                     {# <ul class="nav metismenu main_menu_side_nav" id=""> #}
                                         {% for zone in site.zones %}
                                         <li class="nav ">{# <i class="mdi mdi-crop-free"></i> #}
@@ -302,10 +303,13 @@
             {% if is_granted('ROLE_ADMIN') %}
             <div id="MenuParameters" class="">
                 <div class="title-box">
-                    <h6 class="menu-title">Paramètres</h6>   {# <i class="fas fa-cogs mr-2"></i> #}   
+                    <h6 class="menu-title">Parameters</h6>   {# <i class="fas fa-cogs mr-2"></i> #}   
                 </div>
                 <ul class="nav metismenu" id="">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-user-group"></i>Utilisateurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_index') }}"><i class="dripicons-user-group"></i>Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('contacts_index') }}"><i class="mdi mdi-contact-mail"></i>Contacts</a></li>
+                    {% if app.user.enterprise.sites|length > 0 %}<li class="nav-item"><a class="nav-link" href="{{ path('site_admin_index') }}"><i class="mdi mdi-office-building"></i>Sites</a></li>{% endif %}
+                    {% if nbZone > 0 %}<li class="nav-item"><a class="nav-link" href="{{ path('zone_admin_index') }}"><i class="mdi mdi-crop-free"></i>Zones</a></li>{% endif %}
                     {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-gear"></i>Mon Compte</a></li> #}
                     {# <li class="nav-item">  
                         <a class="nav-link" href="#"><i class="dripicons-mail"></i><span class="w-100">Email</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>

@@ -4,19 +4,28 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Zone;
+use App\Form\ZoneType;
+use App\Repository\ZoneRepository;
+use App\Form\ZoneUserCollectionType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\ApplicationController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @Route("/zone")
+ */
 class ZoneController extends ApplicationController
 {
     /**
-     * @Route("/zone/{zone<\d+>?}", name="home_zone")
+     * @Route("/{zone<\d+>?}", name="home_zone")
+     * 
      */
-    public function index(Zone $zone, EntityManagerInterface $manager): Response
+    public function dashboard(Zone $zone, EntityManagerInterface $manager): Response
     {
         $smartMods = $manager->createQuery("SELECT sm.id AS Id
                             FROM App\Entity\SmartMod sm
@@ -32,7 +41,7 @@ class ZoneController extends ApplicationController
             $smartModsProduction[] = $smartMod['Id'];
         }
         //dump($smartModsProduction);
-        return $this->render('zone/index.html.twig', [
+        return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
             'smartModsProduction' => $smartModsProduction,
             'alarms'    => $manager->getRepository('App:Alarm')->findBy(['type' => 'Load Meter']),
@@ -40,9 +49,166 @@ class ZoneController extends ApplicationController
     }
 
     /**
+     * @Route("/new", name="zone_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     */
+    public function new(Request $request): Response
+    {
+        $zone = new Zone();
+        $form = $this->createForm(ZoneType::class, $zone);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($zone);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('zone_index');
+        }
+
+        return $this->render('zone/new.html.twig', [
+            'zone' => $zone,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id<\d+>}", name="zone_show", methods={"GET"})
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_ADMIN') and zone.getSite().getEnterprise() === user.getEnterprise() )" )
+     */
+    public function show(Zone $zone): Response
+    {
+        return $this->render('zone/show.html.twig', [
+            'zone' => $zone,
+        ]);
+    }
+
+    /**
+     * @Route("/{id<\d+>}/edit", name="zone_edit", methods={"GET","POST"})
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_ADMIN') and zone.getSite().getEnterprise() === user.getEnterprise() )" )
+     */
+    public function edit(Request $request, Zone $zone): Response
+    {
+        $form = $this->createForm(ZoneType::class, $zone);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('zone_index');
+        }
+
+        return $this->render('zone/edit.html.twig', [
+            'zone' => $zone,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/list", name="zone_admin_index", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function adminZoneIndex(EntityManagerInterface $manager): Response
+    {
+        //$manager = $this->getDoctrine()->getManager();
+        $zones = [];
+        $zones_ = $manager->createQuery("SELECT zn
+                            FROM App\Entity\Zone zn
+                            JOIN zn.site st
+                            WHERE st.id IN (SELECT st_.id FROM App\Entity\Site st_ JOIN st_.enterprise ent WHERE ent.id = :entId)                                    
+                            ")
+            ->setParameters(array(
+                'entId'     => $this->getUser()->getEnterprise()->getId()
+            ))
+            ->getResult();
+        foreach ($zones_ as $zone) {
+            $zones[] = $zone;
+        }
+        //dd($zones);
+        return $this->render('zone/admin_index.html.twig', [
+            'zones' => $zones,
+        ]);
+    }
+
+    /**
+     * @Route("/{zone<\d+>}/settings", name="zone_setting", methods={"GET","POST"})
+     * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_ADMIN') and zone.getSite().getEnterprise() === user.getEnterprise() )" )
+     */
+    public function adminZoneSetting(Request $request, Zone $zone): Response
+    {
+        $form = $this->createForm(ZoneUserCollectionType::class, $zone, [
+            'entId'   => $this->getUser()->getEnterprise()->getId(),
+            'forZone' => true,
+        ]);
+        $form->handleRequest($request);
+        dump($zone);
+        $manager = $this->getDoctrine()->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($zone->getUsers() as $user) {
+
+                //dump($user->getUserName());
+                // $zone->addUser($user);
+                //$user->addZone($zone);
+                //Je vérifie si le produit est déjà existant en BDD pour éviter les doublons 
+                $user_ = $manager->getRepository('App:User')->findOneBy(['id' => $user->getUserNam()->getId()]);
+                //dd($user_);
+                // $user->addZone($zone);
+                // $manager->persist($user);
+
+                if (empty($user_)) {
+                    //$user->addZone($zone);
+                    //$manager->persist($user);
+                    $zone->removeUser($user);
+                    //dump('user dont exists ');
+                } else {
+                    //dump('user exists with id = ' . $user_->getId());
+                    if (!$user_->getZones()->contains($zone)) {
+                        //dump("user don't have a zone " . $zone->getName());
+                        $zone->removeUser($user);
+                        $user = $user_;
+                        $user->addZone($zone);
+                        $zone->addUser($user);
+                        $manager->persist($user);
+                    }
+                }
+                // $manager->persist($zone);
+                //$manager->persist($user);
+            }
+            $manager->persist($zone);
+            //die();
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "The modifications of zone <strong> {$zone->getName()} </strong> have been saved !"
+            );
+
+            return $this->redirectToRoute('zone_admin_index');
+        }
+
+        return $this->render('zone/admin_settings.html.twig', [
+            'zone' => $zone,
+            'form' => $form->createView(),
+        ]);
+    }
+    /**
+     * @Route("/{id<\d+>}", name="zone_delete", methods={"POST"})
+     */
+    public function delete(Request $request, Zone $zone): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $zone->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($zone);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('zone_index');
+    }
+
+    /**
      * Permet de mettre à jour les graphes liés aux données d'un module load Meter
      *
-     * @Route("/update/zone/mod/graphs/", name="update_zone_graphs")
+     * @Route("/update/mod/graphs/", name="update_zone_graphs")
      * 
      * @param EntityManagerInterface $manager
      * @return Response

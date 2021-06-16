@@ -121,10 +121,19 @@ class User implements UserInterface
      */
     private $contacts;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Zone::class, mappedBy="users")
+     */
+    private $zones;
+
+    private $name;
+    private $userNam;
+
     public function __construct()
     {
         $this->sites = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->zones = new ArrayCollection();
     }
 
 
@@ -199,12 +208,14 @@ class User implements UserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
+        //return $roles ?? 'ROLE_USER';
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+        //$this->roles = current($roles);
 
         return $this;
     }
@@ -405,6 +416,56 @@ class User implements UserInterface
                 $contact->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Zone[]
+     */
+    public function getZones(): Collection
+    {
+        return $this->zones;
+    }
+
+    public function addZone(Zone $zone): self
+    {
+        if (!$this->zones->contains($zone)) {
+            $this->zones[] = $zone;
+            $zone->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeZone(Zone $zone): self
+    {
+        if ($this->zones->removeElement($zone)) {
+            $zone->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+    public function getUserNam(): ?User
+    {
+        return $this->userNam;
+    }
+
+    public function setUserNam(User $userNam): self
+    {
+        $this->userNam = $userNam;
 
         return $this;
     }
