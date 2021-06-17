@@ -94,6 +94,11 @@ class Enterprise
     private $sites;
 
     /**
+     * @ORM\OneToMany(targetEntity=SmartMod::class, mappedBy="enterprise")
+     */
+    private $smartMods;
+
+    /**
      * Permet d'initialiser la date de création du produit
      *
      * @ORM\PrePersist
@@ -112,6 +117,7 @@ class Enterprise
     {
         $this->user = new ArrayCollection();
         $this->sites = new ArrayCollection();
+        $this->smartMods = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -281,6 +287,36 @@ class Enterprise
             // set the owning side to null (unless already changed)
             if ($site->getEnterprise() === $this) {
                 $site->setEnterprise(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SmartMod[]
+     */
+    public function getSmartMods(): Collection
+    {
+        return $this->smartMods;
+    }
+
+    public function addSmartMod(SmartMod $smartMod): self
+    {
+        if (!$this->smartMods->contains($smartMod)) {
+            $this->smartMods[] = $smartMod;
+            $smartMod->setEnterprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSmartMod(SmartMod $smartMod): self
+    {
+        if ($this->smartMods->removeElement($smartMod)) {
+            // set the owning side to null (unless already changed)
+            if ($smartMod->getEnterprise() === $this) {
+                $smartMod->setEnterprise(null);
             }
         }
 

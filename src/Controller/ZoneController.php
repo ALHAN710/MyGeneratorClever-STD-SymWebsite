@@ -49,30 +49,6 @@ class ZoneController extends ApplicationController
     }
 
     /**
-     * @Route("/new", name="zone_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
-    public function new(Request $request): Response
-    {
-        $zone = new Zone();
-        $form = $this->createForm(ZoneType::class, $zone);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($zone);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('zone_index');
-        }
-
-        return $this->render('zone/new.html.twig', [
-            'zone' => $zone,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/{id<\d+>}", name="zone_show", methods={"GET"})
      * @Security( "is_granted('ROLE_SUPER_ADMIN') or ( is_granted('ROLE_ADMIN') and zone.getSite().getEnterprise() === user.getEnterprise() )" )
      */
@@ -191,19 +167,7 @@ class ZoneController extends ApplicationController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * @Route("/{id<\d+>}", name="zone_delete", methods={"POST"})
-     */
-    public function delete(Request $request, Zone $zone): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $zone->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($zone);
-            $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('zone_index');
-    }
 
     /**
      * Permet de mettre à jour les graphes liés aux données d'un module load Meter

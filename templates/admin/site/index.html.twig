@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Sites list{% endblock %}
+
+{% block breadcrumbItem %}
+<li class="breadcrumb-item"><a href="javascript:void(0);">Sites</a></li>
+<li class="breadcrumb-item active">Lists</li>
+{% endblock %}
+
+{% block pageTitle %}Home{% endblock %}
+
+{% block body %}
+    <h1>Sites lists</h1>
+    <div class="mt-2 mb-2 mr-5 text-right">
+        <a href="{{ path('admin_site_new') }}" class="btn btn-soft-primary rounded waves-effect " data-toggle="tooltip" data-placement="top" title="Add new site ?"><i class="fa fa-plus-circle mr-2"></i>Add</a>
+    </div>
+
+    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr class="text-center">
+                {# <th>Id</th> #}
+                <th>Name</th>
+                <th>Enterprise</th>
+                <th>Currency</th>
+                {# <th>Power Subscribed</th> #}
+                {# <th>Site</th> #}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr class="text-center">
+                {# <td>{{ site.id }}</td> #}
+                <td>{{ site.name }}</td>
+                <td>{{ site.enterprise.socialReason }}</td>
+                <td>{{ site.currency }}</td>
+                {# <td>{{ site.site.name }}</td> #}
+                {# <td>{{ site.powerSubscribed }}</td> #}
+                <td>
+                    <form method="post" action="{{ path('admin_site_delete', {'id': site.id}) }}" onsubmit="return confirm('Do really want to delete site << {{site.name}} >> ?');">
+                        <a href="{{ path('admin_site_edit', {'id': site.id}) }}" class="btn btn-soft-primary btn-xs rounded waves-effect mr-2" data-toggle="tooltip" data-placement="top" title="Edit site ?"><i class="far fa-edit mr-2"></i>Edit</a>
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ site.id) }}">
+                        <button class="btn btn-soft-danger btn-xs rounded waves-effect mt-1 mr-2" data-toggle="tooltip" data-placement="top" title="Delete site ?"><i class="mdi mdi-trash-can-outline mr-2"></i>Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# <a href="{{ path('site_new') }}">Create new</a> #}
+{% endblock %}

@@ -1,0 +1,41 @@
+{{ form_start(form) }}
+    {# {{ form_widget(form) }} #}
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.name, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.name, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.powerSubscribed, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.powerSubscribed, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.type, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.type, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.site, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.site, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        
+    
+    </div>
+    {% if isEdit|default(false) %}{{ form_widget(form.smartMods) }}{% endif %}
+    
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
+    <div class="row float-left">
+        <a href="{{ path('admin_zone_index') }}" class="btn btn-danger mr-2 mt-4 waves-effect">Back to list</a>
+        <button type="submit" class="btn btn-primary mt-4 waves-effect" id="saveBtn">
+            <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+            {{ button_label|default('Save') }}
+        </button>
+    
+    </div>
+{{ form_end(form) }}

@@ -80,153 +80,153 @@
 
 <script>
     var tabHideUser = [];
-var tabUserIds = [];
+    var tabUserIds = [];
 
 
-$('#add-users').click(function () {
-    //Je récupère le numéro du futur champ que je vais créer
-    const index = +$('#users-widgets-count').val();
-    //console.log(index);
-    $('#users-widgets-count').val(index + 1);
+    $('#add-users').click(function () {
+        //Je récupère le numéro du futur champ que je vais créer
+        const index = +$('#users-widgets-count').val();
+        //console.log(index);
+        $('#users-widgets-count').val(index + 1);
 
-    //$('#add-users').attr('disabled', true);
-    //Je récupère le prototype des entrées(champs) et je remplace dans ce
-    //prototype toutes les expressions régulières (drapeau g) "___name___" (/___name___/) par l'index
-    const tmpl = $('#zone_user_collection_users').data('prototype').replace(/__name__/g, index);
-    //console.log(tmpl);
+        //$('#add-users').attr('disabled', true);
+        //Je récupère le prototype des entrées(champs) et je remplace dans ce
+        //prototype toutes les expressions régulières (drapeau g) "___name___" (/___name___/) par l'index
+        const tmpl = $('#zone_user_collection_users').data('prototype').replace(/__name__/g, index);
+        //console.log(tmpl);
 
-    //J'ajoute à la suite de la div contenant le sous-formulaire ce code
-    $('#zone_user_collection_users').append(tmpl).ready(() => {
-        //var usersId = '#zone_user_collection_users_' + index + '_name';
-        var nameId = '#zone_user_collection_users_' + index + '_name';
-        /*var priceId = '#zone_user_collection_users_' + index + '_price';
-        var skuId = '#zone_user_collection_users_' + index + '_sku';*/
-        // var descriptionId = '#zone_user_collection_users_' + index + '_description';
-        // var hasStockId = '#zone_user_collection_users_' + index + '_hasStock';
+        //J'ajoute à la suite de la div contenant le sous-formulaire ce code
+        $('#zone_user_collection_users').append(tmpl).ready(() => {
+            //var usersId = '#zone_user_collection_users_' + index + '_name';
+            var nameId = '#zone_user_collection_users_' + index + '_name';
+            /*var priceId = '#zone_user_collection_users_' + index + '_price';
+            var skuId = '#zone_user_collection_users_' + index + '_sku';*/
+            // var descriptionId = '#zone_user_collection_users_' + index + '_description';
+            // var hasStockId = '#zone_user_collection_users_' + index + '_hasStock';
 
-        var userNameId = '#zone_user_collection_users_' + index + '_userNam';
-        //var userPriceId = '#zone_user_collection_users_' + index + '_userPrice';
-        //var userSkuId = '#zone_user_collection_users_' + index + '_userSku';
-        // var userDescriptionId = '#zone_user_collection_users_' + index + '_userDescription';
-        // var userHasStockId = '#zone_user_collection_users_' + index + '_userHasStock';
+            var userNameId = '#zone_user_collection_users_' + index + '_userNam';
+            //var userPriceId = '#zone_user_collection_users_' + index + '_userPrice';
+            //var userSkuId = '#zone_user_collection_users_' + index + '_userSku';
+            // var userDescriptionId = '#zone_user_collection_users_' + index + '_userDescription';
+            // var userHasStockId = '#zone_user_collection_users_' + index + '_userHasStock';
 
-        $(userNameId).select2({
-            width: '100%',
-            //height: '300%',
-            //dropdownCssClass: "custom-select"
-        });
-
-        //Ajout de l'option fictive de gestion des options à retire des autres select list
-        // var Opt = new Option("Select a user", "-1");
-        // $(usersId).append(Opt);
-        // $(usersId).val("-1");
-
-        /*tabHideUser.forEach(function (value, index_) {
-            $(usersId + " option[value='" + value + "']").remove();
-
-        });
-        tabuserIds[index] = $(usersId).val();*/
-
-        /*$(nameId).change(() => {
-
-            //Retrait des options fictives précédemment ajoutées
-            $(usersId + " option[value='-1']").remove();
-
-            var Str = String($(usersId).val());
-            //console.log('user  value = ' + $(usersId).val());
-            var Name = $(usersId + ' option[value=\"' + Str + '\"]').text();
-            // var puId_ = String(Name);
-            // $(designationId).val(puId_);
-
-            //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
-
-            $('#add-users').attr('disabled', false);
-            tabHideUser.forEach(function (value, index_) {
-                //console.log('in foreach tabHideUser ' + index_ + ' : value = ' + value);
-                // var usersSKUId_ = '#users_users_' + index_ + '_usersSku';
-                var usersId_ = '#zone_user_collection_users_' + index_ + '_users';
-                // var usersPriceId_ = '#zone_user_collection_users_' + index_ + '_usersPrice';
-                $(usersId_ + " option[value='" + $(usersId).val() + "']").remove();
-
+            $(userNameId).select2({
+                width: '100%',
+                //height: '300%',
+                //dropdownCssClass: "custom-select"
             });
 
-        });*/
+            //Ajout de l'option fictive de gestion des options à retire des autres select list
+            // var Opt = new Option("Select a user", "-1");
+            // $(usersId).append(Opt);
+            // $(usersId).val("-1");
 
-         $(userNameId).change(() => {
+            /*tabHideUser.forEach(function (value, index_) {
+                $(usersId + " option[value='" + value + "']").remove();
 
-            var Str = String($(userNameId).val());
-            //console.log('user  value = ' + $(usersId).val());
-            var Name = $(userNameId + ' option[value=\"' + Str + '\"]').text();
-            var puId_ = String(Name);
-            $(nameId).val(puId_);
+            });
+            tabuserIds[index] = $(usersId).val();*/
 
-            /*$(userPriceId).val($(userNameId).val());
-            $(userSkuId).val($(userNameId).val());
-            // $(userDescriptionId).val($(userNameId).val());
-            // $(userHasStockId).val($(userNameId).val());
-            //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
+            /*$(nameId).change(() => {
+
+                //Retrait des options fictives précédemment ajoutées
+                $(usersId + " option[value='-1']").remove();
+
+                var Str = String($(usersId).val());
+                //console.log('user  value = ' + $(usersId).val());
+                var Name = $(usersId + ' option[value=\"' + Str + '\"]').text();
+                // var puId_ = String(Name);
+                // $(designationId).val(puId_);
+
+                //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
+
+                $('#add-users').attr('disabled', false);
+                tabHideUser.forEach(function (value, index_) {
+                    //console.log('in foreach tabHideUser ' + index_ + ' : value = ' + value);
+                    // var usersSKUId_ = '#users_users_' + index_ + '_usersSku';
+                    var usersId_ = '#zone_user_collection_users_' + index_ + '_users';
+                    // var usersPriceId_ = '#zone_user_collection_users_' + index_ + '_usersPrice';
+                    $(usersId_ + " option[value='" + $(usersId).val() + "']").remove();
+
+                });
+
+            });*/
+
+            $(userNameId).change(() => {
+
+                var Str = String($(userNameId).val());
+                //console.log('user  value = ' + $(usersId).val());
+                var Name = $(userNameId + ' option[value=\"' + Str + '\"]').text();
+                var puId_ = String(Name);
+                $(nameId).val(puId_);
+
+                /*$(userPriceId).val($(userNameId).val());
+                $(userSkuId).val($(userNameId).val());
+                // $(userDescriptionId).val($(userNameId).val());
+                // $(userHasStockId).val($(userNameId).val());
+                //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
 
 
-            Str = String($(userPriceId).val());
-            //console.log('user  value = ' + $(usersId).val());
-            Name = $(userPriceId + ' option[value=\"' + Str + '\"]').text();
-            puId_ = String(Name);
-            $(priceId).val(puId_);
+                Str = String($(userPriceId).val());
+                //console.log('user  value = ' + $(usersId).val());
+                Name = $(userPriceId + ' option[value=\"' + Str + '\"]').text();
+                puId_ = String(Name);
+                $(priceId).val(puId_);
 
-            Str = String($(userSkuId).val());
-            //console.log('user  value = ' + $(usersId).val());
-            Name = $(userSkuId + ' option[value=\"' + Str + '\"]').text();
-            puId_ = String(Name);
-            $(skuId).val(puId_);*/
+                Str = String($(userSkuId).val());
+                //console.log('user  value = ' + $(usersId).val());
+                Name = $(userSkuId + ' option[value=\"' + Str + '\"]').text();
+                puId_ = String(Name);
+                $(skuId).val(puId_);*/
 
-            
+                
 
-        }); 
+            }); 
 
-        handleDeleteButton();
+            handleDeleteButton();
+        });
+
+
     });
 
 
-});
+    handleDeleteButton();
+    updateCounter();
+
+    function updateCounter() {
+        const usersCounter = +$('#zone_user_collection_users div.nbItems').length;
+        //const reductionsCounter = +$('#user_reductions div.form-group').length;
+
+        $('#users-widgets-count').val(usersCounter);
+        //$('#reductions-widgets-count').val(reductionsCounter);
+        //console.log('widgets-count = ' + $('#users-widgets-count').val());
+    }
+
+    function handleDeleteButton() {
+        //Je gère l'action du click sur les boutton possédant l'attribut data-action = "delete"
+        $('button[data-action="delete"]').click(function () {
+            //Je récupère l'identifiant de la cible(target) à supprimer en recherchant 
+            //dans les attributs data-[quelque chose](grâce à dataset) celui dont quelque chose = target (grâce à target)
+            const target = this.dataset.target;
+            var str = String(target);
+            var subItems = String('_users_');
+            var posItems = str.indexOf(subItems);
+
+            var index = 0;
+            if (posItems > 0) {
+                //console.log(str.substr(posItems + subItems.length));
+                index = parseInt(str.substr(posItems + subItems.length));
+
+                tabHideUser[index] = '';
 
 
-handleDeleteButton();
-updateCounter();
+            }
 
-function updateCounter() {
-    const usersCounter = +$('#zone_user_collection_users div.nbItems').length;
-    //const reductionsCounter = +$('#user_reductions div.form-group').length;
-
-    $('#users-widgets-count').val(usersCounter);
-    //$('#reductions-widgets-count').val(reductionsCounter);
-    //console.log('widgets-count = ' + $('#users-widgets-count').val());
-}
-
-function handleDeleteButton() {
-    //Je gère l'action du click sur les boutton possédant l'attribut data-action = "delete"
-    $('button[data-action="delete"]').click(function () {
-        //Je récupère l'identifiant de la cible(target) à supprimer en recherchant 
-        //dans les attributs data-[quelque chose](grâce à dataset) celui dont quelque chose = target (grâce à target)
-        const target = this.dataset.target;
-        var str = String(target);
-        var subItems = String('_users_');
-        var posItems = str.indexOf(subItems);
-
-        var index = 0;
-        if (posItems > 0) {
-            //console.log(str.substr(posItems + subItems.length));
-            index = parseInt(str.substr(posItems + subItems.length));
-
-            tabHideUser[index] = '';
-
-
-        }
-
-        //console.log(target);
-        $(target).remove();
-        //updateCounter();
-    });
-};
+            //console.log(target);
+            $(target).remove();
+            //updateCounter();
+        });
+    };
 
 </script>
 

@@ -1,0 +1,66 @@
+{{ form_start(form) }}
+    {# {{ form_widget(form) }} #}
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.name, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.name, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.moduleId, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.moduleId, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.modType, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.modType, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.subType, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.subType, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        
+    
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.levelZone, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.levelZone, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.nbPhases, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.nbPhases, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.fuelPrice, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.fuelPrice, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.enterprise, 'Enterprise', {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.enterprise, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+    
+    </div>
+    
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
+    <div class="row float-left">
+        <a href="{{ path('admin_smartMod_index') }}" class="btn btn-danger mr-2 mt-4 waves-effect">Back to list</a>
+        <button type="submit" class="btn btn-primary mt-4 waves-effect" id="saveBtn">
+            <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+            {{ button_label|default('Save') }}
+        </button>
+    
+    </div>
+{{ form_end(form) }}

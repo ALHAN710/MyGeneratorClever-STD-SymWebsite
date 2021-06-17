@@ -48,7 +48,7 @@ class SmartMod
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="smartMods")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $site;
 
@@ -96,6 +96,15 @@ class SmartMod
      * @ORM\OneToMany(targetEntity=AlarmReporting::class, mappedBy="smartMod")
      */
     private $alarmReportings;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Enterprise::class, inversedBy="smartMods")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $enterprise;
+
+    private $modName;
+    private $smartModName;
 
     public function __construct()
     {
@@ -336,6 +345,41 @@ class SmartMod
                 $alarmReporting->setSmartMod(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEnterprise(): ?Enterprise
+    {
+        return $this->enterprise;
+    }
+
+    public function setEnterprise(?Enterprise $enterprise): self
+    {
+        $this->enterprise = $enterprise;
+
+        return $this;
+    }
+
+    public function getModName(): ?String
+    {
+        return $this->getName();
+    }
+
+    public function setModName(String $modName): self
+    {
+        $this->modName = $modName;
+
+        return $this;
+    }
+    public function getSmartModName(): ?SmartMod
+    {
+        return $this->smartModName;
+    }
+
+    public function setSmartModName(SmartMod $smartModName): self
+    {
+        $this->smartModName = $smartModName;
 
         return $this;
     }

@@ -1,0 +1,355 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edit Zone{% endblock %}
+
+{% block stylesheets %}
+<link href="/plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" media="screen, print" href="/css/notifications/sweetalert2/sweetalert2.bundle.css">
+
+{% endblock %}
+
+{% block breadcrumbItem %}
+<li class="breadcrumb-item active"><a href="javascript:void(0);">Edit</a></li>
+<li class="breadcrumb-item"><a href="javascript:void(0);">Site</a></li>
+{# <li class="breadcrumb-item ">Dashboard</li> #}
+{% endblock %}
+
+{% block pageTitle %}Home{% endblock %}
+
+{% form_theme form 'admin/site/_smartMod_collection.html.twig' %}
+
+{% block body %}
+    <h1>Edit site</h1>
+
+    {{ include('admin/site/_form.html.twig', {'button_label': 'Update','isEdit': true}) }}
+
+    {# <a href="{{ path('site_index') }}">back to list</a>
+
+    {{ include('site/_delete_form.html.twig') }} #}
+{% endblock %}
+
+{% block javascripts %}
+<!-- Plugins js -->
+<script src="/plugins/select2/select2.min.js"></script>
+<!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support -->
+<script src="/js/notifications/sweetalert2/sweetalert2.bundle.js"></script>
+
+{# <script src="/js/smartMod.js"></script> #}
+<script>
+    $('#admin_site_mainsInterruptDayLimit').attr('type','number');
+    $('#admin_site_enterprise').select2({
+        width: '100%',
+        //height: '300%',
+        //dropdownCssClass: "custom-select"
+    });
+    $('#saveBtn').click(function(){
+        //block of code that runs when the click event triggers
+        $(this).children('i').addClass('d-none');
+        $(this).children('span').removeClass('d-none');
+        //$('#saveBtn').prop('disabled', true);
+    });
+    var nbItem = +$('button[data-action="delete"]').length;
+    console.log(nbItem)
+    for (let index = 0; index < nbItem; index++) {
+        
+        $('.colName_admin_site_smartMods_' + index).removeClass('d-none');
+        $('.colsmartModName_admin_site_smartMods_' + index).addClass('d-none');
+
+        $('#admin_site_smartMods_' + index + '_name').attr('readonly', true);
+        //var Str = String($(smartModPriceId).val());
+        //var Name = $(smartModPriceId + ' option[value=\"' + Str + '\"]').text();
+        //var puId_ = String(Name); 
+        //$(puId).val(puId_);
+        
+        
+    }
+
+    $(document).ready(function()
+    {
+        $('#admin_site_latitude').attr('type','number').attr("step", "any");
+        $('#admin_site_longitude').attr('type','number').attr("step", "any");
+
+        $('#getPos').click(function(){
+            getLocation();
+        })
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getPosition, showError,{enableHighAccuracy:true, timeout:60000, maximumAge:600000});
+            } else {
+                positionError = true;
+                Swal.fire(
+                {
+                    type: "error",
+                    title: "Oops...",
+                    text: "Sorry your browser does not support the geolocation feature !",
+                    {# footer: "<a href>Why do I have this issue?</a>" #}
+                });
+            }
+        }
+
+        function getPosition(position) {
+            lat = position.coords.latitude;
+            long = position.coords.longitude;
+            positionError = false;
+            {# console.log('Type of latitude coordinates = ' + position.coords.latitude + ' is : ' + typeof position.coords.latitude );
+            console.log('Type of longitude coordinates = ' + position.coords.longitude + ' is : ' + typeof position.coords.longitude );
+            console.log('Position accuracy  = ' + position.coords.accuracy ); #}
+            
+
+            Swal.mixin(
+            {
+                customClass:
+                {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-danger ml-2"
+                },
+                buttonsStyling: false
+            }).queue([{
+                    type: "warning",
+                    title: 'Your Current Position',
+                    confirmButtonText: 'Confirm',
+                    text: 'Latitude : ' + position.coords.latitude + ' , Longitude : ' + position.coords.longitude,
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    //confirmButtonClass: 'btn btn-primary',
+                    //cancelButtonClass: 'btn btn-danger ml-2',
+                    preConfirm: function () {
+                        return new Promise(function (resolve) { 
+                            $('#admin_site_latitude').val(position.coords.latitude);
+                            $('#admin_site_longitude').val(position.coords.longitude);
+        
+                            Swal.fire("Success !", "Position recovery successful.", "success");
+                            
+                            setTimeout(function () {
+                                resolve()
+                            }, 1500);
+                    })  
+                },
+                //allowOutsideClick: false
+                /*allowOutsideClick: function allowOutsideClick()
+                {
+                    return !Swal.isLoading();
+                }*/
+            }]).then((result) => {
+                if (result.isConfirmed) {
+                    
+                }else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    //$('#' + id).prop("checked",false);
+                    Swal.fire(
+                    'Cancellation',
+                    'Position Recovery Canceled',
+                    'error'
+                    )
+                }
+            });
+        }
+
+        function showError(error) {
+            positionError = true;
+            console.log("Handling Position Error");
+            //$('#' + id).prop("checked",false);
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    console.log("User denied the request for Geolocation.");
+                    Swal.fire(
+                    {
+                        type: "error",
+                        title: "Oops...\r\nUser denied the request for Geolocation. !",
+                        text: "Please allow access from your location to the app",
+                        footer: "<a href='#'><i class='fa fa-exclamation-circle mr-1'></i>Why do I have this issue?</a>" 
+                    });
+                break;
+                case error.POSITION_UNAVAILABLE:
+                    console.log("Location information is unavailable.");
+                    Swal.fire(
+                    {
+                        type: "error",
+                        title: "Oops...",
+                        text: "Location information is unavailable. !",
+                        footer: "<a href='#'><i class='fa fa-exclamation-circle mr-1'></i>Why do I have this issue?</a>" 
+                    });
+                break;
+                case error.TIMEOUT:
+                    console.log("The request to get user location timed out.");
+                    Swal.fire(
+                    {
+                        type: "error",
+                        title: "Oops...",
+                        text: "The request to get user location timed out. !",
+                        footer: "<a href='#'><i class='fa fa-exclamation-circle mr-1'></i>Why do I have this issue?</a>" 
+                    });
+                break;
+                case error.UNKNOWN_ERROR:
+                    console.log("An unknown error occurred.");
+                    Swal.fire(
+                    {
+                        type: "error",
+                        title: "Oops...",
+                        text: "Erreur de localisation inconnu !",
+                        {# footer: "<a href>Why do I have this issue?</a>" #}
+                    });
+                break;
+            }
+        }
+
+    });
+    
+</script>
+
+<script>
+    var tabHideSmartMod = [];
+    var tabsmartModIds = [];
+
+
+    $('#add-smartMods').click(function () {
+        //Je récupère le numéro du futur champ que je vais créer
+        const index = +$('#smartMods-widgets-count').val();
+        //console.log(index);
+        $('#smartMods-widgets-count').val(index + 1);
+
+        //$('#add-smartMods').attr('disabled', true);
+        //Je récupère le prototype des entrées(champs) et je remplace dans ce
+        //prototype toutes les expressions régulières (drapeau g) "___name___" (/___name___/) par l'index
+        const tmpl = $('#admin_site_smartMods').data('prototype').replace(/__name__/g, index);
+        //console.log(tmpl);
+
+        //J'ajoute à la suite de la div contenant le sous-formulaire ce code
+        $('#admin_site_smartMods').append(tmpl).ready(() => {
+            //var smartModsId = '#admin_site_smartMods_' + index + '_name';
+            var nameId = '#admin_site_smartMods_' + index + '_name';
+            /*var priceId = '#admin_site_smartMods_' + index + '_price';
+            var skuId = '#admin_site_smartMods_' + index + '_sku';*/
+            // var descriptionId = '#admin_site_smartMods_' + index + '_description';
+            // var hasStockId = '#admin_site_smartMods_' + index + '_hasStock';
+
+            var smartModNameId = '#admin_site_smartMods_' + index + '_smartModName';
+            //var smartModPriceId = '#admin_site_smartMods_' + index + '_smartModPrice';
+            //var smartModSkuId = '#admin_site_smartMods_' + index + '_smartModSku';
+            // var smartModDescriptionId = '#admin_site_smartMods_' + index + '_smartModDescription';
+            // var smartModHasStockId = '#admin_site_smartMods_' + index + '_smartModHasStock';
+
+            $(smartModNameId).select2({
+                width: '100%',
+                //height: '300%',
+                //dropdownCssClass: "custom-select"
+            });
+
+            //Ajout de l'option fictive de gestion des options à retire des autres select list
+            // var Opt = new Option("Select a smartMod", "-1");
+            // $(smartModsId).append(Opt);
+            // $(smartModsId).val("-1");
+
+            /*tabHideSmartMod.forEach(function (value, index_) {
+                $(smartModsId + " option[value='" + value + "']").remove();
+
+            });
+            tabsmartModIds[index] = $(smartModsId).val();*/
+
+            /*$(nameId).change(() => {
+
+                //Retrait des options fictives précédemment ajoutées
+                $(smartModsId + " option[value='-1']").remove();
+
+                var Str = String($(smartModsId).val());
+                //console.log('smartMod  value = ' + $(smartModsId).val());
+                var Name = $(smartModsId + ' option[value=\"' + Str + '\"]').text();
+                // var puId_ = String(Name);
+                // $(designationId).val(puId_);
+
+                //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
+
+                $('#add-smartMods').attr('disabled', false);
+                tabHideSmartMod.forEach(function (value, index_) {
+                    //console.log('in foreach tabHideSmartMod ' + index_ + ' : value = ' + value);
+                    // var smartModsSKUId_ = '#smartMods_smartMods_' + index_ + '_smartModsSku';
+                    var smartModsId_ = '#admin_site_smartMods_' + index_ + '_smartMods';
+                    // var smartModsPriceId_ = '#admin_site_smartMods_' + index_ + '_smartModsPrice';
+                    $(smartModsId_ + " option[value='" + $(smartModsId).val() + "']").remove();
+
+                });
+
+            });*/
+
+            $(smartModNameId).change(() => {
+
+                var Str = String($(smartModNameId).val());
+                //console.log('smartMod  value = ' + $(smartModsId).val());
+                var Name = $(smartModNameId + ' option[value=\"' + Str + '\"]').text();
+                var puId_ = String(Name);
+                $(nameId).val(puId_);
+
+                /*$(smartModPriceId).val($(smartModNameId).val());
+                $(smartModSkuId).val($(smartModNameId).val());
+                // $(smartModDescriptionId).val($(smartModNameId).val());
+                // $(smartModHasStockId).val($(smartModNameId).val());
+                //tabQtyError[index] = (tabError[index] - 1) * tabQty[index];
+
+
+                Str = String($(smartModPriceId).val());
+                //console.log('smartMod  value = ' + $(smartModsId).val());
+                Name = $(smartModPriceId + ' option[value=\"' + Str + '\"]').text();
+                puId_ = String(Name);
+                $(priceId).val(puId_);
+
+                Str = String($(smartModSkuId).val());
+                //console.log('smartMod  value = ' + $(smartModsId).val());
+                Name = $(smartModSkuId + ' option[value=\"' + Str + '\"]').text();
+                puId_ = String(Name);
+                $(skuId).val(puId_);*/
+
+                
+
+            }); 
+
+            handleDeleteButton();
+        });
+
+
+    });
+
+
+    handleDeleteButton();
+    updateCounter();
+
+    function updateCounter() {
+        const smartModsCounter = +$('#admin_site_smartMods div.nbItems').length;
+        //const reductionsCounter = +$('#smartMod_reductions div.form-group').length;
+
+        $('#smartMods-widgets-count').val(smartModsCounter);
+        //$('#reductions-widgets-count').val(reductionsCounter);
+        //console.log('widgets-count = ' + $('#smartMods-widgets-count').val());
+    }
+
+    function handleDeleteButton() {
+        //Je gère l'action du click sur les boutton possédant l'attribut data-action = "delete"
+        $('button[data-action="delete"]').click(function () {
+            //Je récupère l'identifiant de la cible(target) à supprimer en recherchant 
+            //dans les attributs data-[quelque chose](grâce à dataset) celui dont quelque chose = target (grâce à target)
+            const target = this.dataset.target;
+            var str = String(target);
+            var subItems = String('_smartMods_');
+            var posItems = str.indexOf(subItems);
+
+            var index = 0;
+            if (posItems > 0) {
+                //console.log(str.substr(posItems + subItems.length));
+                index = parseInt(str.substr(posItems + subItems.length));
+
+                tabHideSmartMod[index] = '';
+
+
+            }
+
+            //console.log(target);
+            $(target).remove();
+            //updateCounter();
+        });
+    };
+
+</script>
+
+{% endblock %}

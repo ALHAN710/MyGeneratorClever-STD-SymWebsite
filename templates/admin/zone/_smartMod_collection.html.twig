@@ -1,0 +1,101 @@
+{% block _admin_zone_smartMods_widget %}
+
+{# <div class="card">
+    <div class="card-body mx-5">         #}
+        <h4 class="mt-2 mb-4 header-title">Add Smart Module for this zone</h4>
+    
+        {{form_widget(form)}}
+
+        <input type="hidden" id="smartMods-widgets-count">
+        
+        <div class="form-group mt-4 text-right">
+            <button type="button" id="add-smartMods" class="btn btn-primary mr-2 waves-effect" data-toggle="tooltip" data-placement="top" title="Add smart module">
+                <i class="fas fa-plus-circle mr-2"></i>SmartMod
+            </button>
+            
+        </div>
+    {# </div>
+</div> #}
+                        
+{% endblock %}
+
+{% block _admin_zone_smartMods_entry_row %}
+    {{form_widget(form)}}
+{% endblock %} 
+
+{% block _admin_zone_smartMods_entry_widget %}
+    
+    <div class="row form-group mb-0 align-items-center nbItems" id = "block_{{id}}">
+        <div class="col-10 mt-4">
+            <div class="row text-center">
+                <div class="col colsmartModName_{{id}}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            {# <div class="input-group-prepend">
+                                {{ form_label(form.reference, null, {'label_attr': {'class': 'input-group-text'}}) }}
+                            </div> #}
+                            {{ form_widget(form.smartModName, {'attr': {'class': "form-control text-center select2 custom-select"}}) }}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col d-none colName_{{id}}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            
+                            {{ form_widget(form.modName, {'attr': {'class': "form-control text-center"}}) }}
+                            
+                        </div>
+                    </div>
+                </div>
+                {# <div class="col d-none">
+                    <div class="form-group">
+                        <div class="input-group">
+                            
+                            {{ form_widget(form.userPrice, {'attr': {'class': "form-control text-center"}}) }}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col d-none">
+                    <div class="form-group">
+                        <div class="input-group">
+                            
+                            {{ form_widget(form.userSku, {'attr': {'class': "form-control text-center"}}) }}
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col d-none">
+                    <div class="form-group">
+                        <div class="input-group">
+                            
+                            {{ form_widget(form.price, {'attr': {'class': "form-control text-center"}}) }}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col d-none">
+                    <div class="form-group">
+                        <div class="input-group">
+                            
+                            {{ form_widget(form.sku, {'attr': {'class': "form-control text-center"}}) }}
+                            
+                        </div>
+                    </div>
+                </div> #}
+                
+            </div>       
+        </div>
+
+        <div class="col">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="mt-1 btn btn-danger">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+
+    </div>
+
+
+{% endblock %}

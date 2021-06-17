@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheets %}
+<link href="/plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+{% block breadcrumbItem %}
+<li class="breadcrumb-item active"><a href="javascript:void(0);">New</a></li>
+<li class="breadcrumb-item"><a href="javascript:void(0);">Zone</a></li>
+{# <li class="breadcrumb-item ">Dashboard</li> #}
+{% endblock %}
+
+{% block pageTitle %}Zone{% endblock %}
+
+
+{% block body %}
+    <h1>Create new Zone</h1>
+
+    
+    {{ include('admin/zone/_form.html.twig') }}
+    {# <a href="{{ path('zone_index') }}">back to list</a> #}
+{% endblock %}
+
+{% block javascripts %}
+<!-- Plugins js -->
+<script src="/plugins/select2/select2.min.js"></script>
+
+{# <script src="/js/user.js"></script> #}
+<script>
+    $('#admin_zone_powerSubscribed').attr('type', 'number');
+    $('#admin_zone_site').select2({
+        width: '100%',
+        //height: '300%',
+        //dropdownCssClass: "custom-select"
+    });
+    $('#saveBtn').click(function(){
+        //block of code that runs when the click event triggers
+        $(this).children('i').addClass('d-none');
+        $(this).children('span').removeClass('d-none');
+        //$('#saveBtn').prop('disabled', true);
+    });
+</script>
+
+{% endblock %}
