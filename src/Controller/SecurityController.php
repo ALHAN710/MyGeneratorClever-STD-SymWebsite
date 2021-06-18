@@ -49,7 +49,7 @@ class SecurityController extends AbstractController
         // $username = $utils->getLastUsername();
         //dump($user->getRoles()[0]);
         if ($user !== NULL) {
-            if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') return $this->redirectToRoute('admin_enterprises_index');
+            if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') return $this->redirectToRoute('admin_enterprise_index');
             else if ($user->getRoles()[0] === 'ROLE_CUSTOMER' || $user->getRoles()[0] === 'ROLE_MANAGER') {
                 $sites = $user->getSites();
                 if (count($sites) > 0) {
