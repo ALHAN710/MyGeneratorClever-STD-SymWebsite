@@ -196,6 +196,8 @@ class ZoneController extends ApplicationController
         $pue = [];
         $diffEnergy = [];
         $dateE       = [];
+        $totalEA = [];
+        $productionEA = [];
 
 
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
