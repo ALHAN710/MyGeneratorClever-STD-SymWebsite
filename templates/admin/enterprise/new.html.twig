@@ -1,0 +1,39 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}NewEnterprise{% endblock %}
+
+{% block stylesheets %}
+<link href="/plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+{% block breadcrumbItem %}
+<li class="breadcrumb-item active"><a href="javascript:void(0);">New</a></li>
+<li class="breadcrumb-item"><a href="javascript:void(0);">Enterprise</a></li>
+{# <li class="breadcrumb-item ">Dashboard</li> #}
+{% endblock %}
+
+{% block pageTitle %}Home{% endblock %}
+
+
+{% block body %}
+    <h1>Create new Enterprise</h1>
+
+    
+    {{ include('admin/enterprise/_form.html.twig') }}
+    {# <a href="{{ path('enterprise_index') }}">back to list</a> #}
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    
+    $('#saveBtn').click(function(){
+        //block of code that runs when the click event triggers
+        $(this).children('i').addClass('d-none');
+        $(this).children('span').removeClass('d-none');
+        //$('#saveBtn').prop('disabled', true);
+    });
+</script>
+
+{% endblock %}

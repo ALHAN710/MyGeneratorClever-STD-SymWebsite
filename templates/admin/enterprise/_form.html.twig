@@ -1,0 +1,60 @@
+{{ form_start(form) }}
+    {# {{ form_widget(form) }} #}
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.socialReason, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.socialReason, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.address, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.address, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.email, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.email, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.phoneNumber, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.phoneNumber, {'attr': {'class': "form-control"}}) }}
+            <small class="form-text text-muted">* Obligatoire</small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.niu, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.niu, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.rccm, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.rccm, {'attr': {'class': "form-control"}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col">
+            {{ form_label(form.country, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.country, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+        <div class="form-group col">
+            {{ form_label(form.logo, null, {'label_attr': {'class': ''}}) }}
+            {{ form_widget(form.logo, {'attr': {'class': "form-control"}}) }}
+            {# <small class="form-text text-muted">* Obligatoire</small> #}
+        </div>
+    </div>
+    
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
+    <div class="row float-left">
+        <a href="{{ path('admin_site_index') }}" class="btn btn-danger mr-2 mt-4 waves-effect">Back to list</a>
+        <button type="submit" class="btn btn-primary mt-4 waves-effect" id="saveBtn">
+            <span class="spinner-border spinner-border-sm mr-1 d-none" role="status" aria-hidden="true"></span>
+            {{ button_label|default('Save') }}
+        </button>
+    
+    </div>
+{{ form_end(form) }}
