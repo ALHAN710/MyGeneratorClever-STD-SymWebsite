@@ -39,6 +39,16 @@ class Alarm
      */
     private $type;
 
+    /**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $media;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $alerte;
+
     public function __construct()
     {
         $this->alarmReportings = new ArrayCollection();
@@ -111,6 +121,30 @@ class Alarm
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getMedia(): ?string
+    {
+        return $this->media;
+    }
+
+    public function setMedia(string $media): self
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    public function getAlerte(): ?string
+    {
+        return $this->alerte;
+    }
+
+    public function setAlerte(string $alerte): self
+    {
+        $this->alerte = $alerte;
 
         return $this;
     }
