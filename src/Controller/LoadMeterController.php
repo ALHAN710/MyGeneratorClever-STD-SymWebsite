@@ -156,8 +156,8 @@ class LoadMeterController extends ApplicationController
                         $datetimeData->setEr($paramJSON['Er']);
                     }
 
-                    //$manager->persist($datetimeData);
-                    //$manager->flush();
+                    $manager->persist($datetimeData);
+                    $manager->flush();
                 }
             }
 
