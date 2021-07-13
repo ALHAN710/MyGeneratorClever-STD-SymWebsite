@@ -74,86 +74,113 @@ class LoadMeterController extends ApplicationController
                     $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                     $datetimeData->setDateTime($date)
                         ->setSmartMod($smartMod);
-                    if (array_key_exists("Va", $paramJSON)) {
-                        $datetimeData->setVamoy($paramJSON['Va']);
-                    }
-                    if (array_key_exists("Vb", $paramJSON)) {
-                        $datetimeData->setVbmoy($paramJSON['Vb']);
-                    }
-                    if (array_key_exists("Vc", $paramJSON)) {
-                        $datetimeData->setVcmoy($paramJSON['Vc']);
-                    }
-                    if (array_key_exists("Pa", $paramJSON)) {
-                        $datetimeData->setPamoy($paramJSON['Pa']);
-                    }
-                    if (array_key_exists("Pb", $paramJSON)) {
-                        $datetimeData->setPbmoy($paramJSON['Pb']);
-                    }
-                    if (array_key_exists("Pc", $paramJSON)) {
-                        $datetimeData->setPcmoy($paramJSON['Pc']);
-                    }
-                    if (array_key_exists("P", $paramJSON)) {
-                        $datetimeData->setPmoy($paramJSON['P']);
-                    }
-                    if (array_key_exists("Sa", $paramJSON)) {
-                        $datetimeData->setSamoy($paramJSON['Sa']);
-                    }
-                    if (array_key_exists("Sb", $paramJSON)) {
-                        $datetimeData->setSbmoy($paramJSON['Sb']);
-                    }
-                    if (array_key_exists("Sc", $paramJSON)) {
-                        $datetimeData->setScmoy($paramJSON['Sc']);
-                    }
-                    if (array_key_exists("S", $paramJSON)) {
-                        $datetimeData->setSmoy($paramJSON['S']);
-                    }
-                    /*if (array_key_exists("Qa", $paramJSON)) {
-                        $datetimeData->setQamoy($paramJSON['Qa']);
-                    }
-                    if (array_key_exists("Qb", $paramJSON)) {
-                        $datetimeData->setQbmoy($paramJSON['Qb']);
-                    }
-                    if (array_key_exists("Sc", $paramJSON)) {
-                        $datetimeData->setQcmoy($paramJSON['Qc']);
-                    }
-                    if (array_key_exists("Q", $paramJSON)) {
-                        $datetimeData->setSmoy($paramJSON['Q']);
-                    }*/
-                    if (array_key_exists("Cosfia", $paramJSON)) {
-                        $datetimeData->setCosfia($paramJSON['Cosfia']);
-                    }
-                    if (array_key_exists("Cosfib", $paramJSON)) {
-                        $datetimeData->setCosfib($paramJSON['Cosfib']);
-                    }
-                    if (array_key_exists("Cosfic", $paramJSON)) {
-                        $datetimeData->setCosfic($paramJSON['Cosfic']);
-                    }
-                    if (array_key_exists("Cosfi", $paramJSON)) {
-                        $datetimeData->setCosfi($paramJSON['Cosfi']);
-                    }
-                    if (array_key_exists("Eaa", $paramJSON)) {
-                        $datetimeData->setEaa($paramJSON['Eaa']);
-                    }
-                    if (array_key_exists("Eab", $paramJSON)) {
-                        $datetimeData->setEab($paramJSON['Eab']);
-                    }
-                    if (array_key_exists("Eac", $paramJSON)) {
-                        $datetimeData->setEac($paramJSON['Eac']);
-                    }
-                    if (array_key_exists("Ea", $paramJSON)) {
-                        $datetimeData->setEa($paramJSON['Ea']);
-                    }
-                    if (array_key_exists("Era", $paramJSON)) {
-                        $datetimeData->setEra($paramJSON['Era']);
-                    }
-                    if (array_key_exists("Erb", $paramJSON)) {
-                        $datetimeData->setErb($paramJSON['Erb']);
-                    }
-                    if (array_key_exists("Erc", $paramJSON)) {
-                        $datetimeData->setErc($paramJSON['Erc']);
-                    }
-                    if (array_key_exists("Er", $paramJSON)) {
-                        $datetimeData->setEr($paramJSON['Er']);
+                    if ($smartMod->getNbPhases() == 1) {
+                        if (array_key_exists("Cosfi", $paramJSON)) {
+                            if ($paramJSON['Cosfi'] == 0 && $paramJSON['Va'] > 0) {
+                                return $this->json([
+                                    'code' => 200,
+                                    'received' => $paramJSON,
+                                    'message'  => 'Bad'
+
+                                ], 200);
+                            }
+                            $datetimeData->setCosfi($paramJSON['Cosfi']);
+                        }
+                        if (array_key_exists("Va", $paramJSON)) {
+                            $datetimeData->setVamoy($paramJSON['Va']);
+                        }
+
+                        if (array_key_exists("P", $paramJSON)) {
+                            $datetimeData->setPmoy($paramJSON['P']);
+                        }
+                        if (array_key_exists("S", $paramJSON)) {
+                            $datetimeData->setSmoy($paramJSON['S']);
+                        }
+                        if (array_key_exists("Ea", $paramJSON)) {
+                            $datetimeData->setEa($paramJSON['Ea']);
+                        }
+                    } else if ($smartMod->getNbPhases() == 3) {
+                        if (array_key_exists("Va", $paramJSON)) {
+                            $datetimeData->setVamoy($paramJSON['Va']);
+                        }
+                        if (array_key_exists("Vb", $paramJSON)) {
+                            $datetimeData->setVbmoy($paramJSON['Vb']);
+                        }
+                        if (array_key_exists("Vc", $paramJSON)) {
+                            $datetimeData->setVcmoy($paramJSON['Vc']);
+                        }
+                        if (array_key_exists("Pa", $paramJSON)) {
+                            $datetimeData->setPamoy($paramJSON['Pa']);
+                        }
+                        if (array_key_exists("Pb", $paramJSON)) {
+                            $datetimeData->setPbmoy($paramJSON['Pb']);
+                        }
+                        if (array_key_exists("Pc", $paramJSON)) {
+                            $datetimeData->setPcmoy($paramJSON['Pc']);
+                        }
+                        if (array_key_exists("P", $paramJSON)) {
+                            $datetimeData->setPmoy($paramJSON['P']);
+                        }
+                        if (array_key_exists("Sa", $paramJSON)) {
+                            $datetimeData->setSamoy($paramJSON['Sa']);
+                        }
+                        if (array_key_exists("Sb", $paramJSON)) {
+                            $datetimeData->setSbmoy($paramJSON['Sb']);
+                        }
+                        if (array_key_exists("Sc", $paramJSON)) {
+                            $datetimeData->setScmoy($paramJSON['Sc']);
+                        }
+                        if (array_key_exists("S", $paramJSON)) {
+                            $datetimeData->setSmoy($paramJSON['S']);
+                        }
+                        /*if (array_key_exists("Qa", $paramJSON)) {
+                            $datetimeData->setQamoy($paramJSON['Qa']);
+                        }
+                        if (array_key_exists("Qb", $paramJSON)) {
+                            $datetimeData->setQbmoy($paramJSON['Qb']);
+                        }
+                        if (array_key_exists("Sc", $paramJSON)) {
+                            $datetimeData->setQcmoy($paramJSON['Qc']);
+                        }
+                        if (array_key_exists("Q", $paramJSON)) {
+                            $datetimeData->setSmoy($paramJSON['Q']);
+                        }*/
+                        if (array_key_exists("Cosfia", $paramJSON)) {
+                            $datetimeData->setCosfia($paramJSON['Cosfia']);
+                        }
+                        if (array_key_exists("Cosfib", $paramJSON)) {
+                            $datetimeData->setCosfib($paramJSON['Cosfib']);
+                        }
+                        if (array_key_exists("Cosfic", $paramJSON)) {
+                            $datetimeData->setCosfic($paramJSON['Cosfic']);
+                        }
+                        if (array_key_exists("Cosfi", $paramJSON)) {
+                            $datetimeData->setCosfi($paramJSON['Cosfi']);
+                        }
+                        if (array_key_exists("Eaa", $paramJSON)) {
+                            $datetimeData->setEaa($paramJSON['Eaa']);
+                        }
+                        if (array_key_exists("Eab", $paramJSON)) {
+                            $datetimeData->setEab($paramJSON['Eab']);
+                        }
+                        if (array_key_exists("Eac", $paramJSON)) {
+                            $datetimeData->setEac($paramJSON['Eac']);
+                        }
+                        if (array_key_exists("Ea", $paramJSON)) {
+                            $datetimeData->setEa($paramJSON['Ea']);
+                        }
+                        if (array_key_exists("Era", $paramJSON)) {
+                            $datetimeData->setEra($paramJSON['Era']);
+                        }
+                        if (array_key_exists("Erb", $paramJSON)) {
+                            $datetimeData->setErb($paramJSON['Erb']);
+                        }
+                        if (array_key_exists("Erc", $paramJSON)) {
+                            $datetimeData->setErc($paramJSON['Erc']);
+                        }
+                        if (array_key_exists("Er", $paramJSON)) {
+                            $datetimeData->setEr($paramJSON['Er']);
+                        }
                     }
 
                     $manager->persist($datetimeData);
