@@ -67,7 +67,7 @@ class LoadMeterController extends ApplicationController
             // //dump($date);
             //die();
 
-            if ($smartMod->getModType() == 'Load') {
+            if ($smartMod->getModType() == 'Load Meter') {
                 //Paramétrage des champs de la nouvelle LoadDataEnergy aux valeurs contenues dans la requête du module
                 if (array_key_exists("date", $paramJSON)) {
                     //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
@@ -159,17 +159,18 @@ class LoadMeterController extends ApplicationController
                     $manager->persist($datetimeData);
                     $manager->flush();
                 }
+
+                return $this->json([
+                    'code' => 200,
+                    'received' => $paramJSON
+
+                ], 200);
             }
 
             // //dump($datetimeData);
             //die();
             //Insertion de la nouvelle datetimeData dans la BDD
 
-            return $this->json([
-                'code' => 200,
-                'received' => $paramJSON
-
-            ], 200);
         }
         return $this->json([
             'code' => 403,
