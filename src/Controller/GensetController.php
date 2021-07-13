@@ -571,7 +571,7 @@ class GensetController extends ApplicationController
                     $dataMod->setSmartMod($smartMod);
                 }
 
-                $dataMod->setL12G($paramJSON['L12G'])
+                /*$dataMod->setL12G($paramJSON['L12G'])
                     ->setL13G($paramJSON['L13G'])
                     ->setL23G($paramJSON['L23G'])
                     ->setL1N($paramJSON['L1N'])
@@ -580,9 +580,9 @@ class GensetController extends ApplicationController
                     ->setL12M($paramJSON['L12M'])
                     ->setL13M($paramJSON['L13M'])
                     ->setL23M($paramJSON['L23M'])
-                    ->setI1($paramJSON['L1N'])
-                    ->setI2($paramJSON['L2N'])
-                    ->setI3($paramJSON['L3N'])
+                    ->setI1($paramJSON['I1N'])
+                    ->setI2($paramJSON['I2N'])
+                    ->setI3($paramJSON['I3N'])
                     ->setFreq($paramJSON['Freq'])
                     ->setIDiff($paramJSON['Idiff'])
                     ->setFuelLevel($paramJSON['FuelLevel'])
@@ -614,8 +614,9 @@ class GensetController extends ApplicationController
                     ->setMainsIncSeq($paramJSON['MainsIncSeq'])
                     ->setGensetIncSeq($paramJSON['GensetIncSeq'])
                     ->setDifferentialIntervention($paramJSON['DiffIntervention'])
-                    ->setSmartMod($smartMod);
-                /*$dataMod->setL12G($paramJSON['L12'])
+                    //->setSmartMod($smartMod)
+                ;*/
+                $dataMod->setL12G($paramJSON['L12'])
                     ->setL13G($paramJSON['L13'])
                     ->setL23G($paramJSON['L23'])
                     ->setL1N($paramJSON['L1'])
@@ -658,7 +659,7 @@ class GensetController extends ApplicationController
                     ->setMainsIncSeq($paramJSON['MIS'])
                     ->setGensetIncSeq($paramJSON['GIS'])
                     ->setDifferentialIntervention($paramJSON['DIT'])
-                    ->setSmartMod($smartMod);*/
+                    ->setSmartMod($smartMod);
             }
 
             // //dump($dataMod);
