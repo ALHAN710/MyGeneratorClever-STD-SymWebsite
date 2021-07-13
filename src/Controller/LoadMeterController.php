@@ -74,7 +74,7 @@ class LoadMeterController extends ApplicationController
                     $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                     $datetimeData->setDateTime($date)
                         ->setSmartMod($smartMod);
-                    if ($smartMod->getNbPhases() == 1) {
+                    if ($smartMod->getNbPhases() === 1) {
                         if (array_key_exists("Cosfi", $paramJSON)) {
                             if ($paramJSON['Cosfi'] == 0 && $paramJSON['Va'] > 0) {
                                 return $this->json([
@@ -91,15 +91,18 @@ class LoadMeterController extends ApplicationController
                         }
 
                         if (array_key_exists("P", $paramJSON)) {
-                            $datetimeData->setPmoy($paramJSON['P']);
+                            $datetimeData->setPmoy($paramJSON['P'] / 1000.0);
                         }
                         if (array_key_exists("S", $paramJSON)) {
-                            $datetimeData->setSmoy($paramJSON['S']);
+                            $datetimeData->setSmoy($paramJSON['S'] / 1000.0);
                         }
                         if (array_key_exists("Ea", $paramJSON)) {
-                            $datetimeData->setEa($paramJSON['Ea']);
+                            $datetimeData->setEa($paramJSON['Ea'] / 1000.0);
                         }
-                    } else if ($smartMod->getNbPhases() == 3) {
+                        if (array_key_exists("Er", $paramJSON)) {
+                            $datetimeData->setEr($paramJSON['Er'] / 1000.0);
+                        }
+                    } else if ($smartMod->getNbPhases() === 3) {
                         if (array_key_exists("Va", $paramJSON)) {
                             $datetimeData->setVamoy($paramJSON['Va']);
                         }
