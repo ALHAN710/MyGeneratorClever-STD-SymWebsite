@@ -28,6 +28,7 @@
                 <th>Nb phasis</th>
                 <th>Enterprise</th>
                 <th>Site</th>
+                <th>Connexion Status</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -44,6 +45,7 @@
                 <td>{{ smartMod.nbPhases ?? '-' }}</td>
                 <td>{{ smartMod.enterprise.socialReason }}</td>
                 <td>{{ smartMod.site.name ?? '-' }}</td>
+                <td><i class="fas fa-circle text-danger conn" id="connexionStatus-{{smartMod.id}}"></i></td>
                 <td>
                     <form method="post" action="{{ path('admin_smartMod_delete', {'id': smartMod.id}) }}" onsubmit="return confirm('Do really want to delete smart Module << {{smartMod.name}} >> ?');">
                         <a href="{{ path('admin_smartMod_edit', {'id': smartMod.id}) }}" class="btn btn-soft-primary btn-xs rounded waves-effect mr-2" data-toggle="tooltip" data-placement="top" title="Edit smart Module ?"><i class="far fa-edit mr-2"></i>Edit</a>
@@ -56,5 +58,194 @@
         </tbody>
     </table>
 
+    {# <div class="row"> #}
+        <div class="card">
+            <div class="card-header ">
+                <h6>Remotely Console Log</h6>
+                <form class="form-inline justify-content-end">
+                    <button class="button btn btn-primary btn-sm " id="clearConsole" type="button" style=" cursor : pointer;"><i class="fa fa-trash-alt"></i></button>
+                </form>
+            </div>
+            <div class="card-body">
+                <textarea class="form-control mt-15" id="console" placeholder="" rows="20" readonly></textarea>
+
+            </div><!--end card-body-->
+        </div><!--end card-->
+    {# </div> #}
     {# <a href="{{ path('smartMod_new') }}">Create new</a> #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="/js/mqttws31.js" type="text/javascript"></script>
+<script>
+    /*var print_first = pipe('#first', function(data) {
+        message = new Paho.MQTT.Message(data);
+        //message.destinationName = "test/all";
+        message.destinationName = "to/device/esp/3164842";
+        console.log("SEND ON " + message.destinationName + " PAYLOAD " + data);
+        client.send(message);
+    });*/
+    $('#clearConsole').click(function () {
+        $('#console').val("");
+    });
+    var mess = {
+        From: "user",
+        To: "Devices",
+        Object: "Connexion Status",
+        message: ""
+    };
+
+    var isConnected = false;
+    var wsbroker = "127.0.0.1";//location.hostname;  //mqtt websocket enabled broker
+    var wsport = 15675; // port for above 1883
+
+    var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
+        "admin_07");
+
+    client.onConnectionLost = function (responseObject) {
+        isConnected = false;
+        console.log("CONNECTION LOST - " + responseObject.errorMessage);
+    };
+
+    client.onMessageArrived = function (message) {
+        console.log("RECEIVE ON " + message.destinationName + " PAYLOAD " + message.payloadString);
+        //print_first(message.payloadString);
+        var result;
+        var parse = true;
+        try {
+            result = JSON.parse(message.payloadString);
+        } catch (e) {
+            parse = false;
+            console.error("Parsing error:", e);
+        }
+
+        if(parse){
+            console.log("Received: " + message.payloadString);
+            var str = String(message.payloadString);
+            //console.log("str: " + str);
+            if (str.indexOf("{\"From\":") >= 0) {
+                //var json = JSON.parse(message.payloadString);
+                //console.log("json : " + json);
+                //$("#" + json.To).prop('checked', parseInt(json.message));
+                //$("#" + key).closest("label").addClass("checked");
+                //console.log(parseInt(json.message));
+                var status;
+
+                switch (result.To) {
+                    case "user":
+                        if (result.Object === "Device Output Status") {
+                            status = (parseInt(result.message) === 1) ? true : false;
+                            //$('#' + result.To).closest("label").toggleClass("checked", status);
+                            $("#" + result.From).prop('checked', status);
+                            if (status) {
+                                $('[data-unit="' + result.From + '"]').toggleClass("active");
+                                $("#" + result.From).closest("label").addClass("checked");
+                            }
+                            else {
+                                $('[data-unit="' + result.From + '"]').removeClass("active");
+                                $("#" + result.From).closest("label").removeClass("checked");
+                            }
+                        }
+                        else if (result.Object === "Connexion Status") {
+                            var id = "#connexionStatus-" + result.From
+                            updateAlarmStatus($(id), 1);
+                            //Get the device's output status
+                            {# mess.Object = "Device Output Status";
+                            mess.To = "Devices";
+                            doSend(JSON.stringify(mess));
+
+                            //Get the ac-device's remaining time
+                            mess.Object = "Remaining Time";
+                            mess.To = "Devices";
+                            doSend(JSON.stringify(mess)); #}
+
+                            {# //Set ON/OFF Real Time Data Mode
+                            if (DataON) mess.Object = "Real Time Data ON";
+                            else mess.Object = "Real Time Data OFF";
+                            mess.To = "Devices";
+                            doSend(JSON.stringify(mess)); #}
+                        }
+                        {# else if (result.Object === "Remaining Time") {//Init the remaining time countdown
+                            var TimeInMs = parseInt(result.message);
+                            var id = result.From;
+                            acTimer(id, TimeInMs);
+                        } #}
+                        else if (result.Object === "Device Time's Clock") {//Display the device time's clock
+                            var id = result.From;
+                            $('#CLK_' + id).html(result.message);
+                        }
+                        else if (result.Object === "Setting Device's Clock") {//Feed-Back des devices sur la config de l'horloge
+
+                            $('.notifsModal').append('<div class="alert alert-' + result.state + ' alert-dismissible fade show border-0" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + result.message + '</div>').ready(() => {
+                                // Notifications "Close" callback - hide modal and alert indicator dot when user closes all alerts
+                                $('#notifsModal .alert').on('close.bs.alert', function () {
+                                    var nbAlert = parseInt($('#notifsModal div.alert').length) - 1;
+                                    console.log('nb alert = ' + nbAlert);
+                                    nbAlert = nbAlert - 1;
+                                    $('#notifs-toggler').attr('data-alerts', nbAlert);
+                                    nbAlert = nbAlert + 1;
+
+                                    if (parseInt(nbAlert) === 0) {
+                                        $('#notifsModal').modal('hide');
+                                        console.log('nb alert = ' + nbAlert);
+                                        // $('#notifs-toggler').attr('data-toggle', 'none');
+                                        $('#notifs-toggler').addClass('d-none');
+
+                                    }
+
+                                });
+                            })
+                            $('#notifs-toggler').removeClass('d-none');
+                            $('#notifsModal').modal('hide');
+                            $('#notifsModal').modal('show');
+
+                        }
+                        else if (result.Object === "Log") {//Feed-Back des devices sur la config de l'horloge
+                            $('#console').val($('#console').val() + "\n" + str);
+                            {# var id = result.From;
+                            $("#Voltage-" + id).html(result.message.V);
+                            $("#Current-" + id).html(result.message.I);
+                            $("#Power-" + id).html(result.message.P); #}
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+
+    var options = {
+        timeout: 3,
+        keepAliveInterval: 30,
+        userName: "mqtt-ESP-device",//"mqtt-test",
+        password: "mqtt-ESP-device",//"mqtt-test",
+        onSuccess: function () {
+            isConnected = true;
+            console.log("CONNECTION SUCCESS");
+            client.subscribe("test/all", {qos: 1});
+            client.subscribe("from/device/esp/#", {qos: 1});
+        },
+        onFailure: function (message) {
+            console.log("CONNECTION FAILURE - " + message.errorMessage);
+        }
+    };
+
+    if (location.protocol == "https:") {
+        options.useSSL = true;
+    }
+
+    // Try to reconnect after a few seconds
+    setTimeout(
+        function () { 
+            if(isConnected === false){
+                console.log("CONNECT TO " + wsbroker + ":" + wsport);
+                client.connect(options);
+            }
+            else{
+
+            } 
+        }, 
+    2000);
+</script>
 {% endblock %}

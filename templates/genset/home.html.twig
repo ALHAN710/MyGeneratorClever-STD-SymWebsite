@@ -16,6 +16,7 @@
     <link href="/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <!-- Responsive datatable examples -->
     <link href="/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
+    
 
 {% endblock %}
         
@@ -350,7 +351,7 @@
 
                     <div class="tab-pane p-3" id="energy" role="tabpanel">
                         <div class="row">
-                            <h5 class="mt-0 mb-3 "><a href="#" id="histo" class="text-decoration"><u>Consult History</u> <i class="dripicons-arrow-up"></i></a></h5>
+                            {# <h5 class="mt-0 mb-3 "><a href="#" id="histo" class="text-decoration"><u>Consult History</u> <i class="dripicons-arrow-up"></i></a></h5> #}
                             <h5 class="mt-0 mb-3 d-none"><a href="#" id="home" class="text-decoration"><u>Back</u></a></h5>
                         </div>
 
@@ -870,7 +871,175 @@
     <!-- Responsive examples -->
     <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
     <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
-    
+    <script src="/js/mqttws31.js" type="text/javascript"></script>
+    <script>
+        /*var print_first = pipe('#first', function(data) {
+            message = new Paho.MQTT.Message(data);
+            //message.destinationName = "test/all";
+            message.destinationName = "to/device/esp/3164842";
+            console.log("SEND ON " + message.destinationName + " PAYLOAD " + data);
+            client.send(message);
+        });*/
+
+        var isConnected = false;
+        var wsbroker = "127.0.0.1";//location.hostname;  //mqtt websocket enabled broker
+        var wsport = 15675; // port for above 1883
+
+        var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
+            "myclientid_" + parseInt(Math.random() * 100, 10));
+
+        client.onConnectionLost = function (responseObject) {
+            isConnected = false;
+            console.log("CONNECTION LOST - " + responseObject.errorMessage);
+        };
+
+        client.onMessageArrived = function (message) {
+            console.log("RECEIVE ON " + message.destinationName + " PAYLOAD " + message.payloadString);
+            //print_first(message.payloadString);
+            var result;
+            var parse = true;
+            try {
+                result = JSON.parse(message.payloadString);
+            } catch (e) {
+                parse = false;
+                console.error("Parsing error:", e);
+            }
+
+            if(parse){
+                if (result.hasOwnProperty("L1")) {
+                    //Mise à jour des jauges des données mécaniques
+                    fuel_level.refresh( parseFloat(result.FL) ?? 0);
+                    oil_level.refresh( parseFloat(result.OL) ?? 0);
+                    water_level.refresh( parseFloat(result.WL) ?? 0);
+                    air_pressure.refresh( parseFloat(result.AP) ?? 0);
+                    oil_pressure.refresh( parseFloat(result.OP) ?? 0);
+                    water_temp.refresh( parseFloat(result.WT) ?? 0);
+                    cooler_temp.refresh( parseFloat(result.CT) ?? 0);
+                    engine_speed.refresh( parseFloat(result.ESD) ?? 0);
+                    batt_voltage.refresh( parseFloat(result.BV) ?? 0);
+
+                    //Mise à jour des paramètres du générateur
+                    $('#l1l2').text(String(result.L12 + " V"))
+                    $('#l1l3').text(String(result.L13 + " V"))
+                    $('#l2l3').text(String(result.L23 + " V"))
+                    $('#l1N').text(String(result.L1 + " V"))
+                    $('#l2N').text(String(result.L2 + " V"))
+                    $('#l3N').text(String(result.L3 + " V"))
+                    $('#l1l2M').text(String(result.L12M + " V"))
+                    $('#l1l3M').text(String(result.L13M + " V"))
+                    $('#l2l3M').text(String(result.L23M + " V"))
+                    $('#I1').text(String(result.I1 + " A"))
+                    $('#I2').text(String(result.I2 + " A"))
+                    $('#I3').text(String(result.I1 + " A"))
+                    $('#idiff').text(String(result.Id + " mA"))   
+                    $('#freq').text(String(result.Fr + " Hz"))
+                    $('#htm').text(String(result.HTM))  
+                }
+
+                if (result.hasOwnProperty("PWF")) {
+                    if(parseInt(result.CG)){//CG = 1
+                        $('#cg').removeClass('badge-danger')
+                        $('#cg').addClass('badge-success')
+                        $('#cg').children("h6").children("span").text('Closed')
+                        //$('#cgStatus').text('Closed')
+                        
+                    }
+                    else{//CG = 0
+                        $('#cg').removeClass('badge-success')
+                        $('#cg').addClass('badge-danger')
+                        $('#cg').children("h6").children("span").text('Open')
+                        //$('#cgStatus').text('Open')
+                        
+                    }      
+
+                    if(parseInt(result.GenRun)){//Genset running = 1
+                        $('#gensetStatus').removeClass('badge-danger')
+                        $('#gensetStatus').addClass('badge-success')
+                        $('#gensetStatus').children("h6").text('Running')
+                    }
+                    else{
+                        $('#gensetStatus').removeClass('badge-success')
+                        $('#gensetStatus').addClass('badge-danger')
+                        $('#gensetStatus').children("h6").text('Stop')
+                    }
+
+                    
+                    if(parseInt(result.CR)){//CR = 1
+                        $('#cr').removeClass('badge-danger')
+                        $('#cr').addClass('badge-success')
+                        $('#cr').children("h6").children("span").text('Closed')
+                        //$('#crStatus').text('Closed')
+                        
+                    }
+                    else{//CR = 0
+                        $('#cr').removeClass('badge-success')
+                        $('#cr').addClass('badge-danger')
+                        $('#cr').children("h6").children("span").text('Open')
+                        //$('#crStatus').text('Open')
+                        
+                    }     
+
+                    if(parseInt(result.MainsPresence)){//Mains Presence = 1
+                        $('#mainsStatus').removeClass('badge-danger')
+                        $('#mainsStatus').addClass('badge-success')
+                        $('#mainsStatus').children("h6").text('Present')
+                    }
+                    else{
+                        $('#mainsStatus').removeClass('badge-success')
+                        $('#mainsStatus').addClass('badge-danger')
+                        $('#mainsStatus').children("h6").text('Absent')
+                    }        
+                        
+                    updateAlarmStatus($('#lowFuel'), parseInt(result.LowFuel))
+                    updateAlarmStatus($('#presenceWaterInFuel'), parseInt(result.PWF))
+                    updateAlarmStatus($('#overspeed'), parseInt(result.Overspeed))
+                    updateAlarmStatus($('#maxFreq'), parseInt(result.MaxFr))
+                    updateAlarmStatus($('#minFreq'), parseInt(result.MinFr))
+                    updateAlarmStatus($('#maxVolt'), parseInt(result.MaxVolt))
+                    updateAlarmStatus($('#minVolt'), parseInt(result.MinVolt))
+                    updateAlarmStatus($('#maxBattVolt'), parseInt(result.MaxBV))
+                    updateAlarmStatus($('#minBattVolt'), parseInt(result.MinBV))
+                    updateAlarmStatus($('#shortCircuit'), parseInt(result.SC))
+                    updateAlarmStatus($('#maintenanceRequest'), parseInt(result.MRqst))
+                    updateAlarmStatus($('#differentialIntervention'), parseInt(result.DIT))
+                    updateAlarmStatus($('#mainsIncSeq'), parseInt(result.MIS))
+                    updateAlarmStatus($('#genIncSeq'), parseInt(result.GIS))
+                    updateAlarmStatus($('#overload'), parseInt(result.Overload))
+                }
+            }
+        };
+
+        var options = {
+            timeout: 3,
+            keepAliveInterval: 30,
+			userName: "mqtt-ESP-device",//"mqtt-test",
+			password: "mqtt-ESP-device",//"mqtt-test",
+            onSuccess: function () {
+                isConnected = true;
+                console.log("CONNECTION SUCCESS");
+                client.subscribe("test/all", {qos: 1});
+				client.subscribe("from/device/esp/{{smartMod.moduleId}}", {qos: 1});
+            },
+            onFailure: function (message) {
+                console.log("CONNECTION FAILURE - " + message.errorMessage);
+            }
+        };
+
+        if (location.protocol == "https:") {
+            options.useSSL = true;
+        }
+
+        // Try to reconnect after a few seconds
+        setTimeout(
+            function () { 
+                if(isConnected === false){
+                    console.log("CONNECT TO " + wsbroker + ":" + wsport);
+                    client.connect(options);
+                } 
+            }, 
+        2000);
+    </script>
+
     <script>
         //Buttons examples
         var table = $('#datatable-buttons').DataTable({
@@ -1114,9 +1283,9 @@
                                     $('#l1l2M').text(String(result['Vcm'][0] + " V"))
                                     $('#l1l3M').text(String(result['Vcm'][1] + " V"))
                                     $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                                    $('#I1').text(String(result['I'][0] + " V"))
-                                    $('#I2').text(String(result['I'][1] + " V"))
-                                    $('#I3').text(String(result['I'][2] + " V"))
+                                    $('#I1').text(String(result['I'][0] + " A"))
+                                    $('#I2').text(String(result['I'][1] + " A"))
+                                    $('#I3').text(String(result['I'][2] + " A"))
                                     $('#idiff').text(String(result['Idiff'] + " mA"))   
                                     $('#freq').text(String(result['Freq'] + " Hz"))
                                     $('#htm').text(String(result['HTM']))  
@@ -1175,7 +1344,7 @@
                                     if(parseInt(result['Gensetrunning'])){//Genset running = 1
                                         $('#gensetStatus').removeClass('badge-danger')
                                         $('#gensetStatus').addClass('badge-success')
-                                        $('#gensetStatus').text('Running')
+                                        $('#gensetStatus').children("h6").text('Running')
                                     }
                                     else{
                                         $('#gensetStatus').removeClass('badge-success')
