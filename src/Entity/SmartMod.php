@@ -106,12 +106,18 @@ class SmartMod
     private $modName;
     private $smartModName;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ClimateData::class, mappedBy="smartMod", orphanRemoval=true)
+     */
+    private $climateData;
+
     public function __construct()
     {
         $this->datetimeData = new ArrayCollection();
         $this->zones = new ArrayCollection();
         $this->loadDataEnergies = new ArrayCollection();
         $this->alarmReportings = new ArrayCollection();
+        $this->climateData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -380,6 +386,36 @@ class SmartMod
     public function setSmartModName(SmartMod $smartModName): self
     {
         $this->smartModName = $smartModName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ClimateData[]
+     */
+    public function getClimateData(): Collection
+    {
+        return $this->climateData;
+    }
+
+    public function addClimateData(ClimateData $climateData): self
+    {
+        if (!$this->climateData->contains($climateData)) {
+            $this->climateData[] = $climateData;
+            $climateData->setSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClimateData(ClimateData $climateData): self
+    {
+        if ($this->climateData->removeElement($climateData)) {
+            // set the owning side to null (unless already changed)
+            if ($climateData->getSmartMod() === $this) {
+                $climateData->setSmartMod(null);
+            }
+        }
 
         return $this;
     }
