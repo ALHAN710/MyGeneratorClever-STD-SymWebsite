@@ -238,6 +238,11 @@ class NoDatetimeData
      */
     private $smartMod;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateTime;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -767,6 +772,18 @@ class NoDatetimeData
     public function setSmartMod(SmartMod $smartMod): self
     {
         $this->smartMod = $smartMod;
+
+        return $this;
+    }
+
+    public function getDateTime(): ?\DateTimeInterface
+    {
+        return $this->dateTime;
+    }
+
+    public function setDateTime(?\DateTimeInterface $dateTime): self
+    {
+        $this->dateTime = $dateTime;
 
         return $this;
     }

@@ -347,6 +347,9 @@
                             </div><!--end col-->
                         </div><!--end row-->
                         
+                        <div class="row float-right">
+                            <small>Last update <span id="update">2021-07-15 15:45:52</span></small>
+                        </div>
                     </div>       
 
                     <div class="tab-pane p-3" id="energy" role="tabpanel">
@@ -936,6 +939,7 @@
                 }
 
                 if (result.hasOwnProperty("PWF")) {
+                    $('#update').text(String(result.date1))
                     if(parseInt(result.CG)){//CG = 1
                         $('#cg').removeClass('badge-danger')
                         $('#cg').addClass('badge-success')
@@ -1027,8 +1031,8 @@
         var options = {
             timeout: 3,
             keepAliveInterval: 30,
-            userName: "mqtt-ESP-device",//"mqtt-test",
-            password: "mqtt-ESP-device",//"mqtt-test",
+            userName: "mqtt-ESP-device",
+            password: "mqtt-ESP-device",
             onSuccess: function () {
                 isConnected = true;
                 console.log("CONNECTION SUCCESS");

@@ -484,7 +484,7 @@ class GensetController extends ApplicationController
             $dateE[] = $d['jour'];
             $TRH[] = $d['TRH'];
             $TEP[] = $d['TEP'];
-            $FC[] = $d['FC'];
+            $FC[] = $d['FC'] ?? 0;
         }
 
 
@@ -570,6 +570,7 @@ class GensetController extends ApplicationController
                     $dataMod = new NoDatetimeData();
                     $dataMod->setSmartMod($smartMod);
                 }
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
 
                 /*$dataMod->setL12G($paramJSON['L12G'])
                     ->setL13G($paramJSON['L13G'])
@@ -617,6 +618,7 @@ class GensetController extends ApplicationController
                     //->setSmartMod($smartMod)
                 ;*/
                 $dataMod->setL12G($paramJSON['L12'])
+                    ->setDateTime($date)
                     ->setL13G($paramJSON['L13'])
                     ->setL23G($paramJSON['L23'])
                     ->setL1N($paramJSON['L1'])

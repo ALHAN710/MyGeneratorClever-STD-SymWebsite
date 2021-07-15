@@ -27,7 +27,7 @@ class ZoneController extends ApplicationController
      */
     public function dashboard(Zone $zone, EntityManagerInterface $manager): Response
     {
-        $smartMods = $manager->createQuery("SELECT sm.id AS Id
+        /*$smartMods = $manager->createQuery("SELECT sm.id AS Id
                             FROM App\Entity\SmartMod sm
                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
                             AND sm.levelZone = 2 
@@ -39,11 +39,11 @@ class ZoneController extends ApplicationController
             ->getResult();
         foreach ($smartMods as $smartMod) {
             $smartModsProduction[] = $smartMod['Id'];
-        }
+        }*/
         // //dump($smartModsProduction);
         return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
-            'smartModsProduction' => $smartModsProduction,
+            //'smartModsProduction' => $smartModsProduction,
             'alarms'    => $manager->getRepository('App:Alarm')->findBy(['type' => 'Load Meter']),
         ]);
     }
@@ -199,6 +199,10 @@ class ZoneController extends ApplicationController
         $totalEA = [];
         $productionEA = [];
 
+        //Climate data variables
+        $temperature = [];
+        $humidity = [];
+
 
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
@@ -327,6 +331,49 @@ class ZoneController extends ApplicationController
                     ->getResult();
                 // dump($IntervalProductionEnergy);
 
+                $indoorClimateData = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Indoor'  
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                             
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                dump($indoorClimateData);
+
+                $outdoorClimateData = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Outdoor'   
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                            
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                dump($outdoorClimateData);
+                foreach ($outdoorClimateData as $d) {
+                    $dateClimate[] = $d['dt'];
+                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                    $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                }
+
                 $IntervalPUE = 0;
                 if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
                     $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
@@ -410,22 +457,22 @@ class ZoneController extends ApplicationController
                 foreach ($dataProductionEnergy as $d) {
                     $dateE[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    $productionEA[]   = number_format((float) $d['kWh'], 6, '.', '');
                 }
                 // dump($dataTotalEnergy);
                 //die();
                 foreach ($dataTotalEnergy as $d) {
                     //$dateE[] = $d['dt'];
-                    $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    $totalEA[]   = number_format((float) $d['kWh'], 6, '.', '');
                 }
 
                 $pue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
+                    return $b > 0 ? round($a / $b, 6) : 0;
                 }, $totalEA, $productionEA);
                 // dump($pue);
 
                 $diffEnergy =  array_map(function ($a, $b) {
-                    return number_format((float) ($a - $b), 2, '.', '');
+                    return number_format((float) ($a - $b), 6, '.', '');
                 }, $totalEA, $productionEA);
                 // dump($diffEnergy);
             }

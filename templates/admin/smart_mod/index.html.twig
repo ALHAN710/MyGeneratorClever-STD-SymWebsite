@@ -100,7 +100,7 @@
     var wsport = 15675; // port for above 1883
 
     var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
-        "admin_07");
+        "admin_{{app.user.id}}");
 
     client.onConnectionLost = function (responseObject) {
         isConnected = false;
@@ -215,11 +215,13 @@
         }
     };
 
-    var options = {
+        {# "mqtt-ESP-device","mqtt-test", #}
+        {# "mqtt-ESP-device","mqtt-test", #}
+        var options = {
         timeout: 3,
         keepAliveInterval: 30,
-        userName: "mqtt-ESP-device",//"mqtt-test",
-        password: "mqtt-ESP-device",//"mqtt-test",
+        userName: "mqtt-ESP-device",
+        password: "mqtt-ESP-device",
         onSuccess: function () {
             isConnected = true;
             console.log("CONNECTION SUCCESS");
@@ -234,7 +236,8 @@
     if (location.protocol == "https:") {
         options.useSSL = true;
     }
-
+    console.log("CONNECT TO " + wsbroker + ":" + wsport);
+    client.connect(options);
     // Try to reconnect after a few seconds
     setTimeout(
         function () { 
