@@ -255,10 +255,10 @@ class ZoneController extends ApplicationController
             //die();
             foreach ($commonData as $d) {
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
-                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
-                $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 2, '.', '');
-                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 6, '.', ''));
+                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 6, '.', ''));
+                $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 6, '.', '');
+                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 6, '.', '');
             }
 
             if ($zone->getType() === 'PUE Calculation') {
@@ -348,7 +348,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($indoorClimateData);
+                //dump($indoorClimateData);
 
                 $outdoorClimateData = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, d.temperature AS temp, d.humidity AS hum
                                                         FROM App\Entity\ClimateData d
@@ -367,7 +367,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($outdoorClimateData);
+                //dump($outdoorClimateData);
                 foreach ($outdoorClimateData as $d) {
                     $dateClimate[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
