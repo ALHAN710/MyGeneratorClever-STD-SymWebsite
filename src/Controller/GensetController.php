@@ -412,6 +412,7 @@ class GensetController extends ApplicationController
             'ShortCircuit' => $noDatetimeData->getShortCircuit() ?? 0,
             'IncSeq'       => [$noDatetimeData->getMainsIncSeq() ?? 0, $noDatetimeData->getGensetIncSeq() ?? 0],
             'DifferentialIntervention' => $noDatetimeData->getDifferentialIntervention() ?? 0,
+            'Date1' => $noDatetimeData->getDateTime() ?? '2021-07-15 15:45:52',
         ], 200);
     }
 
