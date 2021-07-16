@@ -1051,17 +1051,15 @@
         console.log("CONNECT TO " + wsbroker + ":" + wsport);
         client.connect(options);
         // Try to reconnect after a few seconds
-        setTimeout(
-            function () { 
-                if(isConnected === false){
-                    console.log("CONNECT TO " + wsbroker + ":" + wsport);
-                    client.connect(options);
-                }
-                else{
+        setInterval(function () {
+            if(isConnected === false){
+                console.log("CONNECT TO " + wsbroker + ":" + wsport);
+                client.connect(options);
+            }
+            else{
 
-                } 
-            }, 
-        2000);
+            } 
+        }, 2000);
     </script>
 
     <script>
