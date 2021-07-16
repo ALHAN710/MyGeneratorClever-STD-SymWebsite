@@ -885,7 +885,7 @@
         });*/
 
         var isConnected = false;
-        var wsbroker = "127.0.0.1";//location.hostname;  //mqtt websocket enabled broker
+        var wsbroker = "192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
         var wsport = 15675; // port for above 1883
 
         var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws", "user_{{app.user.id}}");
@@ -940,6 +940,7 @@
 
                 if (result.hasOwnProperty("PWF")) {
                     $('#update').text(String(result.date1))
+                    //$('#update').text(String( moment( new Date(result.date1) ).format("DD MMM YYYY HH:mm:ss")) )
                     if(parseInt(result.CG)){//CG = 1
                         $('#cg').removeClass('badge-danger')
                         $('#cg').addClass('badge-success')
@@ -1312,7 +1313,7 @@
                                     $('#idiff').text(String(result['Idiff'] + " mA"))   
                                     $('#freq').text(String(result['Freq'] + " Hz"))
                                     $('#htm').text(String(result['HTM']))  
-                                    $('#update').text(String(result['Date1']))
+                                    $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
                                     //Affichage des derniers enregistrements données dynamiques
                                     $('#activePower').text(String(result['Power'][0] + " kW"))
