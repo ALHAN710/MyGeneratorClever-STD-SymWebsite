@@ -1268,179 +1268,8 @@
                     //cancelButtonClass: 'btn btn-danger ml-2',
                     preConfirm: function () {
                         return new Promise(function (resolve) { 
+                            getnoDatetime(true);
                             
-                            $.getJSON("{{ path('update_genset_display_data', {'id': smartMod.id}) }}", function (result) {//{'selectedDate': $date},
-                                swal({
-                                    type: 'success', 
-                                    title: 'The Dashbord have been updated !',
-                                    // html: 'Submitted email: ' + email
-                                });
-
-                                setTimeout(function () {
-                                    resolve()
-                                }, 1000);
-
-                                if( Object.keys(result).length > 0 ){
-                                    console.log(result)
-                                    //var dateLabel = Object.values(result['date']);
-
-                                    //Mise à jour des jauges des données mécaniques
-                                    fuel_level.refresh( parseFloat(result['Level'][0]) ?? 0);
-                                    oil_level.refresh( parseFloat(result['Level'][1]) ?? 0);
-                                    water_level.refresh( parseFloat(result['Level'][2]) ?? 0);
-                                    air_pressure.refresh( parseFloat(result['Pressure'][0]) ?? 0);
-                                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0);
-                                    water_temp.refresh( parseFloat(result['Temp'][0]) ?? 0);
-                                    cooler_temp.refresh( parseFloat(result['Temp'][1]) ?? 0);
-                                    engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0);
-                                    batt_voltage.refresh( parseFloat(result['BattVolt']) ?? 0);
-
-                                    //Mise à jour des paramètres du générateur
-                                    $('#l1l2').text(String(result['Vcg'][0] + " V"))
-                                    $('#l1l3').text(String(result['Vcg'][1] + " V"))
-                                    $('#l2l3').text(String(result['Vcg'][2] + " V"))
-                                    $('#l1N').text(String(result['Vsg'][0] + " V"))
-                                    $('#l2N').text(String(result['Vsg'][1] + " V"))
-                                    $('#l3N').text(String(result['Vsg'][2] + " V"))
-                                    $('#l1l2M').text(String(result['Vcm'][0] + " V"))
-                                    $('#l1l3M').text(String(result['Vcm'][1] + " V"))
-                                    $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                                    $('#I1').text(String(result['I'][0] + " A"))
-                                    $('#I2').text(String(result['I'][1] + " A"))
-                                    $('#I3').text(String(result['I'][2] + " A"))
-                                    $('#idiff').text(String(result['Idiff'] + " mA"))   
-                                    $('#freq').text(String(result['Freq'] + " Hz"))
-                                    $('#htm').text(String(result['HTM']))  
-                                    $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-
-                                    //Affichage des derniers enregistrements données dynamiques
-                                    $('#activePower').text(String(result['Power'][0] + " kW"))
-                                    $('#reactivePower').text(String(result['Power'][1] + " kVAR"))
-                                    $('#apparentPower').text(String(result['Power'][2] + " VAR"))
-                                    $('#cosfi').text(String(result['Cosfi']))
-                                    {# $('#trh').text(String(result['TRH'][0])) #}
-                                    $('#trhd').text(String(result['TRH'][1]))
-                                    $('#trhm').text(String(result['TRH'][2]))
-                                    $('#trhy').text(String(result['TRH'][3]))
-                                    {# $('#tep').text(String(result['TEP'][0])) #}
-                                    $('#tepd').text(String(result['TEP'][1]))
-                                    $('#tepm').text(String(result['TEP'][2]))
-                                    $('#tepy').text(String(result['TEP'][3]))
-
-                                    $('#fcd').text( String( parseFloat(result['FC'][0]).toFixed(2) ) )
-                                    $('#fcm').text( String( parseFloat(result['FC'][1]).toFixed(2) ) )
-                                    $('#fcy').text( String( parseFloat(result['FC'][2]).toFixed(2) ) )
-
-                                    $('#fcdp').text( String( parseFloat(result['FC'][0]*{{smartMod.fuelPrice}}).toFixed(2) ) )
-                                    $('#fcmp').text( String( parseFloat(result['FC'][1]*{{smartMod.fuelPrice}}).toFixed(2) ) )
-                                    $('#fcyp').text( String( parseFloat(result['FC'][2]*{{smartMod.fuelPrice}}).toFixed(2) ) )
-                                    
-                                    $('#poed').text( String( (result['POE'][0]).toFixed(2) ) )
-                                    $('#poem').text( String( parseFloat(result['POE'][1]).toFixed(2) ) )
-                                    $('#poey').text( String( parseFloat(result['POE'][2]).toFixed(2) ) )
-                                    
-                                    //Day 
-                                    prog = parseFloat(result['prevPOE'][0]) > 0 ? (parseFloat(result['POE'][0]) - parseFloat(result['prevPOE'][0])) * 100.0 / parseFloat(result['prevPOE'][0]) : parseFloat(result['POE'][0]);
-                                    progressVal($('#poedProgVal'), $('#poedProg'), prog, true, false);
-                                    //Month
-                                    prog = parseFloat(result['prevPOE'][1]) > 0 ? (parseFloat(result['POE'][1]) - parseFloat(result['prevPOE'][1])) * 100.0 / parseFloat(result['prevPOE'][1]) : parseFloat(result['POE'][1]);
-                                    progressVal($('#poemProgVal'), $('#poemProg'), prog, true, false);
-                                    //Year
-                                    prog = parseFloat(result['prevPOE'][2]) > 0 ? (parseFloat(result['POE'][2]) - parseFloat(result['prevPOE'][2])) * 100.0 / parseFloat(result['prevPOE'][2]) : parseFloat(result['POE'][2]);
-                                    progressVal($('#poeyProgVal'), $('#poeyProg'), prog, true, false);
-
-                                    if(parseInt(result['CGCR'][0])){//CG = 1
-                                        $('#cg').removeClass('badge-danger')
-                                        $('#cg').addClass('badge-success')
-                                        $('#cg').children("h6").children("span").text('Closed')
-                                        //$('#cgStatus').text('Closed')
-                                        
-                                    }
-                                    else{//CG = 0
-                                        $('#cg').removeClass('badge-success')
-                                        $('#cg').addClass('badge-danger')
-                                        $('#cg').children("h6").children("span").text('Open')
-                                        //$('#cgStatus').text('Open')
-                                        
-                                    }      
-
-                                    if(parseInt(result['Gensetrunning'])){//Genset running = 1
-                                        $('#gensetStatus').removeClass('badge-danger')
-                                        $('#gensetStatus').addClass('badge-success')
-                                        $('#gensetStatus').children("h6").text('Running')
-                                    }
-                                    else{
-                                        $('#gensetStatus').removeClass('badge-success')
-                                        $('#gensetStatus').addClass('badge-danger')
-                                        $('#gensetStatus').children("h6").text('Stop')
-                                    }
-
-                                    
-                                    if(parseInt(result['CGCR'][1])){//CR = 1
-                                        $('#cr').removeClass('badge-danger')
-                                        $('#cr').addClass('badge-success')
-                                        $('#cr').children("h6").children("span").text('Closed')
-                                        //$('#crStatus').text('Closed')
-                                        
-                                    }
-                                    else{//CR = 0
-                                        $('#cr').removeClass('badge-success')
-                                        $('#cr').addClass('badge-danger')
-                                        $('#cr').children("h6").children("span").text('Open')
-                                        //$('#crStatus').text('Open')
-                                        
-                                    }     
-
-                                    if(parseInt(result['MainsPresence'])){//Mains Presence = 1
-                                        $('#mainsStatus').removeClass('badge-danger')
-                                        $('#mainsStatus').addClass('badge-success')
-                                        $('#mainsStatus').children("h6").text('Present')
-                                    }
-                                    else{
-                                        $('#mainsStatus').removeClass('badge-success')
-                                        $('#mainsStatus').addClass('badge-danger')
-                                        $('#mainsStatus').children("h6").text('Absent')
-                                    }        
-                                        
-                                    updateAlarmStatus($('#lowFuel'), parseInt(result['LowFuel']))
-                                    updateAlarmStatus($('#presenceWaterInFuel'), parseInt(result['PresenceWaterInFuel']))
-                                    updateAlarmStatus($('#overspeed'), parseInt(result['Overspeed']))
-                                    updateAlarmStatus($('#maxFreq'), parseInt(result['FreqAlarm'][0]))
-                                    updateAlarmStatus($('#minFreq'), parseInt(result['FreqAlarm'][1]))
-                                    updateAlarmStatus($('#maxVolt'), parseInt(result['VoltAlarm'][0]))
-                                    updateAlarmStatus($('#minVolt'), parseInt(result['VoltAlarm'][1]))
-                                    updateAlarmStatus($('#maxBattVolt'), parseInt(result['BattVoltAlarm'][0]))
-                                    updateAlarmStatus($('#minBattVolt'), parseInt(result['BattVoltAlarm'][1]))
-                                    updateAlarmStatus($('#shortCircuit'), parseInt(result['ShortCircuit']))
-                                    updateAlarmStatus($('#maintenanceRequest'), parseInt(result['MaintenanceRequest']))
-                                    updateAlarmStatus($('#differentialIntervention'), parseInt(result['DifferentialIntervention']))
-                                    updateAlarmStatus($('#mainsIncSeq'), parseInt(result['IncSeq'][0]))
-                                    updateAlarmStatus($('#genIncSeq'), parseInt(result['IncSeq'][1]))
-                                    updateAlarmStatus($('#overload'), parseInt(result['Overload']))
-
-                                    //Update Nb performed starts-up
-                                    $('#npsd').text(result['NPS'][0])
-                                    $('#nmid').text(result['NMI'][0])
-
-                                    $('#npsm').text(result['NPS'][1])
-                                    $('#nmim').text(result['NMI'][1])
-
-                                    $('#npsy').text(result['NPS'][2])
-                                    $('#nmiy').text(result['NMI'][2])
-                                }        
-                                else{
-                                    //$('.spin').addClass('d-none');
-                                    
-                                }
-                            }).fail(function() { 
-                                swal('Oops...', 'Something went wrong!', 'error'
-                                // footer: '<a href>Why do I have this issue?</a>'
-                                );
-
-                                setTimeout(function () {
-                                    resolve()
-                                }, 5000);
-                             });
                         })
                     },
                     allowOutsideClick: false
@@ -1451,6 +1280,191 @@
                  
             }
         , 500);
+
+        setInterval(function () {
+            getnoDatetime(false);
+        }, 20000);
+
+        function getnoDatetime(swal){
+           $.getJSON("{{ path('update_genset_display_data', {'id': smartMod.id}) }}", function (result) {//{'selectedDate': $date},
+                if( swal === true ){
+                    swal({
+                        type: 'success', 
+                        title: 'The Dashbord have been updated !',
+                        // html: 'Submitted email: ' + email
+                    });
+
+                    setTimeout(function () {
+                        resolve()
+                    }, 1000);
+
+                }
+
+                if( Object.keys(result).length > 0 ){
+                    console.log(result)
+                    //var dateLabel = Object.values(result['date']);
+
+                    //Mise à jour des jauges des données mécaniques
+                    fuel_level.refresh( parseFloat(result['Level'][0]) ?? 0);
+                    oil_level.refresh( parseFloat(result['Level'][1]) ?? 0);
+                    water_level.refresh( parseFloat(result['Level'][2]) ?? 0);
+                    air_pressure.refresh( parseFloat(result['Pressure'][0]) ?? 0);
+                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0);
+                    water_temp.refresh( parseFloat(result['Temp'][0]) ?? 0);
+                    cooler_temp.refresh( parseFloat(result['Temp'][1]) ?? 0);
+                    engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0);
+                    batt_voltage.refresh( parseFloat(result['BattVolt']) ?? 0);
+
+                    //Mise à jour des paramètres du générateur
+                    $('#l1l2').text(String(result['Vcg'][0] + " V"))
+                    $('#l1l3').text(String(result['Vcg'][1] + " V"))
+                    $('#l2l3').text(String(result['Vcg'][2] + " V"))
+                    $('#l1N').text(String(result['Vsg'][0] + " V"))
+                    $('#l2N').text(String(result['Vsg'][1] + " V"))
+                    $('#l3N').text(String(result['Vsg'][2] + " V"))
+                    $('#l1l2M').text(String(result['Vcm'][0] + " V"))
+                    $('#l1l3M').text(String(result['Vcm'][1] + " V"))
+                    $('#l2l3M').text(String(result['Vcm'][2] + " V"))
+                    $('#I1').text(String(result['I'][0] + " A"))
+                    $('#I2').text(String(result['I'][1] + " A"))
+                    $('#I3').text(String(result['I'][2] + " A"))
+                    $('#idiff').text(String(result['Idiff'] + " mA"))   
+                    $('#freq').text(String(result['Freq'] + " Hz"))
+                    $('#htm').text(String(result['HTM']))  
+                    $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+                    //Affichage des derniers enregistrements données dynamiques
+                    $('#activePower').text(String(result['Power'][0] + " kW"))
+                    $('#reactivePower').text(String(result['Power'][1] + " kVAR"))
+                    $('#apparentPower').text(String(result['Power'][2] + " VAR"))
+                    $('#cosfi').text(String(result['Cosfi']))
+                    {# $('#trh').text(String(result['TRH'][0])) #}
+                    $('#trhd').text(String(result['TRH'][1]))
+                    $('#trhm').text(String(result['TRH'][2]))
+                    $('#trhy').text(String(result['TRH'][3]))
+                    {# $('#tep').text(String(result['TEP'][0])) #}
+                    $('#tepd').text(String(result['TEP'][1]))
+                    $('#tepm').text(String(result['TEP'][2]))
+                    $('#tepy').text(String(result['TEP'][3]))
+
+                    $('#fcd').text( String( parseFloat(result['FC'][0]).toFixed(2) ) )
+                    $('#fcm').text( String( parseFloat(result['FC'][1]).toFixed(2) ) )
+                    $('#fcy').text( String( parseFloat(result['FC'][2]).toFixed(2) ) )
+
+                    $('#fcdp').text( String( parseFloat(result['FC'][0]*{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    $('#fcmp').text( String( parseFloat(result['FC'][1]*{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    $('#fcyp').text( String( parseFloat(result['FC'][2]*{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    
+                    $('#poed').text( String( (result['POE'][0]).toFixed(2) ) )
+                    $('#poem').text( String( parseFloat(result['POE'][1]).toFixed(2) ) )
+                    $('#poey').text( String( parseFloat(result['POE'][2]).toFixed(2) ) )
+                    
+                    //Day 
+                    prog = parseFloat(result['prevPOE'][0]) > 0 ? (parseFloat(result['POE'][0]) - parseFloat(result['prevPOE'][0])) * 100.0 / parseFloat(result['prevPOE'][0]) : parseFloat(result['POE'][0]);
+                    progressVal($('#poedProgVal'), $('#poedProg'), prog, true, false);
+                    //Month
+                    prog = parseFloat(result['prevPOE'][1]) > 0 ? (parseFloat(result['POE'][1]) - parseFloat(result['prevPOE'][1])) * 100.0 / parseFloat(result['prevPOE'][1]) : parseFloat(result['POE'][1]);
+                    progressVal($('#poemProgVal'), $('#poemProg'), prog, true, false);
+                    //Year
+                    prog = parseFloat(result['prevPOE'][2]) > 0 ? (parseFloat(result['POE'][2]) - parseFloat(result['prevPOE'][2])) * 100.0 / parseFloat(result['prevPOE'][2]) : parseFloat(result['POE'][2]);
+                    progressVal($('#poeyProgVal'), $('#poeyProg'), prog, true, false);
+
+                    if(parseInt(result['CGCR'][0])){//CG = 1
+                        $('#cg').removeClass('badge-danger')
+                        $('#cg').addClass('badge-success')
+                        $('#cg').children("h6").children("span").text('Closed')
+                        //$('#cgStatus').text('Closed')
+                        
+                    }
+                    else{//CG = 0
+                        $('#cg').removeClass('badge-success')
+                        $('#cg').addClass('badge-danger')
+                        $('#cg').children("h6").children("span").text('Open')
+                        //$('#cgStatus').text('Open')
+                        
+                    }      
+
+                    if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                        $('#gensetStatus').removeClass('badge-danger')
+                        $('#gensetStatus').addClass('badge-success')
+                        $('#gensetStatus').children("h6").text('Running')
+                    }
+                    else{
+                        $('#gensetStatus').removeClass('badge-success')
+                        $('#gensetStatus').addClass('badge-danger')
+                        $('#gensetStatus').children("h6").text('Stop')
+                    }
+
+                    
+                    if(parseInt(result['CGCR'][1])){//CR = 1
+                        $('#cr').removeClass('badge-danger')
+                        $('#cr').addClass('badge-success')
+                        $('#cr').children("h6").children("span").text('Closed')
+                        //$('#crStatus').text('Closed')
+                        
+                    }
+                    else{//CR = 0
+                        $('#cr').removeClass('badge-success')
+                        $('#cr').addClass('badge-danger')
+                        $('#cr').children("h6").children("span").text('Open')
+                        //$('#crStatus').text('Open')
+                        
+                    }     
+
+                    if(parseInt(result['MainsPresence'])){//Mains Presence = 1
+                        $('#mainsStatus').removeClass('badge-danger')
+                        $('#mainsStatus').addClass('badge-success')
+                        $('#mainsStatus').children("h6").text('Present')
+                    }
+                    else{
+                        $('#mainsStatus').removeClass('badge-success')
+                        $('#mainsStatus').addClass('badge-danger')
+                        $('#mainsStatus').children("h6").text('Absent')
+                    }        
+                        
+                    updateAlarmStatus($('#lowFuel'), parseInt(result['LowFuel']))
+                    updateAlarmStatus($('#presenceWaterInFuel'), parseInt(result['PresenceWaterInFuel']))
+                    updateAlarmStatus($('#overspeed'), parseInt(result['Overspeed']))
+                    updateAlarmStatus($('#maxFreq'), parseInt(result['FreqAlarm'][0]))
+                    updateAlarmStatus($('#minFreq'), parseInt(result['FreqAlarm'][1]))
+                    updateAlarmStatus($('#maxVolt'), parseInt(result['VoltAlarm'][0]))
+                    updateAlarmStatus($('#minVolt'), parseInt(result['VoltAlarm'][1]))
+                    updateAlarmStatus($('#maxBattVolt'), parseInt(result['BattVoltAlarm'][0]))
+                    updateAlarmStatus($('#minBattVolt'), parseInt(result['BattVoltAlarm'][1]))
+                    updateAlarmStatus($('#shortCircuit'), parseInt(result['ShortCircuit']))
+                    updateAlarmStatus($('#maintenanceRequest'), parseInt(result['MaintenanceRequest']))
+                    updateAlarmStatus($('#differentialIntervention'), parseInt(result['DifferentialIntervention']))
+                    updateAlarmStatus($('#mainsIncSeq'), parseInt(result['IncSeq'][0]))
+                    updateAlarmStatus($('#genIncSeq'), parseInt(result['IncSeq'][1]))
+                    updateAlarmStatus($('#overload'), parseInt(result['Overload']))
+
+                    //Update Nb performed starts-up
+                    $('#npsd').text(result['NPS'][0])
+                    $('#nmid').text(result['NMI'][0])
+
+                    $('#npsm').text(result['NPS'][1])
+                    $('#nmim').text(result['NMI'][1])
+
+                    $('#npsy').text(result['NPS'][2])
+                    $('#nmiy').text(result['NMI'][2])
+                }        
+                else{
+                    //$('.spin').addClass('d-none');
+                    
+                }
+            }).fail(function() { 
+                if(swal === true){
+                    swal('Oops...', 'Something went wrong!', 'error'
+                    // footer: '<a href>Why do I have this issue?</a>'
+                    );
+
+                    setTimeout(function () {
+                        resolve()
+                    }, 5000);
+
+                }
+            }); 
+        }
 
         function updateAlarmStatus(id, value){
             if(value){
