@@ -24,6 +24,7 @@
                 <th>Type</th>
                 <th>Enterprise</th>
                 <th>Site</th>
+                <th>Nb Modules</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -36,6 +37,7 @@
                 <td>{{ zone.type }}</td>
                 <td>{{ zone.site.enterprise.socialReason }}</td>
                 <td>{{ zone.site.name }}</td>
+                <td>{{ zone.smartMods|length }}</td>
                 <td>
                     <form method="post" action="{{ path('admin_zone_delete', {'id': zone.id}) }}" onsubmit="return confirm('Do really want to delete zone << {{zone.name}} >> ?');">
                         <a href="{{ path('admin_zone_edit', {'id': zone.id}) }}" class="btn btn-soft-primary btn-xs rounded waves-effect mr-2" data-toggle="tooltip" data-placement="top" title="Edit zone ?"><i class="far fa-edit mr-2"></i>Edit</a>
