@@ -84,33 +84,37 @@ class AdminZoneController extends AbstractController
                 // //dump($smartMod->getsmartModName());
                 // $zone->addsmartMod($smartMod);
                 //$smartMod->addZone($zone);
-                //Je vérifie si le produit est déjà existant en BDD pour éviter les doublons 
+                //Je vérifie si le module est déjà existant en BDD pour éviter les doublons 
                 $smartMod_ = $manager->getRepository('App:SmartMod')->findOneBy(['id' => $smartMod->getSmartModName()->getId()]);
                 //dd($smartMod_);
                 // $smartMod->addZone($zone);
                 // $manager->persist($smartMod);
-
-                if (empty($smartMod_)) {
-                    //$smartMod->addZone($zone);
-                    //$manager->persist($smartMod);
-                    $zone->removeSmartMod($smartMod);
-                    // //dump('smartMod dont exists ');
-                } else {
-                    // //dump('smartMod exists with id = ' . $smartMod_->getId());
-                    if (!$smartMod_->getZones()->contains($zone)) {
-                        // //dump("smartMod don't have a zone " . $zone->getName());
+                if (empty($smartMod->getId())) {
+                    if (empty($smartMod_)) {
+                        //$smartMod->addZone($zone);
+                        //$manager->persist($smartMod);
                         $zone->removeSmartMod($smartMod);
-                        $smartMod = $smartMod_;
-                        $smartMod->addZone($zone);
-                        $zone->addSmartMod($smartMod);
-                        $manager->persist($smartMod);
+                        // //dump('smartMod dont exists ');
+                    } else {
+                        // //dump('smartMod exists with id = ' . $smartMod_->getId());
+                        if (!$smartMod_->getZones()->contains($zone)) {
+                            dump($smartMod_);
+                            // //dump("smartMod don't have a zone " . $zone->getName());
+                            $zone->removeSmartMod($smartMod);
+                            $smartMod = $smartMod_;
+                            $smartMod->addZone($zone);
+                            $zone->addSmartMod($smartMod);
+                            $manager->persist($smartMod);
+                        }
                     }
                 }
+
                 // $manager->persist($zone);
                 //$manager->persist($smartMod);
             }
+            dump($zone);
             $manager->persist($zone);
-            //die();
+            // die();
             $manager->flush();
 
             $this->addFlash(
