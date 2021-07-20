@@ -35,9 +35,9 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#energybilling" role="tab">Energy Billing</a>
         </li>                                                
-        <li class="nav-item">
+        {# <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#alarm" role="tab">Alarm</a>
-        </li>                              
+        </li>                               #}
         
     </ul>
 
@@ -59,48 +59,212 @@
             </div>
 
             {% if zone.type == 'PUE Calculation' %}
-            <div class="row ">
+                <div class="row">
+                    <div class="col-12 col-sm-9">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4"></h4>
+                                        <div class="chart-demo">
+                                            <div id="apex_mixed_pue_power" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div><!--end col-->                            
+                        </div><!--end row-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4"></h4>
+                                        <div class="chart-demo">
+                                            <div id="apex_mixed_climate" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div><!--end col-->
+                        </div><!--end row-->
+                    </div>
+
+                    <div class="col-12 col-sm-3">
+                        
+                        <div class="card crm-data-card bg-soft-warning">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-spa bg-soft-warning rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="instPUE">0</span></h3>
+                                        <p class="text-white font-weight-bold mb-0">PUE</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card--> 
+                        
+                        <div class="card crm-data-card bg-soft-blue">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-flash bg-soft-blue rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="it_power">0</span> kW</h3>
+                                        <p class="text-white font-weight-bold mb-0">IT Power</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card--> 
+                        <div class="card crm-data-card bg-soft-blue">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-flash bg-soft-blue rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="datacenter_power">0</span> kW</h3>
+                                        <p class="font-weight-bold text-white mb-0">DataCenter</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card--> 
+                        
+                        {# <div class="float-left mt-0">
+                        </div> #}
+                        <small>Last update <span id="update">Y-m-d HH:mm:ss</span></small>
+
+                        <div class="card crm-data-card bg-soft-pink">
+                            <div class="card-body text-center"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-thermometer-lines bg-soft-pink rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="temp_indoor">0</span> °C</h3>
+                                        <p class="text-white font-weight-bold mb-0">Temperature Indoor</p>
+                                    </div><!-- end col-->
+                                
+                                </div>
+                            </div><!--end card-body--> 
+                        </div><!--end card-->
+
+                        <div class="card crm-data-card bg-soft-pink">
+                            <div class="card-body text-center"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-thermometer-lines bg-soft-pink rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="temp_outdoor">0</span> °C</h3>
+                                        <p class="text-white font-weight-bold mb-0">Temperature Outdoor</p>
+                                    </div><!-- end col-->
+                                </div><!--end card-body--> 
+                                
+                                </div>
+                        </div><!--end card-->
+
+                        <div class="card crm-data-card bg-soft-success">
+                            <div class="card-body text-center"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-opacity bg-soft-success rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="hum_indoor">0</span> %</h3>
+                                        <p class="text-white font-weight-bold mb-0">Humidity Indoor</p>
+                                    </div><!-- end col-->
+                                    
+                                </div>
+                            </div><!--end card-body--> 
+                        </div><!--end card-->
+
+                        <div class="card crm-data-card bg-soft-success">
+                            <div class="card-body text-center"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-opacity bg-soft-success rounded-circle"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8 text-center">
+                                        <h3 class="text-white"><span id="hum_outdoor">0</span> %</h3>
+                                        <p class="text-white font-weight-bold mb-0">Humidity Outdoor</p>
+                                    </div><!-- end col-->
+                                
+                                </div>
+                            </div><!--end card-body--> 
+                        </div><!--end card-->                        
+                    </div>
+                </div>
                 
-                <div class="col">
-                    <div class="card crm-data-card">
-                        <div class="card-body"> 
-                            <div class="row">
-                                <div class="col-sm-4 align-self-center">
-                                    <div class="data-icon">
-                                        <i class="mdi mdi-spa rounded-circle bg-soft-primary"></i>
-                                    </div>
-                                </div><!-- end col-->
-                                <div class="col-sm-8">
-                                    <h3 class="text-primary"><span id="instPUE">0</span></h3>
-                                    <p class="text-muted font-14 mb-0">Instant PUE</p>
-                                </div><!-- end col-->
-                            </div><!-- end row-->                                                                                     
-                        </div><!--end card-body--> 
-                    </div><!--end card-->                                      
-                </div>
-                <div class="col">
-                    <div class="card crm-data-card">
-                        <div class="card-body"> 
-                            <div class="row">
-                                <div class="col-sm-4 align-self-center">
-                                    <div class="data-icon">{# mdi mdi-spa #}
-                                        <i class="mdi mdi-spa rounded-circle bg-soft-success"></i>
-                                    </div>
-                                </div><!-- end col-->
-                                <div class="col-sm-8">
-                                    <h3 class="text-success"><span id="intPUE">0</span></h3>
-                                    <p class="text-muted font-14 mb-0">Interval PUE</p>
-                                </div><!-- end col-->
-                            </div><!-- end row-->                                                                                     
-                        </div><!--end card-body--> 
-                    </div><!--end card-->                                      
-                </div>
-            </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_pue_energy" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+
+                {# <div class="row ">
+                    <div class="col">
+                        <div class="card crm-data-card">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-spa rounded-circle bg-soft-primary"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8">
+                                        <h3 class="text-primary"><span id="instPUE">0</span></h3>
+                                        <p class="text-muted font-14 mb-0">Instant PUE</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card-->                                      
+                    </div>
+                    <div class="col">
+                        <div class="card crm-data-card">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">{ mdi mdi-spa }
+                                            <i class="mdi mdi-spa rounded-circle bg-soft-success"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8">
+                                        <h3 class="text-success"><span id="intPUE">0</span></h3>
+                                        <p class="text-muted font-14 mb-0">Interval PUE</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card-->                                      
+                    </div>
+                </div> #}
             {% endif %}
+
 
             <div class="row">
 
-                <div class="col-6">
+                <div class="col-12 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mt-0 mb-4">Active Energy Flow</h4>
@@ -111,7 +275,7 @@
                     </div><!--end card-->
                 </div><!--end col-->
                 
-                <div class="col-6">
+                <div class="col-12 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mt-0 mb-4">Reactive Energy Flow</h4>
@@ -141,14 +305,16 @@
                                     </thead>
                                     <tbody>
                                         {% for smartMod in zone.smartMods %}
-                                        <tr>
-                                            <td>
-                                                <p class="d-inline-block align-middle mb-0 product-name">{{smartMod.name}}</p> 
-                                            </td>
-                                            <td class="text-center"><span id="smax_{{smartMod.id}}">0</span></td>
-                                            <td class="text-center"><span id="fp_{{smartMod.id}}">0</span></td>                                                        
-                                                                                  
-                                        </tr>
+                                            {% if smartMod.modType ==  'Load Meter' %}
+                                            <tr>
+                                                <td>
+                                                    <p class="d-inline-block align-middle mb-0 product-name">{{smartMod.name}}</p> 
+                                                </td>
+                                                <td class="text-center"><span id="smax_{{smartMod.id}}">0</span></td>
+                                                <td class="text-center"><span id="fp_{{smartMod.id}}">0</span></td>                                                        
+                                                                                    
+                                            </tr>
+                                        {% endif %}
                                         {% endfor %}
                                         
                                     </tbody>
@@ -159,35 +325,6 @@
                     
                 </div>
             </div>
-
-            {% if zone.type == 'PUE Calculation' %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="header-title mt-0 mb-4"></h4>
-                                <div class="chart-demo">
-                                    <div id="apex_pue" class="apex-charts"></div>
-                                </div>                                        
-                            </div><!--end card-body-->
-                        </div><!--end card-->
-                    </div><!--end col-->                            
-                </div><!--end row-->
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="header-title mt-0 mb-4"></h4>
-                                <div class="chart-demo">
-                                    <div id="apex_mixed_energy" class="apex-charts"></div>
-                                </div>                                        
-                            </div><!--end card-body-->
-                        </div><!--end card-->
-                    </div><!--end col-->
-                </div><!--end row-->
-
-            {% endif %}
 
             {# {% if type == 'zone sans' %}
                 
@@ -480,33 +617,6 @@
                                                 <td class="text-center"><span id="EAHP_tarif">{{zone.site.tarification.tarifAcGridHp}}</span></td>                                                       
                                                 <td class="text-center"><span id="EAHP_Amount">0</span></td>                                                       
                                             </tr>
-                                            {# <tr>
-                                                <td>
-                                                    <img src="../assets/images/products/img-4.png" alt="" height="52">
-                                                    <p class="d-inline-block align-middle mb-0 product-name">Lava Purse</p> 
-                                                </td>
-                                                <td>
-                                                    1
-                                                </td>
-                                                <td>$49</td>                                                       
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <img src="../assets/images/products/2.png" alt="" height="52">
-                                                    <p class="d-inline-block align-middle mb-0 product-name">Important Chair</p>
-                                                </td>
-                                                <td>
-                                                    1
-                                                </td>
-                                                <td>$99</td>
-                                            </tr>  
-                                            <tr>
-                                                <td>
-                                                    <h6>Total :</h6>
-                                                </td>
-                                                <td></td>
-                                                <td class="text-white">$496</td>
-                                            </tr>                                                     #}
                                         </tbody>
                                     </table>
                                 </div><!--end re-table-->
@@ -790,7 +900,7 @@
             });
             // Danger
             swal.queue([{
-                title: 'the Bill will be updated for the date range :',
+                title: 'The Bill will be updated for the date range :',
                 confirmButtonText: 'Confirm',
                 text: 'From ' + startDate + ' To ' + endDate,
                 showCancelButton: true,
@@ -868,6 +978,7 @@
     </script>
     
     {# <script src="/pages/jquery.crypto-dashboard.init.js"></script> #}
+    {# General panel script #}
     <script>
         var options = {
             chart: {
@@ -879,8 +990,8 @@
                 width: 2,
                 colors: ['transparent']
             },
-            series: [{% for smartMod in zone.smartMods %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endfor %}],
+            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
             //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
             legend: {
                 show: true,
@@ -926,8 +1037,8 @@
                 width: 2,
                 colors: ['transparent']
             },
-            series: [{% for smartMod in zone.smartMods %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endfor %}],
+            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
             //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
             legend: {
                 show: true,
@@ -965,7 +1076,7 @@
         ReactiveEnergy_Piechart.render();
                 
         {% if zone.type == 'PUE Calculation' %}
-        //Mixed Active Power Zone - Active Power Equipments - PUE charts
+        //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
         var options = {
             chart: {
                 height: 380,
@@ -986,7 +1097,7 @@
                 enabled: false
             },
             stroke: {
-                width: [2],
+                width: [2, 2, 2],
                 curve: 'smooth'
             },
             noData: {
@@ -1002,12 +1113,12 @@
                 }
             },
             series: [{
-                name: 'PUE',
+                name: 'IT Power',
                 type: 'line',
                 data: []
                 //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-            }{#, {
-                name: 'Active Power of Production Equipments',
+            }, {
+                name: 'DataCenter Power',
                 type: 'line',
                 data: []
                 //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
@@ -1016,7 +1127,7 @@
                 type: 'line',
                 data: []
                 //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
-            }#}],
+            }],
             fill: {
                 opacity: [1, 1, 1],
                 gradient: {
@@ -1028,7 +1139,7 @@
                     stops: [0, 100, 100, 100]
                 }
             },
-            colors: ["#fbb624"], //, "#77d0ba", "#e02040"
+            colors: ["#fbb624", "#77d0ba", "#e02040"], //
             xaxis: {
                 type: 'datetime',
                 categories: [],
@@ -1051,11 +1162,61 @@
                     },
                 }
             },
-            yaxis: {
-                title: {
-                    text: 'PUE',
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "IT Power (kW)"
+                    },
                 },
-            },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "DataCenter Power (kW)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "PUE"
+                    }
+                },
+            ],
             tooltip: {
                 theme: "dark",
                 followCursor: true,
@@ -1091,11 +1252,218 @@
                 }
             }]
         }
-        var Pue_Linechart = new ApexCharts(
-            document.querySelector("#apex_pue"),
+        
+        var Mixed_Pue_Power_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_pue_power"),
             options
         );
-        Pue_Linechart.render();
+        Mixed_Pue_Power_Linechart.render();
+
+        //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Temperature Indoor',
+                type: 'line',
+                data: []
+                //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+            }, {
+                name: 'Temperatue Outdoor',
+                type: 'line',
+                data: []
+                //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+            }, {
+                name: 'Humidity Indoor',
+                type: 'line',
+                data: []
+                //data: [84, 90, 94, 97, 95, 93, 80, 82]
+            }, {
+                name: 'Humidity Outdoor',
+                type: 'line',
+                data: []
+                //data: [90, 84, 97, 94, 93, 95, 84, 87]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: 'rgb(0, 143, 251)'
+                    },
+                    labels: {
+                        style: {
+                            color: 'rgb(0, 143, 251)',
+                        }
+                    },
+                    title: {
+                        text: "Temperature Indoor (°C)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "Temperature Outdoor (°C)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "Humidity Indoor (%)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "Humidity Outdoor (%)"
+                    }
+                },
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2)
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+        
+        var Mixed_Climate_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_climate"),
+            options
+        );
+        Mixed_Climate_Linechart.render();
+
         //Mixed Energy charts
         var options = {
             chart: {
@@ -1143,7 +1511,7 @@
                 data: []
                 //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
             }, {
-                name: 'Difference',
+                name: 'Interval PUE',
                 type: 'area',
                 data: []
                 //data: [20, 29, 37, 36, 44, 45, 50, 58]
@@ -1233,7 +1601,7 @@
                         }
                     },
                     title: {
-                        text: "Energy of Difference(kWh)"
+                        text: "Interval PUE"
                     }
                 },
             ],
@@ -1243,7 +1611,7 @@
                 y: {
                     formatter: function (y) {
                         if (typeof y !== "undefined") {
-                            return y.toFixed(2) + " kWh"
+                            return y.toFixed(2) + ""
                         } 
                         return y;
                     }
@@ -1272,11 +1640,11 @@
                 }
             }]
         }
-        var MixedEnergy_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed_energy"),
+        var Mixed_Pue_Energy_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_pue_energy"),
             options
         );
-        MixedEnergy_Linechart.render();
+        Mixed_Pue_Energy_Linechart.render();
         {% endif %}
         
         var _url = "{{ path('update_zone_graphs') }}";
@@ -1334,6 +1702,7 @@
                     data: data
                 }]);
             }
+
             if(xscale === 'day'){
                 chart.updateOptions({
                     xaxis: {
@@ -1491,8 +1860,10 @@
                                     console.log(result);
                                     console.log(Object.values(result['PieActiveEnergy']));
                                     {% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}
                                         $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{loop.index0}}])
                                         $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{loop.index0}}])
+                                        {% endif %}
                                     {% endfor %}
                                     /*Object.values(result['Smax']).forEach(function (item, index) {
                                         var id = '#smax_' + index;
@@ -1514,29 +1885,31 @@
                                     //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                     //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                     
-                                    var dataArray = [{% for smartMod in zone.smartMods %}
-                                        parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}
-                                        {% endfor %}
-                                    ];
-                                    updateDonutChart(ActiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}
-                                        {% endfor %}
-                                    ], dataArray);
-                                    dataArray = [{% for smartMod in zone.smartMods %}
-                                        parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}
-                                        {% endfor %}
-                                    ];
-                                    updateDonutChart(ReactiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}
-                                        {% endfor %}
-                                    ], dataArray);
                                     
                                     {% if zone.type == 'PUE Calculation' %}     
                                     $("#instPUE").text(result['InstantPUE']);
-                                    $("#intPUE").text(result['IntervalPUE']);
-                                    displayNewData(Pue_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 1, 'day');
-                                    displayNewData(MixedEnergy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
-                                    {% endif %}                                                                        
+                                    //$("#intPUE").text(result['IntervalPUE']);
+                                    displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, Object.values(result['xscale']));
+                                    displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, Object.values(result['xscale']));
+                                    displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, Object.values(result['xscale']));
+                                    {% endif %}
+
+                                    var dataArray = [{% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                        {% endfor %}
+                                    ];
+                                    updateDonutChart(ActiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                        {% endfor %}
+                                    ], dataArray);
+                                    dataArray = [{% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                        {% endfor %}
+                                    ];
+                                    updateDonutChart(ReactiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                        {% endfor %}
+                                    ], dataArray);
                                 }
                             },
                             error: function (result) {
@@ -1556,6 +1929,88 @@
             }]);
         }
     </script>
+
+    {# Climate params script #}
+    {% if zone.type == 'PUE Calculation' %}
+    <script src="/js/mqttws31.js" type="text/javascript"></script>
+    <script>
+        var mess = {
+            From: "user",
+            To: "Devices",
+            Object: "Connexion Status",
+            message: ""
+        };
+
+        var isConnected = false;
+        var wsbroker = location.hostname;  //"192.168.10.40";//mqtt websocket enabled broker
+        var wsport = 15675; // port for above 1883
+
+        var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
+            "admin_{{app.user.id}}");
+
+        client.onConnectionLost = function (responseObject) {
+            isConnected = false;
+            console.log("CONNECTION LOST - " + responseObject.errorMessage);
+        };
+
+        client.onMessageArrived = function (message) {
+            console.log("RECEIVE ON " + message.destinationName + " PAYLOAD " + message.payloadString);
+            //print_first(message.payloadString);
+            var result;
+            var parse = true;
+            try {
+                result = JSON.parse(message.payloadString);
+            } catch (e) {
+                parse = false;
+                console.error("Parsing error:", e);
+            }
+
+            if(parse){
+                {# console.log("Received: " + message.payloadString); #}
+                if (result.hasOwnProperty("Intemp")) {
+                    $('#temp_indoor').text(String(result.Intemp))
+                    $('#temp_outdoor').text(String(result.Outtemp))
+                    $('#hum_indoor').text(String(result.Inhum))
+                    $('#hum_outdoor').text(String(result.Outhum))
+                    $('#update').text(String( moment( new Date(result.date) ).format("DD MMM YYYY HH:mm:ss")) )
+                    
+                }
+            }
+        };
+
+        if (location.protocol == "https:") {
+            options.useSSL = true;
+        }
+        //console.log("CONNECT TO " + wsbroker + ":" + wsport);
+        //client.connect(options);
+        //client.reconnect();
+        // Try to reconnect after a few seconds
+        setInterval(function () {
+            if(isConnected === false){
+                console.log("CONNECT TO " + wsbroker + ":" + wsport);
+                client.connect({
+                    timeout: 3,
+                    keepAliveInterval: 30,
+                    userName: "mqtt-ESP-device",
+                    password: "mqtt-ESP-device",
+                    onSuccess: function () {
+                        isConnected = true;
+                        console.log("CONNECTION SUCCESS");
+                        //client.subscribe("/#", {qos: 1});
+                        client.subscribe("/from/raspb/#", {qos: 1});
+                    },
+                    onFailure: function (message) {
+                        console.log("CONNECTION FAILURE - " + message.errorMessage);
+                    }
+                });
+            }
+            else{
+                //console.log("CONNECTED TO " + wsbroker + ":" + wsport);
+            } 
+        }, 10000);
+    </script>
+
+    {% endif %}
    
    {# Alarm panel script #}
    <script>

@@ -40,8 +40,9 @@ class SmartModType extends ApplicationType
                             ''  => '',
                             'FUEL'  => 'FUEL',
                             'GRID'  => 'GRID',
-                            'DC'  => 'FUEL',
+                            'DC'  => 'DC',
                             'Load Meter'   => 'Load Meter',
+                            'Climate'   => 'Climate',
                             //'2'   => 2,
 
                         ],
@@ -95,6 +96,8 @@ class SmartModType extends ApplicationType
                             ''  => null,
                             'Production' => 'Production',
                             'Support'    => 'Support',
+                            'Indoor' => 'Indoor',
+                            'Outdoor'    => 'Outdoor',
 
                         ],
                         'label'    => 'SubType'
