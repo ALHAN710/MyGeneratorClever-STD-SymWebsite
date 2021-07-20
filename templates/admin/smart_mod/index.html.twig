@@ -96,7 +96,7 @@
     };
 
     var isConnected = false;
-    var wsbroker = "192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
+    var wsbroker = location.hostname;  //"192.168.10.40";//mqtt websocket enabled broker
     var wsport = 15675; // port for above 1883
 
     var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
@@ -217,15 +217,15 @@
 
         {# "mqtt-ESP-device","mqtt-test", #}
         {# "mqtt-ESP-device","mqtt-test", #}
-        var options = {
+    var options = {
         timeout: 3,
         keepAliveInterval: 30,
-        userName: "mqtt-ESP-device",
-        password: "mqtt-ESP-device",
+        userName: "",
+        password: "",
         onSuccess: function () {
             isConnected = true;
             console.log("CONNECTION SUCCESS");
-            client.subscribe("test/all", {qos: 1});
+            client.subscribe("/#", {qos: 1});
             client.subscribe("from/device/esp/#", {qos: 1});
         },
         onFailure: function (message) {
@@ -236,15 +236,31 @@
     if (location.protocol == "https:") {
         options.useSSL = true;
     }
-    console.log("CONNECT TO " + wsbroker + ":" + wsport);
-    client.connect(options);
+    //console.log("CONNECT TO " + wsbroker + ":" + wsport);
+    //client.connect(options);
+    //client.reconnect();
     // Try to reconnect after a few seconds
     setInterval(function () {
         if(isConnected === false){
             console.log("CONNECT TO " + wsbroker + ":" + wsport);
-            client.connect(options);
+            client.connect({
+                timeout: 3,
+                keepAliveInterval: 30,
+                userName: "mqtt-ESP-device",
+                password: "mqtt-ESP-device",
+                onSuccess: function () {
+                    isConnected = true;
+                    console.log("CONNECTION SUCCESS");
+                    client.subscribe("/#", {qos: 1});
+                    client.subscribe("from/device/esp/#", {qos: 1});
+                },
+                onFailure: function (message) {
+                    console.log("CONNECTION FAILURE - " + message.errorMessage);
+                }
+            });
         }
         else{
+            //console.log("CONNECTED TO " + wsbroker + ":" + wsport);
 
         } 
     }, 10000);

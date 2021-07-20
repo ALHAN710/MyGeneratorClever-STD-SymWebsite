@@ -1054,9 +1054,24 @@
         setInterval(function () {
             if(isConnected === false){
                 console.log("CONNECT TO " + wsbroker + ":" + wsport);
-                client.connect(options);
+                client.connect({
+                    timeout: 3,
+                    keepAliveInterval: 30,
+                    userName: "mqtt-ESP-device",
+                    password: "mqtt-ESP-device",
+                    onSuccess: function () {
+                        isConnected = true;
+                        console.log("CONNECTION SUCCESS");
+                        client.subscribe("/#", {qos: 1});
+                        client.subscribe("from/device/esp/#", {qos: 1});
+                    },
+                    onFailure: function (message) {
+                        console.log("CONNECTION FAILURE - " + message.errorMessage);
+                    }
+                });
             }
             else{
+                //console.log("CONNECTED TO " + wsbroker + ":" + wsport);
 
             } 
         }, 10000);
