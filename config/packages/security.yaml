@@ -39,6 +39,7 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/account/recover/password, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/account/code-verification, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/load-data-energy, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         # - { path: ^/profile, roles: ROLE_USER }
     
     # La partie role_hierarchy contient la hiérarchie des rôles
