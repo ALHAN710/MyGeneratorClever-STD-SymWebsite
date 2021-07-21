@@ -2,17 +2,19 @@
 
 namespace App\MessageHandler;
 
-use App\Entity\Contacts;
+use Exception;
 use App\Entity\User;
 //use App\Entity\User;
 use Twig\Environment;
 use Twilio\Rest\Client;
+use App\Entity\Contacts;
 use Symfony\Component\Mime\Email;
 use App\Message\UserNotificationMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Notifier\TexterInterface;
 use Symfony\Component\Notifier\Message\SmsMessage;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class UserNotificationHandler implements MessageHandlerInterface
@@ -25,7 +27,9 @@ class UserNotificationHandler implements MessageHandlerInterface
 
     private MailerInterface $mailer;
 
-    public function __construct(EntityManagerInterface $em, Environment $twig, TexterInterface $texter, Client $twilio, string $fromNumber, MailerInterface $mailer)
+    private $client;
+
+    public function __construct(EntityManagerInterface $em, HttpClientInterface $client, Environment $twig, TexterInterface $texter, Client $twilio, string $fromNumber, MailerInterface $mailer)
     {
         $this->em = $em;
         $this->twig = $twig;
@@ -33,15 +37,17 @@ class UserNotificationHandler implements MessageHandlerInterface
         $this->twilio = $twilio;
         $this->fromNumber = $fromNumber;
         $this->mailer = $mailer;
+        $this->client = $client;
     }
 
     public function __invoke(UserNotificationMessage $notifMessage)
     {
-        if ($notifMessage->getNotifType() !== 'Reset')  $contact = $this->em->find(Contacts::class, $notifMessage->getUserId());
+        if ($notifMessage->getMedia() !== 'Reset')  $contact = $this->em->find(Contacts::class, $notifMessage->getUserId());
         else $contact = $this->em->find(User::class, $notifMessage->getUserId());
+
         if ($contact) {
-            if ($notifMessage->getNotifType() === 'Email') {
-                $object = 'ALERTE My Energy Clever !!!';
+            if ($notifMessage->getMedia() === 'Email') {
+                $object = 'Alerte ' . $notifMessage->getObject();
                 $to = $contact->getUser() !== null ? $contact->getUser()->getEmail() : $contact->getEmail();
                 $email = (new Email())
                     ->from('stdigital.powermon.alerts@gmail.com')
@@ -57,7 +63,7 @@ class UserNotificationHandler implements MessageHandlerInterface
 
                 //sleep(10);
                 $this->mailer->send($email);
-            } else if ($notifMessage->getNotifType() === 'Reset') {
+            } else if ($notifMessage->getMedia() === 'Reset') {
                 $object = "PASSWORD RESET";
                 $to = $contact->getEmail();
                 $email = (new Email())
@@ -74,8 +80,17 @@ class UserNotificationHandler implements MessageHandlerInterface
 
                 //sleep(10);
                 $this->mailer->send($email);
-            } else if ($notifMessage->getNotifType() === 'SMS') {
+            } else if ($notifMessage->getMedia() === 'SMS') {
                 $phoneNumber = $contact->getUser() !== null ? $contact->getUser()->getPhoneNumber() : $contact->getPhoneNumber();
+                $phoneNumber = $contact->getCountryCode() . $phoneNumber;
+                $message = "=== Alerte {$notifMessage->getObject()} ===%0A%0ASalut M. {$contact->getUser()->getFirstName()}, {$notifMessage->getMessage()}";
+                //throw new \Exception("Pas Possible");
+                //dump($message);
+                $this->client->request(
+                    'POST',
+                    "http://smsgw.gtsnetwork.cloud:22293/message?user=STDigital&pass=56@oAyWF&from=STDTechMon&to={$phoneNumber}&tag=GSM&text={$message}&id=1&dlrreq=0"
+                );
+                /*$phoneNumber = $contact->getUser() !== null ? $contact->getUser()->getPhoneNumber() : $contact->getPhoneNumber();
                 $phoneNumber = $contact->getCountryCode() . $phoneNumber;
                 $firstName = $contact->getUser() !== null ? $contact->getUser()->getFirstName() : $contact->getFirstName();
                 $mess = "Hi {$firstName}, Alerte !!!. " . $notifMessage->getMessage();
@@ -86,7 +101,7 @@ class UserNotificationHandler implements MessageHandlerInterface
                     $mess
                 );
                 //sleep(10);
-                $this->texter->send($sms);
+                $this->texter->send($sms);*/
 
                 /*$toName = $user->getFirstName();
                 $toNumber = $user->getPhoneNumber();

@@ -7,13 +7,15 @@ class UserNotificationMessage
 
     private int $userId;
     private string $message;
-    private string $notifType;
+    private string $media;
+    private string $object;
 
-    public function __construct(int $userId, string $message, string $notifType)
+    public function __construct(int $userId, string $message, string $media, string $object)
     {
         $this->userId = $userId;
         $this->message = $message;
-        $this->notifType = $notifType;
+        $this->media = $media;
+        $this->object = $object;
     }
 
     /**
@@ -33,10 +35,18 @@ class UserNotificationMessage
     }
 
     /**
-     * Get the value of notifType
+     * Get the value of media
      */
-    public function getNotifType()
+    public function getMedia()
     {
-        return $this->notifType;
+        return $this->media;
+    }
+
+    /**
+     * Get the value of object
+     */
+    public function getObject()
+    {
+        return $this->object;
     }
 }
