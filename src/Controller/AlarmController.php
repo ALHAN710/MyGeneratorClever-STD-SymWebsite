@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\ApplicationController;
 use App\Entity\AlarmReporting;
 use App\Message\UserNotificationMessage;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\ApplicationController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 //use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AlarmController extends ApplicationController
@@ -153,24 +154,31 @@ class AlarmController extends ApplicationController
     /**
      * Permet de notifier les utilisateurs d'une alarme déclenchée
      *
-     * @Route("/alarm/notification", name="alarm_notification")
+     * @Route("/alarm/notification/{modId<[a-zA-Z0-9]+>}", name="alarm_notification")
      * 
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    public function alarmNotify(EntityManagerInterface $manager, Request $request, MessageBusInterface $messageBus): Response
+    public function alarmNotify($modId, EntityManagerInterface $manager, HttpClientInterface $client, Request $request, MessageBusInterface $messageBus): Response
     {
         /*$messageBus->dispatch(new UserNotificationMessage(5, "Coupure d'énergie", 'Email'));
-        //$messageBus->dispatch(new UserNotificationMessage(5, "Coupure d'énergie", 'SMS'));
+        //$messageBus->dispatch(new UserNotificationMessage(5, "Coupure d'énergie", 'SMS'));*/
+        //$messageBus->dispatch(new UserNotificationMessage(1, "Coupure d'énergie", 'SMS'));
+        /*$text = "SMS from GTS API";
+
+        $response = $client->request(
+            'POST',
+            "http://smsgw.gtsnetwork.cloud:22293/message?user=STDigital&pass=56@oAyWF&from=STDTechMon&to=+237690442311&tag=GSM&text={$text}&id=1&dlrreq=0"
+        );
         return $this->json([
             'code'    => 200,
-
+            //'content'   => $response->toArray()
         ], 200);*/
 
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
 
-        $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $paramJSON['id']]);
+        $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $modId]);
         if ($smartMod) {
             $alarmCode = $manager->getRepository('App:Alarm')->findOneBy(['code' => $paramJSON['code']]);
             if ($alarmCode) {
@@ -189,11 +197,13 @@ class AlarmController extends ApplicationController
                         if ($site) break;
                     }
                 }
-                $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+
+                if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                else if ($alarmCode->getType() === 'FUEL') $message = $alarmCode->getLabel() . ' <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
 
                 foreach ($site->getContacts() as $contact) {
-                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'Email'));
-                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS'));
+                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
+                    //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
                 }
                 $manager->persist($alarmReporting);
                 $manager->flush();
