@@ -357,7 +357,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($indoorClimateData);
+                //dump($indoorClimateData);
                 foreach ($indoorClimateData as $d) {
                     $dateClimate[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
@@ -383,7 +383,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($outdoorClimateData);
+                //dump($outdoorClimateData);
                 foreach ($outdoorClimateData as $d) {
                     //$dateClimate[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
