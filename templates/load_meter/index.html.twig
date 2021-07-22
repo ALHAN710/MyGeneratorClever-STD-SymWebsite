@@ -981,24 +981,23 @@
         var options = {
             chart: {
                 height: 380,
-                type: 'line',
+                type: 'area',
                 stacked: false,
                 toolbar: {
                     show: true
                 }
             },
             plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
+                line: {
+                curve: 'smooth',
+
                 }
             },
             dataLabels: {
                 enabled: false
             },
             stroke: {
-                width: [2],
+                width: [3],
                 curve: 'smooth'
             },
             noData: {
@@ -1020,7 +1019,7 @@
                 //data: [234, 237, 210, 180, 225, 228, 240, 236]
             }],
             fill: {
-                opacity: [1, 1, 1],
+                opacity: [1],
                 gradient: {
                     inverseColors: false,
                     shade: 'light',
@@ -1030,7 +1029,7 @@
                     stops: [0, 100, 100, 100]
                 }
             },
-            colors: ["#40a0c0", "#77d0ba", "#e02040"],
+            colors: ["#fa5c7c"],
             xaxis: {
                 //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                 categories: [],
