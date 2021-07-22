@@ -197,6 +197,7 @@ class ZoneController extends ApplicationController
         $intervalpue = [];
         $diffEnergy = [];
         $dateE       = [];
+        $dateP = [];
         $dateClimate   = [];
         $productionAP = [];
         $totalAP = [];
