@@ -263,10 +263,10 @@ class ZoneController extends ApplicationController
             //die();
             foreach ($commonData as $d) {
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 6, '.', ''));
-                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 6, '.', ''));
-                $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 6, '.', '');
-                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 6, '.', '');
+                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
+                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 2, '.', '');
+                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
             }
 
             if ($zone->getType() === 'PUE Calculation') {
@@ -546,26 +546,26 @@ class ZoneController extends ApplicationController
                 foreach ($dataProductionActivePower as $d) {
                     $dateP[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionAP[]   = number_format((float) $d['kW'], 6, '.', '');
+                    $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
 
                 // dump($dataTotalActivePower);
                 //die();
                 foreach ($dataTotalActivePower as $d) {
                     //$dateE[] = $d['dt'];
-                    $totalAP[]   = number_format((float) $d['kW'], 6, '.', '');
+                    $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
 
                 foreach ($dataProductionEnergy as $d) {
                     $dateE[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionEA[]   = number_format((float) $d['kWh'], 6, '.', '');
+                    $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
                 }
                 // dump($dataTotalEnergy);
                 //die();
                 foreach ($dataTotalEnergy as $d) {
                     //$dateE[] = $d['dt'];
-                    $totalEA[]   = number_format((float) $d['kWh'], 6, '.', '');
+                    $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
                 }
 
                 $instantpue =  array_map(function ($a, $b) {
@@ -578,7 +578,7 @@ class ZoneController extends ApplicationController
                 // dump($intervalpue);
 
                 /*$diffEnergy =  array_map(function ($a, $b) {
-                    return number_format((float) ($a - $b), 6, '.', '');
+                    return number_format((float) ($a - $b), 2, '.', '');
                 }, $totalEA, $productionEA);*/
                 // dump($diffEnergy);
             }
@@ -819,21 +819,21 @@ class ZoneController extends ApplicationController
                 //die();
                 foreach ($Energy as $d) {
                     //$dateE[] = $d['dt'];
-                    $EAHP  = number_format((float) $d['EAHP'], 6, '.', '');
-                    $EAP   = number_format((float) $d['EAP'], 6, '.', '');
-                    $ERHP  = number_format((float) $d['ERHP'], 6, '.', '');
-                    $ERP   = number_format((float) $d['ERP'], 6, '.', '');
+                    $EAHP  = number_format((float) $d['EAHP'], 2, '.', '');
+                    $EAP   = number_format((float) $d['EAP'], 2, '.', '');
+                    $ERHP  = number_format((float) $d['ERHP'], 2, '.', '');
+                    $ERP   = number_format((float) $d['ERP'], 2, '.', '');
                     $EATotal = $d['EAHP'] + $d['EAP'];
                     $ERTotal = $d['ERHP'] + $d['ERP'];
                     $FP = ($EATotal * 1.0) / sqrt(($EATotal * $EATotal) + ($ERTotal * $ERTotal));
-                    $FP = number_format((float) $FP, 6, '.', '');
+                    $FP = number_format((float) $FP, 2, '.', '');
                     $amountEAHP = $d['EAHP'] * ((($NHU_Grid * 1.0) / $nbHours) * $tarifGridHP + (($NHU_FUEL * 1.0) / $nbHours) * $tarifFuelHP);
                     $amountEAP = $d['EAP'] * ((($NHU_Grid * 1.0) / $nbHours) * $tarifGridP + (($NHU_FUEL * 1.0) / $nbHours) * $tarifFuelP);
                     $amountEA = $amountEAHP + $amountEAP;
-                    $amountEAHP = number_format((float) $amountEAHP, 6, '.', '');
-                    $amountEAP = number_format((float) $amountEAP, 6, '.', '');
-                    $amountEA = number_format((float) $amountEA, 6, '.', '');
-                    $EATotal = number_format((float) $EATotal, 6, '.', '');
+                    $amountEAHP = number_format((float) $amountEAHP, 2, '.', '');
+                    $amountEAP = number_format((float) $amountEAP, 2, '.', '');
+                    $amountEA = number_format((float) $amountEA, 2, '.', '');
+                    $EATotal = number_format((float) $EATotal, 2, '.', '');
                 }
 
                 $PowerMax = $manager->createQuery("SELECT d.dateTime AS jour, SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS Smoy

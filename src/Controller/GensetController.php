@@ -483,9 +483,9 @@ class GensetController extends ApplicationController
         //die();
         foreach ($Energy as $d) {
             $dateE[] = $d['jour'];
-            $TRH[] = $d['TRH'];
-            $TEP[] = $d['TEP'];
-            $FC[] = $d['FC'] ?? 0;
+            $TRH[] = number_format((float) $d['TRH'], 2, '.', '');
+            $TEP[] = number_format((float) $d['TEP'], 2, '.', '');
+            $FC[] = number_format((float) $d['FC'], 2, '.', '') ?? 0;
         }
 
 

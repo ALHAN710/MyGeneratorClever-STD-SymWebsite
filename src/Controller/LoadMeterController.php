@@ -319,8 +319,8 @@ class LoadMeterController extends ApplicationController
             //die();
             foreach ($Energy as $d) {
                 $dateE[] = $d['dt'];
-                $EA[]   = number_format((float) $d['kWh'], 6, '.', '');
-                $ER[] = number_format((float) $d['kVAR'], 6, '.', '');
+                $EA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                $ER[] = number_format((float) $d['kVAR'], 2, '.', '');
             }
 
             if ($smartMod->getNbPhases() === 1) {
@@ -343,12 +343,12 @@ class LoadMeterController extends ApplicationController
                 //die();
                 foreach ($data as $d) {
                     $date[] = $d['dt']->format('Y-m-d H:i:s');
-                    //$EA[]   = number_format((float) $d['kWh'], 6, '.', '');
-                    $Smoy[] = number_format((float) $d['kVA'], 6, '.', '');
-                    $Pmoy[] = number_format((float) $d['kW'], 6, '.', '');
-                    $VAmoy[] = number_format((float) $d['Volt'], 6, '.', '');
-                    $Cosfimoy[] = number_format((float) $d['Cosfi'], 6, '.', '');
-                    //$FP[] = number_format((float) $d['PF'], 6, '.', '');
+                    //$EA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    $Smoy[] = number_format((float) $d['kVA'], 2, '.', '');
+                    $Pmoy[] = number_format((float) $d['kW'], 2, '.', '');
+                    $VAmoy[] = number_format((float) $d['Volt'], 2, '.', '');
+                    $Cosfimoy[] = number_format((float) $d['Cosfi'], 2, '.', '');
+                    //$FP[] = number_format((float) $d['PF'], 2, '.', '');
                 }
             } else if ($smartMod->getNbPhases() === 3) {
                 $data = $manager->createQuery("SELECT d.dateTime AS dt, d.pamoy AS PA, d.pbmoy AS PB, d.pcmoy AS PC, d.vamoy AS VA,d.vbmoy AS VB, d.vcmoy AS VC, 
@@ -371,19 +371,19 @@ class LoadMeterController extends ApplicationController
                 //die();
                 foreach ($data as $d) {
                     $date[] = $d['dt']->format('Y-m-d H:i:s');
-                    //$EA[]   = number_format((float) $d['kWh'], 6, '.', '');
-                    //$Smoy[] = number_format((float) $d['kVA'], 6, '.', '');
-                    $PAmoy[] = number_format((float) $d['PA'], 6, '.', '');
-                    $PBmoy[] = number_format((float) $d['PB'], 6, '.', '');
-                    $PCmoy[] = number_format((float) $d['PC'], 6, '.', '');
-                    $VAmoy[] = number_format((float) $d['VA'], 6, '.', '');
-                    $VBmoy[] = number_format((float) $d['VB'], 6, '.', '');
-                    $VCmoy[] = number_format((float) $d['VC'], 6, '.', '');
-                    $CosfiA[] = number_format((float) $d['CosfiA'], 6, '.', '');
-                    $CosfiB[] = number_format((float) $d['CosfiB'], 6, '.', '');
-                    $CosfiC[] = number_format((float) $d['CosfiC'], 6, '.', '');
+                    //$EA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    //$Smoy[] = number_format((float) $d['kVA'], 2, '.', '');
+                    $PAmoy[] = number_format((float) $d['PA'], 2, '.', '');
+                    $PBmoy[] = number_format((float) $d['PB'], 2, '.', '');
+                    $PCmoy[] = number_format((float) $d['PC'], 2, '.', '');
+                    $VAmoy[] = number_format((float) $d['VA'], 2, '.', '');
+                    $VBmoy[] = number_format((float) $d['VB'], 2, '.', '');
+                    $VCmoy[] = number_format((float) $d['VC'], 2, '.', '');
+                    $CosfiA[] = number_format((float) $d['CosfiA'], 2, '.', '');
+                    $CosfiB[] = number_format((float) $d['CosfiB'], 2, '.', '');
+                    $CosfiC[] = number_format((float) $d['CosfiC'], 2, '.', '');
 
-                    //$FP[] = number_format((float) $d['PF'], 6, '.', '');
+                    //$FP[] = number_format((float) $d['PF'], 2, '.', '');
                 }
             }
             return $this->json([
