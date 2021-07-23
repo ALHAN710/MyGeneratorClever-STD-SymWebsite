@@ -642,13 +642,16 @@ class ZoneController extends ApplicationController
         if ($interval) {
             //return gettype($interval->format('d'));
             //return $interval->format('%R%a days'); // '+29 days'
-            $nbDay = $interval->days; //Nombre de jour total de différence entre les dates
+            $nbDay += $interval->days; //Nombre de jour total de différence entre les dates
+            //$nbDay = $interval->days; //Nombre de jour total de différence entre les dates
             // dump($nbDay);
             //return !$interval->invert; // 
             //return $this->isActivated;
         }
-        $nbHours = $nbDay > 0 ? 24 * $nbDay : 24;
+        $nbHours = 24 * $nbDay;
+        //$nbHours = $nbDay > 0 ? 24 * $nbDay : 24;
         // dump($nbHours);
+
         if ($zone) {
             $niv1 = 0;
             if ($smartMod) { //Recherche de l'existance  d'un module de type LOAD de niv = 1
@@ -674,8 +677,8 @@ class ZoneController extends ApplicationController
                         ))
                         ->getResult();*/
             } else {
-                $GensetParams = $manager->createQuery("SELECT MAX(d.totalRunningHours) - MIN(d.totalRunningHours) AS TRH, 
-                                        MAX(d.totalEnergy) - MIN(d.totalEnergy) AS TEP
+                $GensetParams = $manager->createQuery("SELECT MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
+                                        MAX(d.totalEnergy) - MIN(NULLIF(d.totalEnergy, 0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime BETWEEN :startDate AND :endDate

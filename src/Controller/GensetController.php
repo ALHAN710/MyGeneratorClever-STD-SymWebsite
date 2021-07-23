@@ -462,9 +462,8 @@ class GensetController extends ApplicationController
         //die();
         //$dat = $dat . '%';
 
-
-        $Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, MAX(d.totalRunningHours) - MIN(d.totalRunningHours) AS TRH, 
-                                        MAX(d.totalEnergy) - MIN(d.totalEnergy) AS TEP, AVG(NULLIF(d.fuelInstConsumption, 0))*( MAX(d.totalRunningHours) - MIN(d.totalRunningHours) ) AS FC
+        $Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
+                                        MAX(d.totalEnergy) - MIN(NULLIF(d.totalEnergy, 0)) AS TEP, AVG(NULLIF(d.fuelInstConsumption, 0))*( MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) ) AS FC
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime BETWEEN :startDate AND :endDate
