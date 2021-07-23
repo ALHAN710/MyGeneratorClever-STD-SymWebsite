@@ -809,11 +809,11 @@ class ZoneController extends ApplicationController
                 }
                 // dump($NHU_Psous);
                 // dump($NHD_Psous);
-                // $NHU_Psous = ($Duration[0]['NHU_Psous'] * 15.0) / 60.0;
-                $NHU_Psous = ($NHU_Psous * 15.0) / 60.0;
+                // $NHU_Psous = ($Duration[0]['NHU_Psous'] * 2.0) / 60.0;
+                $NHU_Psous = ($NHU_Psous * 2.0) / 60.0;
                 $NHU_Psous = number_format((float) $NHU_Psous, 2, '.', '');
-                // $NHD_Psous = ($Duration[0]['NHD_Psous'] * 15.0) / 60.0;
-                $NHD_Psous = ($NHD_Psous * 15.0) / 60.0;
+                // $NHD_Psous = ($Duration[0]['NHD_Psous'] * 2.0) / 60.0;
+                $NHD_Psous = ($NHD_Psous * 2.0) / 60.0;
                 $NHD_Psous = number_format((float) $NHD_Psous, 2, '.', '');
                 $tarifGridHP = $zone->getSite()->getTarification()->getTarifAcGridHP();
                 $tarifGridP = $zone->getSite()->getTarification()->getTarifAcGridP();
