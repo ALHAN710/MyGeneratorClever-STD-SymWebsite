@@ -1317,7 +1317,7 @@
                 //data: [90, 84, 97, 94, 93, 95, 84, 87]
             }],
             fill: {
-                opacity: [1, 1, 1],
+                opacity: [1, 1, 1, 1],
                 gradient: {
                     inverseColors: false,
                     shade: 'light',
@@ -1703,7 +1703,7 @@
                 }]);
             }
 
-            if(xscale === 'day'){
+            /*if(xscale === 'day'){
                 chart.updateOptions({
                     xaxis: {
                         title: {
@@ -1735,6 +1735,26 @@
                         }
                     }
                 });
+            }*/
+
+            if(xscale === 'day'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            //text: moment(dateopt).format('DD MMMM').toString(),
+                            text: moment(dateopt[0]).format('DD MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('DD MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            }
+            else if( xscale === 'month'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            text: moment(dateopt[0]).format('MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('MMMM YYYY').toString(),
+                        }
+                    },
+                });
             }
             //console.log(chart.options.scales.xAxes[0].scaleLabel.labelString);
             //preloaderChart(id, false);
@@ -1757,7 +1777,12 @@
                 labels: label
                 
             });*/
-            if(multiple > 1){
+            chart.updateOptions({
+                labels: label
+                
+            });
+
+            {# if(multiple > 1){
                 var i = 0;
                 data.forEach(function (item, index) {
                     chart.data.series.push(item);
@@ -1782,6 +1807,44 @@
                 /*chart.updateSeries([{
                     data: data
                 }]);*/
+            }
+            if(xscale === 'day'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            //text: moment(dateopt).format('DD MMMM').toString(),
+                            text: moment(dateopt[0]).format('DD MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('DD MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            }
+            else if( xscale === 'month'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            text: moment(dateopt[0]).format('MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            } #}
+            if(multiple > 1){
+                var i = 0;
+                chart.opts.series.forEach((dataset) => {
+                    if( i < multiple){
+                        dataset.data = [];
+                        dataset.data = data[i++];
+                        console.log(dataset.name);
+                    }
+                });
+            }
+            else if(multiple == 1){
+                chart.updateSeries([{
+                    data: []
+                }]);
+            
+                chart.updateSeries([{
+                    data: data
+                }]);
             }
             if(xscale === 'day'){
                 chart.updateOptions({
@@ -1889,9 +1952,10 @@
                                     {% if zone.type == 'PUE Calculation' %}     
                                     $("#instPUE").text(result['InstantPUE']);
                                     //$("#intPUE").text(result['IntervalPUE']);
-                                    displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, Object.values(result['xscale']));
-                                    displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, Object.values(result['xscale']));
-                                    displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, Object.values(result['xscale']));
+                                    //console.log(Object.values(result['climateDate']));
+                                    displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                    displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
+                                    displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
                                     {% endif %}
 
                                     var dataArray = [{% for smartMod in zone.smartMods %}
