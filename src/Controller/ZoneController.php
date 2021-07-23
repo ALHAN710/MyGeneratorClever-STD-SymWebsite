@@ -23,7 +23,7 @@ class ZoneController extends ApplicationController
 {
     /**
      * @Route("/{zone<\d+>?}", name="home_zone")
-     * 
+     * @IsGranted("ROLE_USER")
      */
     public function dashboard(Zone $zone, EntityManagerInterface $manager): Response
     {
