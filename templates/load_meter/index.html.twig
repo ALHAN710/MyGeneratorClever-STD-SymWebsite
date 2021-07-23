@@ -1031,6 +1031,7 @@
             },
             colors: ["#fa5c7c"],
             xaxis: {
+                type: 'datetime',
                 //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                 categories: [],
                 labels: {
@@ -1112,6 +1113,114 @@
             }
         }
 
+        {# var options = {
+            chart: {
+                type: 'area',
+                stacked: false,
+                height: 380,
+                zoom: {
+                enabled: true
+                },
+            },
+            plotOptions: {
+                line: {
+                curve: 'smooth',
+
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [3]
+            },
+            series: [{
+                name: 'Voltage',
+                data: []
+            }],
+            markers: {
+                size: 0,
+                style: 'full',
+            },
+            colors: ['#fa5c7c'],
+            grid: {
+                row: {
+                colors: ['transparent', 'transparent'], // takes an array which will be repeated on columns
+                opacity: 0.2
+                },
+                borderColor: '#f1f3fa'
+            },
+            fill: {
+                gradient: {
+                enabled: true,
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.5,
+                opacityTo: 0.1,
+                stops: [0, 70, 80, 100]
+                },
+            },
+            yaxis: {
+                //min: 20000000,
+                //max: 250000000,
+                /*labels: {
+                    formatter: function (val) {
+                        return (val / 1000000).toFixed(0);
+                    },
+                },*/
+                title: {
+                    text: 'Voltage (V)'
+                },
+            },
+            xaxis: {
+                type: 'datetime',
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+
+            tooltip: {
+                theme: "dark",
+                shared: false,
+                y: {
+                    formatter: function (val) {
+                        return (val / 1000000).toFixed(0)
+                    }
+                },
+
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                chart: {
+                    toolbar: {
+                    show: false
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                }
+            }]
+        } #}
+
+        
         var Voltage_Linechart = new ApexCharts(
             document.querySelector("#apex_voltage"),
             options
