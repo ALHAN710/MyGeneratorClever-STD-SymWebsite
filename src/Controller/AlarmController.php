@@ -205,6 +205,8 @@ class AlarmController extends ApplicationController
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
                 }
+                $messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
+                $messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
                 $manager->persist($alarmReporting);
                 $manager->flush();
             }
