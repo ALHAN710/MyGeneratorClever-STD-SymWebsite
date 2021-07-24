@@ -102,7 +102,7 @@ class GensetController extends ApplicationController
             ->getResult();
         // //dump($NMIYear);
 
-        $firstDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        /*$firstDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -113,13 +113,37 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m-d") . "%",
                 'smartModId'   => $id->getId()
             ))
+            ->getResult();*/
+        $firstDatetimeDataDayRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y-m-d") . "%",
+                'smartModId'   => $id->getId()
+            ))
             ->getResult();
         // // dump($firstDatetimeDataDayRecord);
-        $lastDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        /*$lastDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y-m-d") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();*/
+        $lastDatetimeDataDayRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
                                         AND sm.id = :smartModId                   
                                         ")
             ->setParameters(array(
@@ -140,11 +164,11 @@ class GensetController extends ApplicationController
             // // dump($tepd);
         }
 
-        $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
-                                        WHERE d.dateTime =  (SELECT min(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        WHERE d.dateTime LIKE :nowDate
                                         AND sm.id = :smartModId                   
                                         ")
             ->setParameters(array(
@@ -154,7 +178,7 @@ class GensetController extends ApplicationController
             ->getResult();
         // // dump($firstDatetimeDataMonthRecord);
 
-        $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        /*$lastDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -165,7 +189,20 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m") . "%",
                 'smartModId'   => $id->getId()
             ))
+            ->getResult();*/
+        $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
             ->getResult();
+
         // // dump($lastDatetimeDataMonthRecord);
         $npsm = 0;
         $trhm = 0;
@@ -179,7 +216,7 @@ class GensetController extends ApplicationController
             // // dump($tepm);
         }
 
-        $firstDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        /*$firstDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -190,14 +227,38 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y") . "%",
                 'smartModId'   => $id->getId()
             ))
+            ->getResult();*/
+        $firstDatetimeDataYearRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
             ->getResult();
 
         // //dump($firstDatetimeDataYearRecord);
-        $lastDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
+        /*$lastDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();*/
+        $lastDatetimeDataYearRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
                                         AND sm.id = :smartModId                   
                                         ")
             ->setParameters(array(
@@ -282,7 +343,7 @@ class GensetController extends ApplicationController
         $interval = new DateInterval('P1Y'); //P10D P1M
         $lastYear->sub($interval);
         // dump($lastYear);
-        $precDayLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
+        /*$precDayLastTEPRecord = $manager->createQuery("SELECT d.totalEnergy AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
@@ -342,6 +403,75 @@ class GensetController extends ApplicationController
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\DatetimeData d1 WHERE d1.dateTime LIKE :nowDate)
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastYear->format("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();*/
+
+
+        $precDayLastTEPRecord = $manager->createQuery("SELECT MAX(d.totalEnergy) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $yesterday->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $precDayFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        d.nbPerformedStartUps AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $yesterday->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevMonthFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastMonth->format("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevMonthLastTEPRecord = $manager->createQuery("SELECT MAX(d.totalEnergy) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastMonth->format("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevYearFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId                   
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastYear->format("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        $prevYearLastTEPRecord = $manager->createQuery("SELECT MAX(d.totalEnergy) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
                                         AND sm.id = :smartModId                   
                                         ")
             ->setParameters(array(
