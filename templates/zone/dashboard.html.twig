@@ -2166,11 +2166,11 @@
         {% endif %}
         
         var url_ = "{{ path('update_zone_overview_graphs') }}";
-        console.log('startDate = '+moment().format("YYYY-MMMM-DD") + ' 00:00:00')
-        console.log('endDate = '+moment().format("YYYY-MMMM-DD") + ' 00:00:00')
+        console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
+        console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
         var $data_ = JSON.stringify({
-            "startDate": moment().format("YYYY-MMMM-DD") + ' 00:00:00',
-            "endDate": moment().format("YYYY-MMMM-DD") + ' 23:59:59',
+            "startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
+            "endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
             "zoneId": {{zone.id}},
         });
         setTimeout(
