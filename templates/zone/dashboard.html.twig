@@ -289,14 +289,19 @@
                                             <table class="table mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
                                                         <th class="text-center">P (kW)</th>                                                        
                                                         <th class="text-center">S (kVA)</th>                                                        
                                                         <th class="text-center">CosPhi </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for smartMod in zone.smartMods %}
+                                                    <tr>
+                                                        <td class="text-center"><span id="p_overview">0.00</span></td>
+                                                        <td class="text-center"><span id="s_overview">0.00</span></td>
+                                                        <td class="text-center"><span id="fp_overview">0.00</span></td>                                                        
+                                                                                            
+                                                    </tr>
+                                                    {# {% for smartMod in zone.smartMods %}
                                                         {% if smartMod.modType ==  'Load Meter' %}
                                                         <tr>
                                                             <td>
@@ -308,7 +313,7 @@
                                                                                                 
                                                         </tr>
                                                         {% endif %}
-                                                    {% endfor %}
+                                                    {% endfor %} #}
                                                     
                                                 </tbody>
                                             </table>
@@ -2166,8 +2171,8 @@
         {% endif %}
         
         var url_ = "{{ path('update_zone_overview_graphs') }}";
-        console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
-        console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
+        {# console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
+        console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00') #}
         var $data_ = JSON.stringify({
             "startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
             "endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
@@ -2289,13 +2294,16 @@
                         var dateLabel = Object.values(result['date']);
                         {# console.log(result); #}
                         console.log(Object.values(result['PieActiveEnergy']));
-                        {% for smartMod in zone.smartMods %}
+                        $('#p_overview').text(Object.values(result['P']))
+                        $('#s_overview').text(Object.values(result['S']))
+                        $('#fp_overview').text(Object.values(result['FP']))
+                        {# {% for smartMod in zone.smartMods %}
                             {% if smartMod.modType ==  'Load Meter' %}
                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
                             $('#s_{{smartMod.id}}_overview').text(Object.values(result['S'])[{{loop.index0}}])
                             $('#fp_{{smartMod.id}}_overview').text(Object.values(result['FP'])[{{loop.index0}}])
                             {% endif %}
-                        {% endfor %}
+                        {% endfor %} #}
                         
                         //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                         //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');

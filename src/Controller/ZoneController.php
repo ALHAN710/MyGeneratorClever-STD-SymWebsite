@@ -254,8 +254,7 @@ class ZoneController extends ApplicationController
                 }
             }
             //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
-            $commonData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR, SUM(d.pmoy) AS P, 
-                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) AS S
+            $commonData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -279,9 +278,38 @@ class ZoneController extends ApplicationController
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
                 $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
                 $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
-                $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
-                $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
-                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+                // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
+                // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
+                // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+            }
+            $commonData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS P, 
+                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) AS S
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 2
+                                            GROUP BY dt
+                                            ORDER BY dt ASC                                                                                                                                                
+                                            ")
+                ->setParameters(array(
+                    //'selDate'      => $dat,
+                    'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                    'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                    'zoneId'     => $zone->getId()
+                ))
+                ->getResult();
+
+            // dump($commonData);
+
+            //die();
+            foreach ($commonData as $d) {
+                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                // $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
+                // $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                $P = number_format((float) $d['P'], 2, '.', '');
+                $S = number_format((float) $d['S'], 2, '.', '');
+                $FP_flow = number_format((float) $d['PF'], 2, '.', '');
             }
             $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
                                        FROM App\Entity\SmartMod sm
