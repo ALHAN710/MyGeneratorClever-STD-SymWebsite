@@ -608,7 +608,7 @@ class ZoneController extends ApplicationController
                 }, $totalEA, $productionEA);*/
                 // dump($diffEnergy);
             } else {
-                $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW, 
+                $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS P, 
                                             SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) AS S
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
@@ -631,8 +631,6 @@ class ZoneController extends ApplicationController
                 //die();
                 foreach ($data as $d) {
                     $datePSCosfi[] = $d['dt']->format('Y-m-d H:i:s');
-                    $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
-                    $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
                     $p[] = number_format((float) $d['P'], 2, '.', '');
                     $s[] = number_format((float) $d['S'], 2, '.', '');
                     $fp[] = number_format((float) $d['PF'], 2, '.', '');
