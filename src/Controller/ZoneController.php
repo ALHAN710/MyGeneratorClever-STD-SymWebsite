@@ -1212,6 +1212,11 @@ class ZoneController extends ApplicationController
                     GROUP BY dt
                     ORDER BY dt ASC
                 */
+                $smartMods  = []; //$manager->getRepository('App:SmartMod')->findBy(['zones' => [$zone->getId()], 'modType' => 'Load Meter']);
+                foreach ($zone->getSmartMods() as $smartMod) {
+                    if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) $smartMods[] = $smartMod->getId();
+                }
+
                 $Energy = $manager->createQuery("SELECT SUM(CASE 
                                                                 WHEN (d.dateTime BETWEEN CONCAT( SUBSTRING(d.dateTime,1,10), :hp1 ) AND CONCAT( SUBSTRING(d.dateTime,1,10), :hp2 ) )
                                                                     OR (d.dateTime BETWEEN CONCAT( SUBSTRING(d.dateTime,1,10), :hp3 ) AND CONCAT( SUBSTRING(d.dateTime,1,10), :hp4 ) ) THEN d.ea
@@ -1232,7 +1237,7 @@ class ZoneController extends ApplicationController
                                                         END) AS ERP 
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
-                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    WHERE sm.id IN (:smartMods)
                                                     AND d.dateTime BETWEEN :startDate AND :endDate
                                                     AND sm.levelZone = 2
                                                                  
@@ -1247,15 +1252,13 @@ class ZoneController extends ApplicationController
                         'hp4'   => ' 17:59:59',
                         'p1'   => ' 18:59:59',
                         'p2'   => ' 22:00:00',
-                        'zoneId'     => $zone->getId()
+                        'smartMods'  => $smartMods,
+                        //'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
                 // dump($Energy);
                 //
-                $smartMods  = []; //$manager->getRepository('App:SmartMod')->findBy(['zones' => [$zone->getId()], 'modType' => 'Load Meter']);
-                foreach ($zone->getSmartMods() as $smartMod) {
-                    if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) $smartMods[] = $smartMod->getId();
-                }
+
                 // dump($smartMods);
                 //WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
                 //AND sm.levelZone = 2

@@ -2166,7 +2166,8 @@
         {% endif %}
         
         var url_ = "{{ path('update_zone_overview_graphs') }}";
-        
+        console.log('startDate = '+moment().format("YYYY-MMMM-DD") + ' 00:00:00')
+        console.log('endDate = '+moment().format("YYYY-MMMM-DD") + ' 00:00:00')
         var $data_ = JSON.stringify({
             "startDate": moment().format("YYYY-MMMM-DD") + ' 00:00:00',
             "endDate": moment().format("YYYY-MMMM-DD") + ' 23:59:59',
@@ -2219,7 +2220,7 @@
                                         //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                         
                                         if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                                        
+
                                         {% if zone.type == 'PUE Calculation' %}     
                                         $("#instPUE").text(result['InstantPUE']);
                                         //$("#intPUE").text(result['IntervalPUE']);
