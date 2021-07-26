@@ -2225,11 +2225,12 @@
                                         $("#instPUE").text(result['InstantPUE']);
                                         //$("#intPUE").text(result['IntervalPUE']);
                                         //console.log(Object.values(result['climateDate']));
+                                        var dataLabel = Object.values(result['date']);
                                         displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
                                         displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
                                         displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         {% else %}
-                                        displayNewData(Mixed_PSCosfi_Linechart_overview, dateLabel, Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         {% endif %}
 
                                         var dataArray = [{% for smartMod in zone.smartMods %}
@@ -2309,7 +2310,7 @@
                         displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
                         displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         {% else %}
-                        displayNewData(Mixed_PSCosfi_Linechart_overview, dateLabel, Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                        displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         {% endif %}
 
                         var dataArray = [{% for smartMod in zone.smartMods %}
