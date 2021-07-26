@@ -76,14 +76,14 @@ class LoadMeterController extends ApplicationController
                         ->setSmartMod($smartMod);
                     if ($smartMod->getNbPhases() === 1) {
                         if (array_key_exists("Cosfi", $paramJSON)) {
-                            /*if ($paramJSON['Cosfi'] == 0 && $paramJSON['Va'] > 380) {
+                            if ($paramJSON['Cosfi'] == 0 && $paramJSON['Va'] > 380) {
                                 return $this->json([
                                     'code' => 200,
                                     'received' => $paramJSON,
                                     'message'  => 'Bad'
 
                                 ], 200);
-                            }*/
+                            }
                             $datetimeData->setCosfi($paramJSON['Cosfi']);
                         }
                         if (array_key_exists("Va", $paramJSON)) {
