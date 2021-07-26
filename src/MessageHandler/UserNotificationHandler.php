@@ -29,13 +29,11 @@ class UserNotificationHandler implements MessageHandlerInterface
 
     private $client;
 
-    public function __construct(EntityManagerInterface $em, HttpClientInterface $client, Environment $twig, TexterInterface $texter, Client $twilio, string $fromNumber, MailerInterface $mailer)
+    public function __construct(EntityManagerInterface $em, HttpClientInterface $client, Environment $twig, TexterInterface $texter, MailerInterface $mailer)
     {
         $this->em = $em;
         $this->twig = $twig;
         $this->texter = $texter;
-        $this->twilio = $twilio;
-        $this->fromNumber = $fromNumber;
         $this->mailer = $mailer;
         $this->client = $client;
     }
