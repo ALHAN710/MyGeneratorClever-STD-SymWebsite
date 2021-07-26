@@ -37,11 +37,14 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Overview</a>
+                    </li>                                                
+                    {# <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#engine" role="tab">Engine parameters</a>
                     </li>                                                
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#gen" role="tab">Generator parameters</a>
-                    </li>
+                    </li> #}
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#energy" role="tab">Energy</a>
                     </li>                                                
@@ -52,7 +55,174 @@
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div class="tab-pane p-3" id="gen" role="tabpanel">
+                    <div class="tab-pane active p-3" id="overview" role="tabpanel">
+                        <div class="row">
+                            <div class="row float-right">
+                                <small>Last update <span id="update">YYYY-MM-DD HH:mm:ss</span></small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9 col-12">
+                                <div class="row">
+                                    <div class="col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body "> 
+                                                <p class="text-muted mb-5"></p>
+                                                <div id="fuel_level" class="gauge text-center"></div>
+                                            </div><!--end card-body-->
+                                        </div><!--end card-->
+                                    </div><!--end col-->
+
+                                    <div class="col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body"> 
+                                                <p class="text-muted mb-5"></p>
+                                                <div id="water_temp" class="gauge"></div>
+                                            </div><!--end card-body-->
+                                        </div><!--end card-->
+                                    </div><!--end col-->
+                                </div><!--end row-->
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body "> 
+                                                <p class="text-muted mb-5"></p>
+                                                <div id="cooler_temp" class="gauge text-center"></div>
+                                            </div><!--end card-body-->
+                                        </div><!--end card-->
+                                    </div><!--end col-->
+                                     
+                                    <div class="col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body"> 
+                                                <p class="text-muted mb-5"></p>
+                                                <div id="batt_voltage" class="gauge"></div>
+                                            </div><!--end card-body-->
+                                        </div><!--end card-->
+                                    </div><!--end col-->
+
+                                </div><!--end row-->
+                            </div>
+                            <div class="col-sm-3 col-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="wallet-bal-usd">
+                                                            <h4 class="text-center">Mains</h4>
+                                                        </div> 
+                                                        
+                                                        <div class="text-center"> 
+                                                            <span class="badge badge-danger mr-2" id="mainsStatus"><h6>Absent</h6></span>
+                                                            <span class="badge badge-danger" id="cr"><h6>CR <span>open</span> </h6></span>
+                                                        </div>
+                                                    </div>                                        
+                                                </div>                                               
+                                            </div><!--end card-body-->
+                                            <div class="card-body pt-0">
+                                                <ul class="list-group wallet-bal-crypto">
+                                                    <li class="list-group-item align-items-center d-flex justify-content-between">
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L1-L2</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-success" id="l1l2M"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L1-L3</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-pink" id="l1l3M"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L2-L3</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-primary" id="l2l3M"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                    </li>
+                                                                        
+                                                </ul> 
+                                            </div><!--end card-body--> 
+                                        </div><!--end card--> 
+                                    </div><!--end col-->
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="wallet-bal-usd">
+                                                            <h4 class="text-center">Generator</h4>
+                                                        </div> 
+                                                        <div class="text-center"> 
+                                                            <span class="badge badge-success mr-2 h6" id="gensetStatus"><h6>Running</h6></span>
+                                                            <span class="badge badge-success" id="cg"><h6>CG <span>Closed</span> </h6></span>
+                                                        </div>
+                                                    </div>                                        
+                                                </div>                                               
+                                            </div><!--end card-body-->
+                                            <div class="card-body pt-0">
+                                                <ul class="list-group wallet-bal-crypto">
+                                                    <li class="list-group-item align-items-center d-flex justify-content-between">
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L1-L2</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-success" id="l1l2"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L1-L3</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-pink" id="l1l3"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                        <div class="media">
+                                                            <div class="media-body text-center"> 
+                                                                <div class="coin-bal">                                                        
+                                                                    <h5 class="m-0">L2-L3</h5>
+                                                                    <p class="text-muted mb-0"><h5><span class="badge badge-soft-primary" id="l2l3"></span></h5></p>
+                                                                </div>                                                                                              
+                                                            </div><!--end media body-->
+                                                        </div>
+                                                    </li>                                                                                
+                                                </ul> 
+                                            </div><!--end card-body--> 
+                                        </div><!--end card--> 
+                                    </div><!--end col-->
+                                </div>    
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4"></h4>
+                                        <div class="chart-demo">
+                                            <div id="apex_mixed_PSCosfi" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div><!--end col-->
+                        </div><!--end row-->
+                        
+                    </div>
+
+                    {# <div class="tab-pane p-3" id="gen" role="tabpanel">
                         <div class="row">
                             <div class="col-sm-8 col-12">
                                 <div class="card">
@@ -77,7 +247,7 @@
                                                     <div class="media-body text-center"> 
                                                         <div class="coin-bal">                                                        
                                                             <h3 class="m-0">L1-L2</h3>
-                                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-success" id="l1l2"></span></h4></p>
+                                                            <p class="text-muted mb-0"><h5><span class="badge badge-soft-success" id="l1l2"></span></h4></p>
                                                         </div>                                                                                              
                                                     </div><!--end media body-->
                                                 </div>
@@ -350,7 +520,7 @@
                         <div class="row float-right">
                             <small>Last update <span id="update">2021-07-15 15:45:52</span></small>
                         </div>
-                    </div>       
+                    </div>        #}
 
                     <div class="tab-pane p-3" id="energy" role="tabpanel">
                         <div class="row">
@@ -375,8 +545,6 @@
                                                     <th>PoE</th>
                                                 </tr>
                                             </thead>
-        
-        
                                             <tbody>
                                                 <tr>
                                                     <th>Jan-2020</th>
@@ -1062,8 +1230,8 @@
                     onSuccess: function () {
                         isConnected = true;
                         console.log("CONNECTION SUCCESS");
-                        client.subscribe("/#", {qos: 1});
-                        client.subscribe("from/device/esp/#", {qos: 1});
+                        {# client.subscribe("/#", {qos: 1}); #}
+                        client.subscribe("from/device/esp/{{smartMod.moduleId}}", {qos: 1});
                     },
                     onFailure: function (message) {
                         console.log("CONNECTION FAILURE - " + message.errorMessage);
@@ -1128,7 +1296,7 @@
             }
         });
 
-        var oil_level = new JustGage({
+        {# var oil_level = new JustGage({
             id: "oil_level",
             value: 0,
             min: 0,
@@ -1192,7 +1360,7 @@
             onAnimationEnd: function () {
             console.log('f: onAnimationEnd()');
             }
-        });
+        }); #}
 
         var water_temp = new JustGage({
             id: "water_temp",
@@ -1226,7 +1394,7 @@
             }
         });
 
-        var engine_speed = new JustGage({
+        {# var engine_speed = new JustGage({
             id: "engine_speed",
             value: 0,
             min: 0,
@@ -1240,7 +1408,7 @@
             onAnimationEnd: function () {
                 // console.log('f: onAnimationEnd()'); 
             }
-        });
+        }); #}
 
         var batt_voltage = new JustGage({
             id: "batt_voltage",
@@ -1270,6 +1438,183 @@
             batt_voltage.refresh();
             return false;
         }); #}
+
+        //Mixed Apparent Power - Active Power - Cosphi charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%'
+                }
+            },
+            colors: ["#1ecab8", "#fbb624", "#f93b7a"],
+            series: [{
+                name: 'Apparent Power',
+                type: 'line',
+                //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+                data: []
+            }, {
+                name: 'Active Power',
+                type: 'line',
+                //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+                data: []
+            }, {
+                name: 'CosPhi',
+                type: 'line',
+                //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
+                data: []
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            //labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+            labels: [],
+            markers: {
+                size: 0
+            },
+            legend: {
+                //offsetY: -10,
+                position: 'top',
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM YYYY').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#1ecab8'
+                    },
+                    labels: {
+                        style: {
+                            color: '#1ecab8',
+                        }
+                    },
+                    title: {
+                        text: "kVA"
+                    },
+                },
+
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "kW",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#f93b7a'
+                    },
+                    labels: {
+                        style: {
+                            color: '#f93b7a',
+                        }
+                    },
+                    title: {
+                        text: ""
+                    }
+                },
+
+            ],    
+            tooltip: {
+                shared: true,
+                intersect: false,
+                theme: "dark",
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + "";
+                        }
+                        return y;
+
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            }
+        }
+        
+        var Mixed_PSCosfi_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed_PSCosfi"),
+            options
+        );
+
+        Mixed_PSCosfi_Linechart.render();
 
         setTimeout(
                 function(){ 
@@ -1301,38 +1646,43 @@
 
                                     //Mise à jour des jauges des données mécaniques
                                     fuel_level.refresh( parseFloat(result['Level'][0]) ?? 0);
-                                    oil_level.refresh( parseFloat(result['Level'][1]) ?? 0);
+                                    {# oil_level.refresh( parseFloat(result['Level'][1]) ?? 0);
                                     water_level.refresh( parseFloat(result['Level'][2]) ?? 0);
                                     air_pressure.refresh( parseFloat(result['Pressure'][0]) ?? 0);
-                                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0);
+                                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0); #}
                                     water_temp.refresh( parseFloat(result['Temp'][0]) ?? 0);
                                     cooler_temp.refresh( parseFloat(result['Temp'][1]) ?? 0);
-                                    engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0);
+                                    {# engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0); #}
                                     batt_voltage.refresh( parseFloat(result['BattVolt']) ?? 0);
 
                                     //Mise à jour des paramètres du générateur
                                     $('#l1l2').text(String(result['Vcg'][0] + " V"))
                                     $('#l1l3').text(String(result['Vcg'][1] + " V"))
                                     $('#l2l3').text(String(result['Vcg'][2] + " V"))
+                                {#
                                     $('#l1N').text(String(result['Vsg'][0] + " V"))
                                     $('#l2N').text(String(result['Vsg'][1] + " V"))
-                                    $('#l3N').text(String(result['Vsg'][2] + " V"))
+                                    $('#l3N').text(String(result['Vsg'][2] + " V")) 
+                                #}
                                     $('#l1l2M').text(String(result['Vcm'][0] + " V"))
                                     $('#l1l3M').text(String(result['Vcm'][1] + " V"))
                                     $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                                    $('#I1').text(String(result['I'][0] + " A"))
+                                    {# $('#I1').text(String(result['I'][0] + " A"))
                                     $('#I2').text(String(result['I'][1] + " A"))
                                     $('#I3').text(String(result['I'][2] + " A"))
                                     $('#idiff').text(String(result['Idiff'] + " mA"))   
-                                    $('#freq').text(String(result['Freq'] + " Hz"))
+                                    $('#freq').text(String(result['Freq'] + " Hz")) #}
                                     $('#htm').text(String(result['HTM']))  
                                     $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-
+                                    displayNewData(Mixed_PSCosfi_Linechart, Object.values(result['date']), Object.values(result['Mix_PSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                    
                                     //Affichage des derniers enregistrements données dynamiques
+                                {# 
                                     $('#activePower').text(String(result['Power'][0] + " kW"))
                                     $('#reactivePower').text(String(result['Power'][1] + " kVAR"))
                                     $('#apparentPower').text(String(result['Power'][2] + " VAR"))
-                                    $('#cosfi').text(String(result['Cosfi']))
+                                    $('#cosfi').text(String(result['Cosfi'])) 
+                                #}
                                     {# $('#trh').text(String(result['TRH'][0])) #}
                                     $('#trhd').text(String(result['TRH'][1]))
                                     $('#trhm').text(String(result['TRH'][2]))
@@ -1477,39 +1827,47 @@
                     //var dateLabel = Object.values(result['date']);
 
                     //Mise à jour des jauges des données mécaniques
-                    fuel_level.refresh( parseFloat(result['Level'][0]) ?? 0);
-                    oil_level.refresh( parseFloat(result['Level'][1]) ?? 0);
-                    water_level.refresh( parseFloat(result['Level'][2]) ?? 0);
+                    var FL = parseFloat(result['Level'][0]) ?? 0;
+                    FL = FL > 100 ? 100 : FL;
+                    {# var OL = parseFloat(result['Level'][1]) ?? 0;
+                    OL = OL > 100 ? 100 : OL;
+                    var WL = parseFloat(result['Level'][2]) ?? 0;
+                    WL = WL > 100 ? 100 : WL; #}
+
+                    fuel_level.refresh(FL);
+                    {# oil_level.refresh(OL);
+                    water_level.refresh(WL);
                     air_pressure.refresh( parseFloat(result['Pressure'][0]) ?? 0);
-                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0);
+                    oil_pressure.refresh( parseFloat(result['Pressure'][1]) ?? 0); #}
                     water_temp.refresh( parseFloat(result['Temp'][0]) ?? 0);
                     cooler_temp.refresh( parseFloat(result['Temp'][1]) ?? 0);
-                    engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0);
+                    {# engine_speed.refresh( parseFloat(result['EngineSpeed']) ?? 0); #}
                     batt_voltage.refresh( parseFloat(result['BattVolt']) ?? 0);
 
                     //Mise à jour des paramètres du générateur
                     $('#l1l2').text(String(result['Vcg'][0] + " V"))
                     $('#l1l3').text(String(result['Vcg'][1] + " V"))
                     $('#l2l3').text(String(result['Vcg'][2] + " V"))
-                    $('#l1N').text(String(result['Vsg'][0] + " V"))
+                    {# $('#l1N').text(String(result['Vsg'][0] + " V"))
                     $('#l2N').text(String(result['Vsg'][1] + " V"))
-                    $('#l3N').text(String(result['Vsg'][2] + " V"))
+                    $('#l3N').text(String(result['Vsg'][2] + " V")) #}
                     $('#l1l2M').text(String(result['Vcm'][0] + " V"))
                     $('#l1l3M').text(String(result['Vcm'][1] + " V"))
                     $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                    $('#I1').text(String(result['I'][0] + " A"))
+                    {# $('#I1').text(String(result['I'][0] + " A"))
                     $('#I2').text(String(result['I'][1] + " A"))
                     $('#I3').text(String(result['I'][2] + " A"))
                     $('#idiff').text(String(result['Idiff'] + " mA"))   
-                    $('#freq').text(String(result['Freq'] + " Hz"))
+                    $('#freq').text(String(result['Freq'] + " Hz")) #}
                     $('#htm').text(String(result['HTM']))  
                     $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-
+                    displayNewData(Mixed_PSCosfi_Linechart, Object.values(result['date']), Object.values(result['Mix_PSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                    
                     //Affichage des derniers enregistrements données dynamiques
-                    $('#activePower').text(String(result['Power'][0] + " kW"))
+                    {# $('#activePower').text(String(result['Power'][0] + " kW"))
                     $('#reactivePower').text(String(result['Power'][1] + " kVAR"))
                     $('#apparentPower').text(String(result['Power'][2] + " VAR"))
-                    $('#cosfi').text(String(result['Cosfi']))
+                    $('#cosfi').text(String(result['Cosfi'])) #}
                     {# $('#trh').text(String(result['TRH'][0])) #}
                     $('#trhd').text(String(result['TRH'][1]))
                     $('#trhm').text(String(result['TRH'][2]))
@@ -1626,10 +1984,10 @@
                 }
             }).fail(function() { 
                 
-                console.log('FAIL to get noDatetime')
+                console.log('FAIL to get noDatetimeData')
                 
             });
-        }, 20000);
+        }, 60000);
         
         function updateAlarmStatus(id, value){
             if(value){
@@ -2509,7 +2867,7 @@
             // Danger
 
             swal.queue([{
-                title: 'the graphs will be updated for the date range :',
+                title: 'The graphs will be updated for the date range :',
                 confirmButtonText: 'Confirm',
                 text: 'From ' + startDate + ' To ' + endDate,
                 showCancelButton: true,
@@ -2543,7 +2901,7 @@
                                 if( Object.keys(result).length > 0 ){
                                     var dateLabel = Object.values(result['date']);
                                     //console.log(Object.values(result['CourbeCroisé']));
-                                    console.log(result);
+                                    {# console.log(result); #}
                                     {# console.log(Object.values(result['SymI']));
                                     console.log(Object.values(result['SymV'])); #}
                                     

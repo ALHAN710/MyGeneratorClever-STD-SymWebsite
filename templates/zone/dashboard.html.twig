@@ -29,7 +29,10 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#general" role="tab">General</a>
+            <a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#historical" role="tab">Historicals</a>
         </li>
         
         <li class="nav-item">
@@ -44,20 +47,8 @@
     <!-- Tab panes -->
     <div class="tab-content">
         
-        <div class="tab-pane active p-3" id="general" role="tabpanel">
+        <div class="tab-pane active p-3" id="overview" role="tabpanel">
             {# {{dump(type)}} #}
-            <div class="row">
-                <div class="col">
-                    <label class="my-3">Pick Date Ranges</label>
-                    <div class="input-group mb-3">  
-                        <input type="text" id="daterange" class="form-control" value="">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="dripicons-calendar"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {% if zone.type == 'PUE Calculation' %}
                 <div class="row">
                     <div class="col-12 col-sm-9">
@@ -67,7 +58,7 @@
                                     <div class="card-body">
                                         <h4 class="header-title mt-0 mb-4"></h4>
                                         <div class="chart-demo">
-                                            <div id="apex_mixed_pue_power" class="apex-charts"></div>
+                                            <div id="apex_mixed_pue_power_overview" class="apex-charts"></div>
                                         </div>                                        
                                     </div><!--end card-body-->
                                 </div><!--end card-->
@@ -79,7 +70,7 @@
                                     <div class="card-body">
                                         <h4 class="header-title mt-0 mb-4"></h4>
                                         <div class="chart-demo">
-                                            <div id="apex_mixed_climate" class="apex-charts"></div>
+                                            <div id="apex_mixed_climate_overview" class="apex-charts"></div>
                                         </div>                                        
                                     </div><!--end card-body-->
                                 </div><!--end card-->
@@ -209,6 +200,356 @@
                         </div><!--end card-->                        
                     </div>
                 </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_pue_energy_overview" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+
+                {# <div class="row ">
+                    <div class="col">
+                        <div class="card crm-data-card">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">
+                                            <i class="mdi mdi-spa rounded-circle bg-soft-primary"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8">
+                                        <h3 class="text-primary"><span id="instPUE">0</span></h3>
+                                        <p class="text-muted font-14 mb-0">Instant PUE</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card-->                                      
+                    </div>
+                    <div class="col">
+                        <div class="card crm-data-card">
+                            <div class="card-body"> 
+                                <div class="row">
+                                    <div class="col-sm-4 align-self-center">
+                                        <div class="data-icon">{ mdi mdi-spa }
+                                            <i class="mdi mdi-spa rounded-circle bg-soft-success"></i>
+                                        </div>
+                                    </div><!-- end col-->
+                                    <div class="col-sm-8">
+                                        <h3 class="text-success"><span id="intPUE">0</span></h3>
+                                        <p class="text-muted font-14 mb-0">Interval PUE</p>
+                                    </div><!-- end col-->
+                                </div><!-- end row-->                                                                                     
+                            </div><!--end card-body--> 
+                        </div><!--end card-->                                      
+                    </div>
+                </div> #}
+            {% else %}
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4">Active Energy Flow</h4>
+                                        <div class="">
+                                            <div id="apex_pie_active_energy_flow_overview" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div><!--end col-->
+                        </div>
+                        <div class="row">    
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4">Reactive Energy Flow</h4>
+                                        <div class="">
+                                            <div id="apex_pie_reactive_energy_flow_overview" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4"></h4>
+                                        <div class="table-responsive shopping-cart">
+                                            {# {{dump(smartModsProduction)}} #}
+                                            <table class="table mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th class="text-center">P (kW)</th>                                                        
+                                                        <th class="text-center">S (kVA)</th>                                                        
+                                                        <th class="text-center">CosPhi </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for smartMod in zone.smartMods %}
+                                                        {% if smartMod.modType ==  'Load Meter' %}
+                                                        <tr>
+                                                            <td>
+                                                                <p class="d-inline-block align-middle mb-0 product-name">{{smartMod.name}}</p> 
+                                                            </td>
+                                                            <td class="text-center"><span id="p_{{smartMod.id}}_overview">0.00</span></td>
+                                                            <td class="text-center"><span id="s_{{smartMod.id}}_overview">0.00</span></td>
+                                                            <td class="text-center"><span id="fp_{{smartMod.id}}_overview">0.00</span></td>                                                        
+                                                                                                
+                                                        </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div><!--end re-table-->                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                                
+                                <div class="row float-right">
+                                    <small>Last update <span id="update"> YYYY-MM-DD HH:mm:ss</span></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-4"></h4>
+                                        <div class="chart-demo">
+                                            <div id="apex_mixed_PSCosfi_overview" class="apex-charts"></div>
+                                        </div>                                        
+                                    </div><!--end card-body-->
+                                </div><!--end card-->
+                            </div><!--end col-->
+                        </div><!--end row-->
+                    </div>
+                </div>
+                
+            {% endif %}
+
+            {# {% if type == 'zone sans' %}
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_total_active_power" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->                            
+                </div><!--end row-->
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_total_energy" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_total_power_factor" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->                            
+                </div><!--end row-->
+            {% elseif type == 'zone avec' %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_power" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->                            
+                </div><!--end row-->
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_energy" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_power_factor" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->                            
+                </div><!--end row-->
+                { <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Column Chart with Datalabels</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_column2" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->    
+                </div> }
+                {% if smartMod %}
+                    {% if smartMod.nbPhases == 3 %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title mt-0 mb-4"></h4>
+                                    <div class="chart-demo">
+                                        <div id="apex_mixed_active_power" class="apex-charts"></div>
+                                    </div>                                        
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                            
+                    </div><!--end row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title mt-0 mb-4"></h4>
+                                    <div class="chart-demo">
+                                        <div id="apex_mixed_cosfi" class="apex-charts"></div>
+                                    </div>                                        
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                            
+                    </div><!--end row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title mt-0 mb-4"></h4>
+                                    <div class="chart-demo">
+                                        <div id="apex_mixed_voltage" class="apex-charts"></div>
+                                    </div>                                        
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                            
+                    </div><!--end row-->
+                    {% elseif smartMod.nbPhases == 1 %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title mt-0 mb-4"></h4>
+                                    <div class="chart-demo">
+                                        <div id="apex_mixed_PSCos" class="apex-charts"></div>
+                                    </div>                                        
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                            
+                    </div><!--end row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title mt-0 mb-4"></h4>
+                                    <div class="chart-demo">
+                                        <div id="apex_voltage" class="apex-charts"></div>
+                                    </div>                                        
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                            
+                    </div><!--end row-->
+                    {% endif %}
+                {% endif %}
+                
+                { <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Zoomable Timeseries</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_line3" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row--> }
+            {% elseif type == 'load meter' %}
+            {% endif %} #}
+            
+            
+        </div>
+        <div class="tab-pane p-3" id="historical" role="tabpanel">
+            {# {{dump(type)}} #}
+            <div class="row">
+                <div class="col">
+                    <label class="my-3">Pick Date Ranges</label>
+                    <div class="input-group mb-3">  
+                        <input type="text" id="daterange" class="form-control" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="dripicons-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if zone.type == 'PUE Calculation' %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_pue_power" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->                            
+                </div><!--end row-->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_climate" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
                 
                 <div class="row">
                     <div class="col-12">
@@ -978,7 +1319,1025 @@
     </script>
     
     {# <script src="/pages/jquery.crypto-dashboard.init.js"></script> #}
-    {# General panel script #}
+    {# Overview panel script #}
+    <script>
+        var options = {
+            chart: {
+                height: 320,
+                type: 'pie',
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+            legend: {
+                show: true,
+                position: 'bottom',
+                horizontalAlign: 'center',
+                verticalAlign: 'middle',
+                floating: false,
+                fontSize: '14px',
+                offsetX: 0,
+                offsetY: -10
+            },
+            tooltip: {
+                theme: "dark",
+                style: {
+                    color: '#fff',
+                }
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    chart: {
+                        height: 240
+                    },
+                    legend: {
+                        show: false
+                    },
+                }
+            }]
+        }
+        var ActiveEnergy_Piechart_overview = new ApexCharts(
+            document.querySelector("#apex_pie_active_energy_flow_overview"),
+            options
+        );
+        ActiveEnergy_Piechart_overview.render();
+        
+        var options = {
+            chart: {
+                height: 320,
+                type: 'pie',
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+            legend: {
+                show: true,
+                position: 'bottom',
+                horizontalAlign: 'center',
+                verticalAlign: 'middle',
+                floating: false,
+                fontSize: '14px',
+                offsetX: 0,
+                offsetY: -10
+            },
+            tooltip: {
+                theme: "dark",
+                style: {
+                    color: '#fff',
+                },
+                
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    chart: {
+                        height: 240
+                    },
+                    legend: {
+                        show: false
+                    },
+                }
+            }]
+        }
+        var ReactiveEnergy_Piechart_overview = new ApexCharts(
+            document.querySelector("#apex_pie_reactive_energy_flow_overview"),
+            options
+        );
+        ReactiveEnergy_Piechart_overview.render();
+                
+        {% if zone.type == 'PUE Calculation' %}
+        //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'IT Power',
+                type: 'line',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'DataCenter Power',
+                type: 'line',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }, {
+                name: 'PUE',
+                type: 'line',
+                data: []
+                //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"], //
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "IT Power (kW)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "DataCenter Power (kW)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "PUE"
+                    }
+                },
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2)
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+        
+        var Mixed_Pue_Power_Linechart_overview = new ApexCharts(
+            document.querySelector("#apex_mixed_pue_power_overview"),
+            options
+        );
+        Mixed_Pue_Power_Linechart_overview.render();
+
+        //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Temperature Indoor',
+                type: 'line',
+                data: []
+                //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+            }, {
+                name: 'Temperatue Outdoor',
+                type: 'line',
+                data: []
+                //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+            }, {
+                name: 'Humidity Indoor',
+                type: 'line',
+                data: []
+                //data: [84, 90, 94, 97, 95, 93, 80, 82]
+            }, {
+                name: 'Humidity Outdoor',
+                type: 'line',
+                data: []
+                //data: [90, 84, 97, 94, 93, 95, 84, 87]
+            }],
+            fill: {
+                opacity: [1, 1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: 'rgb(0, 143, 251)'
+                    },
+                    labels: {
+                        style: {
+                            color: 'rgb(0, 143, 251)',
+                        }
+                    },
+                    title: {
+                        text: "Temperature Indoor (°C)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "Temperature Outdoor (°C)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "Humidity Indoor (%)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "Humidity Outdoor (%)"
+                    }
+                },
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2)
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+        
+        var Mixed_Climate_Linechart_overview = new ApexCharts(
+            document.querySelector("#apex_mixed_climate_overview"),
+            options
+        );
+        Mixed_Climate_Linechart_overview.render();
+
+        //Mixed Energy charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            series: [{
+                name: 'Active Energy of {{zone.name}}',
+                type: 'column',
+                data: []
+                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+            }, {
+                name: 'Active Energy of Production equipments',
+                type: 'column',
+                data: []
+                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+            }, {
+                name: 'Interval PUE',
+                type: 'area',
+                data: []
+                //data: [20, 29, 37, 36, 44, 45, 50, 58]
+            }],
+            fill: {
+                opacity: [1, 1, 0.25],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            colors: ["#fbb624", "#77d0ba", "#e02040"],
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        }
+                    },
+                    title: {
+                        text: "Active Energy of {{zone.name}} (kWh)"
+                    },
+                },
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#77d0ba'
+                    },
+                    labels: {
+                        style: {
+                            color: '#77d0ba',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "Active Energy of Production Equipments (kWh)",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#e02040'
+                    },
+                    labels: {
+                        style: {
+                            color: '#e02040',
+                        }
+                    },
+                    title: {
+                        text: "Interval PUE"
+                    }
+                },
+            ],
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + ""
+                        } 
+                        return y;
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            },
+            legend: {
+                offsetY: -10,
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    yaxis: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        }
+        var Mixed_Pue_Energy_Linechart_overview = new ApexCharts(
+            document.querySelector("#apex_mixed_pue_energy_overview"),
+            options
+        );
+        Mixed_Pue_Energy_Linechart_overview.render();
+        {% else %}
+            //Mixed Apparent Power - Active Power - Cosphi charts
+        var options = {
+            chart: {
+                height: 380,
+                type: 'line',
+                stacked: false,
+                toolbar: {
+                    show: true
+                }
+            },
+            stroke: {
+                width: [2, 2, 2],
+                curve: 'smooth'
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%'
+                }
+            },
+            colors: ["#1ecab8", "#fbb624", "#f93b7a"],
+            series: [{
+                name: 'Apparent Power',
+                type: 'line',
+                //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+                data: []
+            }, {
+                name: 'Active Power',
+                type: 'line',
+                //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+                data: []
+            }, {
+                name: 'CosPhi',
+                type: 'line',
+                //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
+                data: []
+            }],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            //labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+            labels: [],
+            markers: {
+                size: 0
+            },
+            legend: {
+                offsetY: -10,
+                position: 'bottom',
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM YYYY').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+            },
+            yaxis: [
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#1ecab8'
+                    },
+                    labels: {
+                        style: {
+                            color: '#1ecab8',
+                        }
+                    },
+                    title: {
+                        text: "kVA"
+                    },
+                },
+
+                {
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#fbb624'
+                    },
+                    labels: {
+                        style: {
+                            color: '#fbb624',
+                        },
+                        offsetX: 10
+                    },
+                    title: {
+                        text: "kW",
+                    },
+                },
+                {
+                    opposite: true,
+                    axisTicks: {
+                        show: true,
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#f93b7a'
+                    },
+                    labels: {
+                        style: {
+                            color: '#f93b7a',
+                        }
+                    },
+                    title: {
+                        text: ""
+                    }
+                },
+
+            ],    
+            tooltip: {
+                shared: true,
+                intersect: false,
+                theme: "dark",
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + "";
+                        }
+                        return y;
+
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f3fa'
+            }
+        }
+        
+        var Mixed_PSCosfi_Linechart_overview = new ApexCharts(
+            document.querySelector("#apex_mixed_PSCosfi_overview"),
+            options
+        );
+
+        Mixed_PSCosfi_Linechart_overview.render();
+        {% endif %}
+        
+        var url_ = "{{ path('update_zone_overview_graphs') }}";
+        
+        var $data_ = JSON.stringify({
+            "startDate": moment().format("YYYY-MMMM-DD") + ' 00:00:00',
+            "endDate": moment().format("YYYY-MMMM-DD") + ' 23:59:59',
+            "zoneId": {{zone.id}},
+        });
+        setTimeout(
+            function(){ 
+                swal.queue([{
+                    title: 'Waiting...',
+                    confirmButtonText: 'Confirm',
+                    text: 'Please wait !',
+                    //showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    //confirmButtonClass: 'btn btn-primary',
+                    //cancelButtonClass: 'btn btn-danger ml-2',
+                    preConfirm: function () {
+                        return new Promise(function (resolve) { 
+                            $.ajax({
+                                type: "POST", // method type
+                                contentType: "application/json; charset=utf-8",
+                                url: url_, // /Target function that will be return result
+                                data: $data_, // parameter pass data is parameter name param is value
+                                dataType: "json",
+                                timeout: 120000, // 64241
+                                success: function (result) {
+                                    // $('.fa-sync').removeClass('fa-spin');
+                                    console.log(result);
+                                    
+                                    swal({
+                                        type: 'success', 
+                                        title: 'The graphs have been updated !',
+                                        // html: 'Submitted email: ' + email
+                                    });
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 2000);
+                                    if( Object.keys(result).length > 0 ){
+                                        var dateLabel = Object.values(result['date']);
+                                        console.log(result);
+                                        console.log(Object.values(result['PieActiveEnergy']));
+                                        {% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}
+                                            $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
+                                            $('#s_{{smartMod.id}}_overview').text(Object.values(result['S'])[{{loop.index0}}])
+                                            $('#fp_{{smartMod.id}}_overview').text(Object.values(result['FP'])[{{loop.index0}}])
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                                        //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                                        
+                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                                        
+                                        {% if zone.type == 'PUE Calculation' %}     
+                                        $("#instPUE").text(result['InstantPUE']);
+                                        //$("#intPUE").text(result['IntervalPUE']);
+                                        //console.log(Object.values(result['climateDate']));
+                                        displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                        displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
+                                        displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        {% else %}
+                                        displayNewData(Mixed_PSCosfi_Linechart_overview, dateLabel, Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        {% endif %}
+
+                                        var dataArray = [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ];
+                                        updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ], dataArray);
+                                        dataArray = [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ];
+                                        updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ], dataArray);
+                                    }
+                                },
+                                error: function (result) {
+                                    // console.log("Error");
+                                    // console.log(result);
+                                    swal('Oops...', 'Something went wrong!', 'error'
+                                    // footer: '<a href>Why do I have this issue?</a>'
+                                    );
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 5000);
+                                }
+                            });
+                        })
+                    },
+                    allowOutsideClick: false
+                }]);
+
+                $(".swal2-confirm").click();
+                //alert("Hello"); 
+                    
+            }
+        , 500);
+
+        setInterval(function () {
+            $.ajax({
+                type: "POST", // method type
+                contentType: "application/json; charset=utf-8",
+                url: url_, // /Target function that will be return result
+                data: $data_, // parameter pass data is parameter name param is value
+                dataType: "json",
+                timeout: 120000, // 64241
+                success: function (result) {
+                    // $('.fa-sync').removeClass('fa-spin');
+                    console.log(result);
+                    
+                    if( Object.keys(result).length > 0 ){
+                        var dateLabel = Object.values(result['date']);
+                        {# console.log(result); #}
+                        console.log(Object.values(result['PieActiveEnergy']));
+                        {% for smartMod in zone.smartMods %}
+                            {% if smartMod.modType ==  'Load Meter' %}
+                            $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
+                            $('#s_{{smartMod.id}}_overview').text(Object.values(result['S'])[{{loop.index0}}])
+                            $('#fp_{{smartMod.id}}_overview').text(Object.values(result['FP'])[{{loop.index0}}])
+                            {% endif %}
+                        {% endfor %}
+                        
+                        //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                        //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                        
+                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                    
+                        {% if zone.type == 'PUE Calculation' %}     
+                        $("#instPUE").text(result['InstantPUE']);
+                        //$("#intPUE").text(result['IntervalPUE']);
+                        //console.log(Object.values(result['climateDate']));
+                        displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                        displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
+                        displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                        {% else %}
+                        displayNewData(Mixed_PSCosfi_Linechart_overview, dateLabel, Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                        {% endif %}
+
+                        var dataArray = [{% for smartMod in zone.smartMods %}
+                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                            {% endfor %}
+                        ];
+                        updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                            {% endfor %}
+                        ], dataArray);
+                        dataArray = [{% for smartMod in zone.smartMods %}
+                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                            {% endfor %}
+                        ];
+                        updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                            {% endfor %}
+                        ], dataArray);
+                    }
+                },
+                error: function (result) {
+                    console.log("Something went wrong!");
+                    // console.log(result);
+                }
+            });
+        }, 120000);
+    </script>
+
+    {# Historical panel script #}
     <script>
         var options = {
             chart: {
@@ -1435,7 +2794,7 @@
                 },
                 x: {
                     formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY")
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
                     }
                 }
             },
@@ -2006,7 +3365,7 @@
         };
 
         var isConnected = false;
-        var wsbroker = location.hostname;  //"192.168.10.40";//mqtt websocket enabled broker
+        var wsbroker = "192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
         var wsport = 15675; // port for above 1883
 
         var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
@@ -2073,7 +3432,6 @@
             } 
         }, 10000);
     </script>
-
     {% endif %}
    
    {# Alarm panel script #}
@@ -2192,5 +3550,8 @@
                 allowOutsideClick: false
             }]);
         }
+   </script>
+   <script>
+        
    </script>
 {% endblock %}

@@ -51,8 +51,12 @@ class GensetController extends ApplicationController
             WHERE `id` = (SELECT max(`id`) FROM `datetime_data` WHERE `date_time` LIKE '2021-05-21%')*/
 
         // //dump($date);
+        $date = [];
+        $S = [];
+        $P = [];
+        $Cosfi = [];
 
-        $lastRecord = $manager->createQuery("SELECT d.p AS P, d.q AS Q, d.s AS S, d.cosfi AS Cosfi, d.totalRunningHours AS TRH,
+        /*$lastRecord = $manager->createQuery("SELECT d.p AS P, d.q AS Q, d.s AS S, d.cosfi AS Cosfi, d.totalRunningHours AS TRH,
                                         d.totalEnergy AS TEP, d.fuelInstConsumption AS FC, d.dateTime
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -63,7 +67,31 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m-d") . "%",
                 'smartModId'   => $id->getId()
             ))
+            ->getResult();*/
+
+        $data = $manager->createQuery("SELECT d.dateTime as dat, d.p, d.s, d.cosfi
+                                        FROM App\Entity\DatetimeData d 
+                                        JOIN d.smartMod sm
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId
+                                        ORDER BY dat ASC
+                                        
+                                        ")
+            ->setParameters(array(
+                //'selDate'      => $dateparam,
+                'nowDate'     => date("Y-m-d") . "%",
+                'smartModId'  => $id->getId()
+            ))
             ->getResult();
+
+
+        // dump($data);
+        foreach ($data as $d) {
+            $date[]    = $d['dat']->format('Y-m-d H:i:s');
+            $P[]       = number_format((float) $d['p'], 2, '.', '');
+            $S[]    = number_format((float) $d['s'], 2, '.', '');
+            $Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
+        }
 
         $NMIDay = $manager->createQuery("SELECT SUM(d.nbMainsInterruption) AS NMID
                                         FROM App\Entity\DatetimeData d
@@ -508,11 +536,11 @@ class GensetController extends ApplicationController
         return $this->json([
             'code'    => 200,
             'Vcg'     => [$noDatetimeData->getL12G() ?? 0, $noDatetimeData->getL13G() ?? 0, $noDatetimeData->getL23G() ?? 0],
-            'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
+            //'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
             'Vcm'     => [$noDatetimeData->getL12M() ?? 0, $noDatetimeData->getL13M() ?? 0, $noDatetimeData->getL23M() ?? 0],
-            'I'       => [$noDatetimeData->getI1() ?? 0, $noDatetimeData->getI2() ?? 0, $noDatetimeData->getI3() ?? 0],
-            'Power'   => [$lastRecord[0]['P'] ?? 0, $lastRecord[0]['Q'] ?? 0, $lastRecord[0]['S'] ?? 0],
-            'Cosfi'    => $lastRecord[0]['Cosfi'] ?? 0,
+            //'I'       => [$noDatetimeData->getI1() ?? 0, $noDatetimeData->getI2() ?? 0, $noDatetimeData->getI3() ?? 0],
+            //'Power'   => [$lastRecord[0]['P'] ?? 0, $lastRecord[0]['Q'] ?? 0, $lastRecord[0]['S'] ?? 0],
+            //'Cosfi'    => $lastRecord[0]['Cosfi'] ?? 0,
             'NMI'   => [$NMIDay[0]['NMID'] ?? 0, $NMIMonth[0]['NMIM'] ?? 0, $NMIYear[0]['NMIY'] ?? 0],
             'NPS'   => [$npsd, $npsm, $npsy],
             'TEP'    => [$lastRecord[0]['TEP'] ?? 0, $tepd, $tepm, $tepy],
@@ -520,12 +548,12 @@ class GensetController extends ApplicationController
             'FC'    => [$FCD[0]['FC'] ?? 0, $FCM[0]['FC'] ?? 0, $FCY[0]['FC'] ?? 0],
             'POE'   => $poe,
             'prevPOE' => $prev_poe,
-            'Freq'    => $noDatetimeData->getFreq() ?? 0,
-            'Idiff'   => $noDatetimeData->getIDiff() ?? 0,
+            //'Freq'    => $noDatetimeData->getFreq() ?? 0,
+            //'Idiff'   => $noDatetimeData->getIDiff() ?? 0,
             'Level'       => [$noDatetimeData->getFuelLevel() ?? 0, $noDatetimeData->getWaterLevel() ?? 0, $noDatetimeData->getOilLevel() ?? 0],
-            'Pressure'       => [$noDatetimeData->getAirPressure() ?? 0, $noDatetimeData->getOilPressure() ?? 0],
+            //'Pressure'       => [$noDatetimeData->getAirPressure() ?? 0, $noDatetimeData->getOilPressure() ?? 0],
             'Temp'       => [$noDatetimeData->getWaterTemperature() ?? 0, $noDatetimeData->getCoolerTemperature() ?? 0],
-            'EngineSpeed' => $noDatetimeData->getEngineSpeed() ?? 0,
+            //'EngineSpeed' => $noDatetimeData->getEngineSpeed() ?? 0,
             'BattVolt' => $noDatetimeData->getBattVoltage() ?? 0,
             'HTM' => $noDatetimeData->getHoursToMaintenance() ?? 0,
             'CGCR'       => [$noDatetimeData->getCg() ?? 0, $noDatetimeData->getCr() ?? 0],
@@ -542,7 +570,13 @@ class GensetController extends ApplicationController
             'ShortCircuit' => $noDatetimeData->getShortCircuit() ?? 0,
             'IncSeq'       => [$noDatetimeData->getMainsIncSeq() ?? 0, $noDatetimeData->getGensetIncSeq() ?? 0],
             'DifferentialIntervention' => $noDatetimeData->getDifferentialIntervention() ?? 0,
-            'Date1' => $noDatetimeData->getDateTime() ?? '2021-07-15 15:45:52',
+            'Date1' => $noDatetimeData->getDateTime() ?? '',
+            'date' => $date,
+            'Mix_PSCosfi'            => [$S, $P, $Cosfi],
+            // 'ActivePower'            => $P,
+            // 'Apparent Power'         => $S,
+            // 'Cosfi'            => $Cosfi,
+
         ], 200);
     }
 
@@ -650,8 +684,6 @@ class GensetController extends ApplicationController
             $S[]    = number_format((float) $d['s'], 2, '.', '');
             $Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
         }
-
-
 
         return $this->json([
             'code'         => 200,
@@ -876,7 +908,7 @@ class GensetController extends ApplicationController
                         $datetimeData->setTotalEnergy($paramJSON['EL']);
                     }
                     if (array_key_exists("FuelInstConsumption", $paramJSON)) {
-                        $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption']);
+                        $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption'] / 256.0);
                     }
                     if (array_key_exists("NPS", $paramJSON)) {
                         $datetimeData->setNbPerformedStartUps($paramJSON['NPS']);
