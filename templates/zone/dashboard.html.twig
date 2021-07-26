@@ -2213,13 +2213,16 @@
                                         var dateLabel = Object.values(result['date']);
                                         console.log(result);
                                         console.log(Object.values(result['PieActiveEnergy']));
-                                        {% for smartMod in zone.smartMods %}
+                                        $('#p_overview').text(Object.values(result['P']))
+                                        $('#s_overview').text(Object.values(result['S']))
+                                        $('#fp_overview').text(Object.values(result['FP']))
+                                        {# {% for smartMod in zone.smartMods %}
                                             {% if smartMod.modType ==  'Load Meter' %}
                                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
                                             $('#s_{{smartMod.id}}_overview').text(Object.values(result['S'])[{{loop.index0}}])
                                             $('#fp_{{smartMod.id}}_overview').text(Object.values(result['FP'])[{{loop.index0}}])
                                             {% endif %}
-                                        {% endfor %}
+                                        {% endfor %} #}
                                         
                                         //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                         //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
