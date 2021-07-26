@@ -45,43 +45,49 @@ class UserNotificationHandler implements MessageHandlerInterface
         if ($notifMessage->getMedia() !== 'Reset')  $contact = $this->em->find(Contacts::class, $notifMessage->getUserId());
         else $contact = $this->em->find(User::class, $notifMessage->getUserId());
 
+        if (!$contact) $contact = $this->em->find(User::class, $notifMessage->getUserId());
+
         if ($contact) {
             if ($notifMessage->getMedia() === 'Email') {
                 $object = 'Alerte ' . $notifMessage->getObject();
-                $to = $contact->getUser() !== null ? $contact->getUser()->getEmail() : $contact->getEmail();
-                $email = (new Email())
-                    ->from('stdigital.powermon.alerts@gmail.com')
-                    ->to($to)
-                    //->addTo('cabrelmbakam@gmail.com')
-                    //->cc('cabrelmbakam@gmail.com')
-                    //->bcc('bcc@example.com')
-                    //->replyTo('fabien@example.com')
-                    //->priority(Email::PRIORITY_HIGH)
-                    ->subject($object)
-                    ->text($notifMessage->getMessage());
-                //->html('<p>See Twig integration for better HTML integration!</p>');
+                $to = $contact->getEmail();
+                if ($to) {
+                    $email = (new Email())
+                        ->from('stdigital.powermon.alerts@gmail.com')
+                        ->to($to)
+                        //->addTo('cabrelmbakam@gmail.com')
+                        //->cc('cabrelmbakam@gmail.com')
+                        //->bcc('bcc@example.com')
+                        //->replyTo('fabien@example.com')
+                        //->priority(Email::PRIORITY_HIGH)
+                        ->subject($object)
+                        ->text($notifMessage->getMessage());
+                    //->html('<p>See Twig integration for better HTML integration!</p>');
 
-                //sleep(10);
-                $this->mailer->send($email);
+                    //sleep(10);
+                    $this->mailer->send($email);
+                }
             } else if ($notifMessage->getMedia() === 'Reset') {
                 $object = "PASSWORD RESET";
                 $to = $contact->getEmail();
-                $email = (new Email())
-                    ->from('stdigital.powermon.alerts@gmail.com')
-                    ->to($to)
-                    //->addTo('cabrelmbakam@gmail.com')
-                    //->cc('cabrelmbakam@gmail.com')
-                    //->bcc('bcc@example.com')
-                    //->replyTo('fabien@example.com')
-                    //->priority(Email::PRIORITY_HIGH)
-                    ->subject($object)
-                    ->text($notifMessage->getMessage());
-                //->html('<p>See Twig integration for better HTML integration!</p>');
+                if ($to) {
+                    $email = (new Email())
+                        ->from('stdigital.powermon.alerts@gmail.com')
+                        ->to($to)
+                        //->addTo('cabrelmbakam@gmail.com')
+                        //->cc('cabrelmbakam@gmail.com')
+                        //->bcc('bcc@example.com')
+                        //->replyTo('fabien@example.com')
+                        //->priority(Email::PRIORITY_HIGH)
+                        ->subject($object)
+                        ->text($notifMessage->getMessage());
+                    //->html('<p>See Twig integration for better HTML integration!</p>');
 
-                //sleep(10);
-                $this->mailer->send($email);
+                    //sleep(10);
+                    $this->mailer->send($email);
+                }
             } else if ($notifMessage->getMedia() === 'SMS') {
-                $phoneNumber = $contact->getUser() !== null ? $contact->getUser()->getPhoneNumber() : $contact->getPhoneNumber();
+                $phoneNumber = $contact->getPhoneNumber();
                 $phoneNumber = $contact->getCountryCode() . $phoneNumber;
                 $message = "=== Alerte {$notifMessage->getObject()} ===%0A%0ASalut M. {$contact->getUser()->getFirstName()}, {$notifMessage->getMessage()}";
                 //throw new \Exception("Pas Possible");
