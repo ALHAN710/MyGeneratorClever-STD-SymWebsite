@@ -2213,9 +2213,9 @@
                                         var dateLabel = Object.values(result['date']);
                                         console.log(result);
                                         console.log(Object.values(result['PieActiveEnergy']));
-                                        $('#p_overview').text(Object.values(result['P']))
-                                        $('#s_overview').text(Object.values(result['S']))
-                                        $('#fp_overview').text(Object.values(result['FP']))
+                                        $('#p_overview').text(String(Object.values(result['P'])))
+                                        $('#s_overview').text(String(Object.values(result['S'])))
+                                        $('#fp_overview').text(String(Object.values(result['FP'])))
                                         {# {% for smartMod in zone.smartMods %}
                                             {% if smartMod.modType ==  'Load Meter' %}
                                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
@@ -2297,9 +2297,9 @@
                         var dateLabel = Object.values(result['date']);
                         {# console.log(result); #}
                         console.log(Object.values(result['PieActiveEnergy']));
-                        $('#p_overview').text(Object.values(result['P']))
-                        $('#s_overview').text(Object.values(result['S']))
-                        $('#fp_overview').text(Object.values(result['FP']))
+                        $('#p_overview').text(String(Object.values(result['P'])))
+                        $('#s_overview').text(String(Object.values(result['S'])))
+                        $('#fp_overview').text(String(Object.values(result['FP'])))
                         {# {% for smartMod in zone.smartMods %}
                             {% if smartMod.modType ==  'Load Meter' %}
                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
