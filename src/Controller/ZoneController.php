@@ -300,7 +300,7 @@ class ZoneController extends ApplicationController
                 ))
                 ->getResult();
 
-            dump($commonData);
+            //dump($commonData);
 
             //die();
             foreach ($commonData as $d) {
