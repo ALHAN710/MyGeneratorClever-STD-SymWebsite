@@ -1877,13 +1877,13 @@
                     $('#tepm').text(String(result['TEP'][2]))
                     $('#tepy').text(String(result['TEP'][3]))
 
-                    $('#fcd').text( String( parseFloat(result['FC'][0]).toFixed(2) ) )
-                    $('#fcm').text( String( parseFloat(result['FC'][1]).toFixed(2) ) )
-                    $('#fcy').text( String( parseFloat(result['FC'][2]).toFixed(2) ) )
+                    $('#fcd').text( String( (parseFloat(result['FC'][0])* parseFloat(result['TRH'][1])).toFixed(2) ) )
+                    $('#fcm').text( String( (parseFloat(result['FC'][1])* parseFloat(result['TRH'][2])).toFixed(2) ) )
+                    $('#fcy').text( String( (parseFloat(result['FC'][2])* parseFloat(result['TRH'][3])).toFixed(2) ) )
 
-                    $('#fcdp').text( String( parseFloat(result['FC'][0]*{{smartMod.fuelPrice}}).toFixed(2) ) )
-                    $('#fcmp').text( String( parseFloat(result['FC'][1]*{{smartMod.fuelPrice}}).toFixed(2) ) )
-                    $('#fcyp').text( String( parseFloat(result['FC'][2]*{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    $('#fcdp').text( String( parseFloat(result['FC'][0] * parseFloat(result['TRH'][1]) *{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    $('#fcmp').text( String( parseFloat(result['FC'][1] * parseFloat(result['TRH'][2]) *{{smartMod.fuelPrice}}).toFixed(2) ) )
+                    $('#fcyp').text( String( parseFloat(result['FC'][2] * parseFloat(result['TRH'][3]) *{{smartMod.fuelPrice}}).toFixed(2) ) )
                     
                     $('#poed').text( String( (result['POE'][0]).toFixed(2) ) )
                     $('#poem').text( String( parseFloat(result['POE'][1]).toFixed(2) ) )
