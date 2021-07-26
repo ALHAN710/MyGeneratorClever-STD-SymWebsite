@@ -644,7 +644,7 @@ class ZoneController extends ApplicationController
                 'date'    => $dateE,
                 'dateP'    => $dateP,
                 'Date1'    => $lastRecord[0]['dt'] ?? '',
-                'datePSCosfi'    => $dateP,
+                'datePSCosfi'    => $datePSCosfi,
                 'climateDate'   => $dateClimate,
                 'xscale'    => $xScale,
                 'InstantPUE' => $InstantPUE,
