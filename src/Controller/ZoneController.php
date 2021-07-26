@@ -189,9 +189,9 @@ class ZoneController extends ApplicationController
         $date        = [];
         $EA_flow   = [];
         $ER_flow = [];
-        $S = [];
-        $P = [];
-        $FP_flow = [];
+        $S = 0.00;
+        $P = 0.00;
+        $FP_flow = 0.00;
         $p = [];
         $s = [];
         $fp = [];
@@ -248,9 +248,9 @@ class ZoneController extends ApplicationController
                 if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
                     $EA_flow[$smartMod->getId()]   = 0.00;
                     $ER_flow[$smartMod->getId()] = 0.00;
-                    $P['' . $smartMod->getId()] = "0.00";
-                    $S['' . $smartMod->getId()] = "0.00";
-                    $FP_flow['' . $smartMod->getId()] = "0.00";
+                    // $P['' . $smartMod->getId()] = "0.00";
+                    // $S['' . $smartMod->getId()] = "0.00";
+                    // $FP_flow['' . $smartMod->getId()] = "0.00";
                 }
             }
             //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
@@ -300,7 +300,7 @@ class ZoneController extends ApplicationController
                 ))
                 ->getResult();
 
-            // dump($commonData);
+            dump($commonData);
 
             //die();
             foreach ($commonData as $d) {
