@@ -6,7 +6,7 @@ use Exception;
 use App\Entity\User;
 //use App\Entity\User;
 use Twig\Environment;
-use Twilio\Rest\Client;
+//use Twilio\Rest\Client;
 use App\Entity\Contacts;
 use Symfony\Component\Mime\Email;
 use App\Message\UserNotificationMessage;
@@ -29,11 +29,12 @@ class UserNotificationHandler implements MessageHandlerInterface
 
     private $client;
 
-    public function __construct(EntityManagerInterface $em, HttpClientInterface $client, Environment $twig, TexterInterface $texter, MailerInterface $mailer)
+    public function __construct(EntityManagerInterface $em, HttpClientInterface $client, Environment $twig, TexterInterface $texter, string $fromNumber, MailerInterface $mailer)
     {
         $this->em = $em;
         $this->twig = $twig;
         $this->texter = $texter;
+        $this->fromNumber = $fromNumber;
         $this->mailer = $mailer;
         $this->client = $client;
     }
