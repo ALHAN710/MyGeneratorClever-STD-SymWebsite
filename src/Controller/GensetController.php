@@ -143,7 +143,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
         $firstDatetimeDataDayRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -168,7 +168,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
         $lastDatetimeDataDayRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -193,7 +193,7 @@ class GensetController extends ApplicationController
         }
 
         $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -219,7 +219,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
         $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -257,7 +257,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
         $firstDatetimeDataYearRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -283,7 +283,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
         $lastDatetimeDataYearRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
-                                        d.nbPerformedStartUps AS NPS
+                                        MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
