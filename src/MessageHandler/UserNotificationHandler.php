@@ -88,7 +88,7 @@ class UserNotificationHandler implements MessageHandlerInterface
             } else if ($notifMessage->getMedia() === 'SMS') {
                 $phoneNumber = $contact->getPhoneNumber();
                 $phoneNumber = $contact->getCountryCode() . $phoneNumber;
-                $message = "=== Alerte {$notifMessage->getObject()} ===%0A%0ASalut M. {$contact->getUser()->getFirstName()}, {$notifMessage->getMessage()}";
+                $message = "=== Alerte {$notifMessage->getObject()} ===%0A%0ASalut M. {$contact->getFirstName()}, {$notifMessage->getMessage()}";
                 //throw new \Exception("Pas Possible");
                 //dump($message);
                 $this->client->request(
