@@ -50,41 +50,41 @@ class UserNotificationHandler implements MessageHandlerInterface
             if ($notifMessage->getMedia() === 'Email') {
                 $object = 'Alerte ' . $notifMessage->getObject();
                 $to = 'alhadoumpascal@gmail.com'; //$contact->getEmail();
-                if ($to) {
-                    $email = (new Email())
-                        ->from('stdigital.powermon.alerts@gmail.com')
-                        ->to($to)
-                        //->addTo('cabrelmbakam@gmail.com')
-                        //->cc('cabrelmbakam@gmail.com')
-                        //->bcc('bcc@example.com')
-                        //->replyTo('fabien@example.com')
-                        //->priority(Email::PRIORITY_HIGH)
-                        ->subject($object)
-                        ->text($notifMessage->getMessage());
-                    //->html('<p>See Twig integration for better HTML integration!</p>');
+                //if ($to) {
+                $email = (new Email())
+                    ->from('stdigital.powermon.alerts@gmail.com')
+                    ->to($to)
+                    //->addTo('cabrelmbakam@gmail.com')
+                    //->cc('cabrelmbakam@gmail.com')
+                    //->bcc('bcc@example.com')
+                    //->replyTo('fabien@example.com')
+                    //->priority(Email::PRIORITY_HIGH)
+                    ->subject($object)
+                    ->text($notifMessage->getMessage());
+                //->html('<p>See Twig integration for better HTML integration!</p>');
 
-                    //sleep(10);
-                    $this->mailer->send($email);
-                }
+                //sleep(10);
+                $this->mailer->send($email);
+                //}
             } else if ($notifMessage->getMedia() === 'Reset') {
                 $object = "PASSWORD RESET";
                 $to = $contact->getEmail();
-                if ($to) {
-                    $email = (new Email())
-                        ->from('stdigital.powermon.alerts@gmail.com')
-                        ->to($to)
-                        //->addTo('cabrelmbakam@gmail.com')
-                        //->cc('cabrelmbakam@gmail.com')
-                        //->bcc('bcc@example.com')
-                        //->replyTo('fabien@example.com')
-                        //->priority(Email::PRIORITY_HIGH)
-                        ->subject($object)
-                        ->text($notifMessage->getMessage());
-                    //->html('<p>See Twig integration for better HTML integration!</p>');
+                //if ($to) {
+                $email = (new Email())
+                    ->from('stdigital.powermon.alerts@gmail.com')
+                    ->to($to)
+                    //->addTo('cabrelmbakam@gmail.com')
+                    //->cc('cabrelmbakam@gmail.com')
+                    //->bcc('bcc@example.com')
+                    //->replyTo('fabien@example.com')
+                    //->priority(Email::PRIORITY_HIGH)
+                    ->subject($object)
+                    ->text($notifMessage->getMessage());
+                //->html('<p>See Twig integration for better HTML integration!</p>');
 
-                    //sleep(10);
-                    $this->mailer->send($email);
-                }
+                //sleep(10);
+                $this->mailer->send($email);
+                //}
             } else if ($notifMessage->getMedia() === 'SMS') {
                 $phoneNumber = '690442311'; //$contact->getPhoneNumber();
                 $phoneNumber = $contact->getCountryCode() . $phoneNumber;
