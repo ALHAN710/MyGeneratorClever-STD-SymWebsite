@@ -201,10 +201,10 @@ class AlarmController extends ApplicationController
                 if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 else if ($alarmCode->getType() === 'FUEL') $message = $alarmCode->getLabel() . ' <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
 
-                /*foreach ($site->getContacts() as $contact) {
+                foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }*/
+                }
                 $messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
                 $messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
                 $manager->persist($alarmReporting);
