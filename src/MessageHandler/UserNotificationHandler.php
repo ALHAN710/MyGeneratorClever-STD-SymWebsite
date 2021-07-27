@@ -49,7 +49,7 @@ class UserNotificationHandler implements MessageHandlerInterface
         if ($contact) {
             if ($notifMessage->getMedia() === 'Email') {
                 $object = 'Alerte ' . $notifMessage->getObject();
-                $to = 'alhadoumpascal@gmail.com'; //$contact->getEmail();
+                $to = $contact->getEmail();
                 //if ($to) {
                 $email = (new Email())
                     ->from('stdigital.powermon.alerts@gmail.com')
@@ -86,7 +86,7 @@ class UserNotificationHandler implements MessageHandlerInterface
                 $this->mailer->send($email);
                 //}
             } else if ($notifMessage->getMedia() === 'SMS') {
-                $phoneNumber = '690442311'; //$contact->getPhoneNumber();
+                $phoneNumber = $contact->getPhoneNumber();
                 $phoneNumber = $contact->getCountryCode() . $phoneNumber;
                 $message = "=== Alerte {$notifMessage->getObject()} ===%0A%0ASalut M. {$contact->getFirstName()}, {$notifMessage->getMessage()}";
                 //throw new \Exception("Pas Possible");
