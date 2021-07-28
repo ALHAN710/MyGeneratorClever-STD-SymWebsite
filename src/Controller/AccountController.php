@@ -206,9 +206,9 @@ class AccountController extends ApplicationController
 But don’t worry ! You can use the following code to reset your password : " . $code . "
 
 Thanks,
-The ST DIGITAL Power Monitoring Team";
+The ST DIGITAL Technical Monitoring Team";
             //$this->sendEmail($mailer, $email, $object, $message);
-            $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message, 'Reset'));
+            $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message, 'Reset', ''));
         } else if ($paramJSON['codeVerif'] != null) {
             $Verificationcode = $paramJSON['codeVerif'];
             $id = substr($Verificationcode, 5);
