@@ -861,7 +861,7 @@
                                             </table><!--end /table-->
                                         </div>
                                         <div class="row mt-3">
-                                            <span class="mr-4 text-center"><i class="fas fa-circle text-danger mr-2"></i>OFF</span><span class="text-center"><i class="fas fa-circle text-success mr-2"></i>ON </span>
+                                            <span class="mr-4 text-center"><i class="fas fa-circle text-danger mr-2"></i>ON</span><span class="text-center"><i class="fas fa-circle text-success mr-2"></i>OFF </span>
                                         </div>
                                     </div><!--end card-body-->
                                 </div><!--end card-->
@@ -1990,7 +1990,7 @@
         }, 60000);
         
         function updateAlarmStatus(id, value){
-            if(value){
+            if(!value){
                 id.removeClass('text-danger')
                 id.addClass('text-success')
             }
