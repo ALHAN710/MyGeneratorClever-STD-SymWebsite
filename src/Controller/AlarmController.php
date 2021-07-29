@@ -177,7 +177,6 @@ class AlarmController extends ApplicationController
 
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
-
         $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $modId]);
         if ($smartMod) {
             $alarmCode = $manager->getRepository('App:Alarm')->findOneBy(['code' => $paramJSON['code']]);
@@ -205,13 +204,14 @@ class AlarmController extends ApplicationController
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
                 }
-                $messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
-                $messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
+                //$messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
+                //$messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
                 $manager->persist($alarmReporting);
                 $manager->flush();
             }
             return $this->json([
                 'code'    => 200,
+                //'smartMod'  => "{$smartMod->getModuleId()}",
                 'date'  => $date->format('d F Y H:i:s')
             ], 200);
         }

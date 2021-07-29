@@ -7,12 +7,18 @@ use DateTime;
 use DateInterval;
 use App\Entity\SmartMod;
 use App\Entity\DatetimeData;
+use App\Entity\AlarmReporting;
 use App\Entity\NoDatetimeData;
+use App\Message\UserNotificationMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\ApplicationController;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 //use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -716,7 +722,6 @@ class GensetController extends ApplicationController
         // //dump($content);
         //die();
 
-
         //Recherche du module dans la BDD
         $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $modId]);
 
@@ -727,10 +732,17 @@ class GensetController extends ApplicationController
             //$dataMod->setVamin($paramJSON['Va'][0]);
 
             if ($smartMod->getModType() == 'FUEL') {
+                $isNew = false;
+                $oldData = null;
+                $mess = "";
+                //$response = new ResponseInterface();
                 $dataMod = $smartMod->getNoDatetimeData();
                 if (!$dataMod) {
                     $dataMod = new NoDatetimeData();
                     $dataMod->setSmartMod($smartMod);
+                    $isNew = true;
+                } else {
+                    $oldData = clone $smartMod->getNoDatetimeData();
                 }
                 $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
 
@@ -824,6 +836,119 @@ class GensetController extends ApplicationController
                     ->setGensetIncSeq($paramJSON['GIS'])
                     ->setDifferentialIntervention($paramJSON['DIT'])
                     ->setSmartMod($smartMod);
+
+
+                if (!$isNew) {
+                    $BATT = "MINB"; // 0
+                    $MAINS = "MAIAB"; // 1
+                    $SPEED = "OVSPD"; // 2
+                    $LOAD = "OVLOD"; // 3
+                    $VOLT = "MINV"; // 4
+                    $FREQ = "MINF"; // 5
+                    $GENRUN = "GENR"; // 6
+                    $FUEL = "LOFL"; // 7
+                    $DIFFC = "DIFFC"; // 8
+                    $WATFL = "WATFL"; // 9
+
+                    if ($oldData->getMinBattVolt()  === 0 && $paramJSON['MinBV']  === 1) {
+                        $mess = "{\"code\":\"{$BATT}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getCr()  === 1 && $paramJSON['CR']  === 0) {
+                        $mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getOverspeed() === 0 && $paramJSON['Overspeed']  === 1) {
+                        $mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getOverload() === 0 && $paramJSON['Overload'] === 1) {
+                        $mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getMinVolt() === 0 && $paramJSON['MinVolt'] === 1) {
+                        $mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getMinFreq() === 0 && $paramJSON['MinFr'] === 1) {
+                        $mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess' => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getGensetRunning() === 0 && $paramJSON['GenRun'] === 1) {
+                        $mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                            'mess' => $mess,
+                            'modId'  => $smartMod->getModuleId(),
+                        ]);
+                    }
+                    if ($oldData->getLowFuel() === 0 && $paramJSON['LowFuel'] === 1) {
+                        $mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                            'mess' => $mess,
+                            'modId'  => $smartMod->getModuleId(),
+                        ]);
+                    }
+                    if ($oldData->getDifferentialIntervention() === 0 && $paramJSON['DIT'] === 1) {
+                        $mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                            'mess' => $mess,
+                            'modId'  => $smartMod->getModuleId(),
+                        ]);
+                    }
+                    if ($oldData->getPresenceWaterInFuel() === 0 && $paramJSON['PWF'] === 1) {
+                        $mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                            'mess' => $mess,
+                            'modId'  => $smartMod->getModuleId(),
+                        ]);
+                    }
+                }
             }
 
             // //dump($dataMod);
@@ -834,7 +959,14 @@ class GensetController extends ApplicationController
 
             return $this->json([
                 'code' => 200,
-                'received' => $paramJSON
+                'received' => $paramJSON,
+                // 'status'   => $response->getStatusCode(),
+                // 'content' => $response->getContent(),
+                //'contentType' => $response->getHeaders()['content-type'][0],
+                //'old'   => $oldData->getGensetRunning(),
+                //'new'   => $paramJSON['GenRun'],
+                //'Url'   => "http://127.0.0.1/index.php/alarm/notification/{$smartMod->getModuleId()}",
+                //'mess'   => $mess
 
             ], 200);
         }
@@ -940,5 +1072,61 @@ class GensetController extends ApplicationController
             'received' => $paramJSON
 
         ], 403);
+    }
+
+    public function sendToAlarmController($mess, $modId, EntityManagerInterface $manager, HttpClientInterface $client, MessageBusInterface $messageBus)
+    {
+        /*return $this->json([
+            'mess'    => $mess,
+            'modId' => $modId,
+        ], 200);*/
+        $paramJSON = $this->getJSONRequest($mess);
+        $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $modId]);
+        if ($smartMod) {
+            $alarmCode = $manager->getRepository('App:Alarm')->findOneBy(['code' => $paramJSON['code']]);
+            if ($alarmCode) {
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) !== false ? DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) : new DateTime('now');
+                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                $alarmReporting = new AlarmReporting();
+                $alarmReporting->setSmartMod($smartMod)
+                    ->setAlarm($alarmCode)
+                    ->setCreatedAt($date);
+
+
+                if ($smartMod->getSite()) $site = $smartMod->getSite();
+                else {
+                    foreach ($smartMod->getZones() as $zone) {
+                        $site = $zone->getSite();
+                        if ($site) break;
+                    }
+                }
+
+                if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                else if ($alarmCode->getType() === 'FUEL') $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+
+                foreach ($site->getContacts() as $contact) {
+                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
+                    //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
+                }
+                $messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
+                $messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
+                $manager->persist($alarmReporting);
+                $manager->flush();
+                return $this->json([
+                    'code'    => 200,
+                    'alarmCode'  => "{$alarmCode->getMedia()}",
+                    'date'  => $date->format('d F Y H:i:s')
+                ], 200);
+            }
+            return $this->json([
+                'code'    => 200,
+                'smartMod'  => "{$smartMod->getModuleId()}",
+                //'date'  => $date->format('d F Y H:i:s')
+            ], 200);
+        }
+
+        return $this->json([
+            'code'         => 500,
+        ], 500);
     }
 }
