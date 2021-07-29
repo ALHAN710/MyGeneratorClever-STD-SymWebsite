@@ -1791,7 +1791,7 @@
             },
             yaxis: [
                 {
-                    axisTicks: {
+                    {# axisTicks: {
                         show: true,
                     },
                     axisBorder: {
@@ -1802,13 +1802,14 @@
                         style: {
                             color: 'rgb(0, 143, 251)',
                         }
-                    },
+                    }, #}
                     title: {
-                        text: "Temperature Indoor (°C)"
+                        text: "Temperature (°C)"
                     },
                 },
                 {
-                    axisTicks: {
+                    show: false,
+                    {# axisTicks: {
                         show: true,
                     },
                     axisBorder: {
@@ -1822,10 +1823,11 @@
                     },
                     title: {
                         text: "Temperature Outdoor (°C)"
-                    },
+                    }, #}
                 },
                 {
-                    axisTicks: {
+                    opposite: true,
+                    {# axisTicks: {
                         show: true,
                     },
                     axisBorder: {
@@ -1837,14 +1839,15 @@
                             color: '#77d0ba',
                         },
                         offsetX: 10
-                    },
+                    }, #}
                     title: {
-                        text: "Humidity Indoor (%)",
+                        text: "Humidity (%)",
                     },
                 },
                 {
                     opposite: true,
-                    axisTicks: {
+                    show: false,
+                    {# axisTicks: {
                         show: true,
                     },
                     axisBorder: {
@@ -1858,7 +1861,7 @@
                     },
                     title: {
                         text: "Humidity Outdoor (%)"
-                    }
+                    } #}
                 },
             ],
             tooltip: {
