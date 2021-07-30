@@ -26,12 +26,23 @@
 {# <li class="breadcrumb-item active">Home</li> #}
 {% endblock %}
 
+{% block topTitle %}
+{{site.name|capitalize}} Overview
+{% endblock %}
+
 {% block pageTitle %}
 {# ST-DIGITAL Technical Monitoring web portal #}
 {% endblock %}
 
 {% block body %}
-
+<div class="row">
+    <div class="col-12 col-sm-2"> </div>
+    <div class="col-12 col-sm-2"> </div>
+    <div class="col-12 col-sm-8 text-right mr-auto">
+        <h5 class="">{{site.name|capitalize}} Overview</h5>
+    </div>
+    
+</div>
 <div class="row">
 
     <div class="col-12 col-sm-3">
@@ -298,13 +309,6 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-sm-2"> </div>
-    <div class="col-12 col-sm-8 text-center">
-        <h3 class="">{{site.name|capitalize}} Overview</h3>
-    </div>
-    <div class="col-12 col-sm-2"> </div>
-</div>
 
 {% endblock %}
 
