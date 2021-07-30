@@ -1398,6 +1398,98 @@
 
     </script>
 
+    <script>
+        setTimeout(
+            function(){ 
+                var url_ = "{{ path('update_load_meter_graphs') }}";
+                var drp_ = $('#daterange').data('daterangepicker');
+                console.log('drp = ' + drp.startDate.format('YYYY-MM-DD'));
+                var startDate_ = drp.startDate.format('YYYY-MM-DD');
+                var endDate_ = drp.endDate.format('YYYY-MM-DD');
+
+                var $data_ = JSON.stringify({
+                    //"type": type, // tabGridId,
+                    "startDate": startDate + ' 00:00:00',
+                    "endDate": endDate + '23:59:59', 
+                    "id":{{smartMod.id }},
+                    {# "zoneId": {{zone.id}}, #}
+                });
+                swal.queue([{
+                    title: 'Waiting...',
+                    confirmButtonText: 'Confirm',
+                    text: 'Please wait !',
+                    //showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    //confirmButtonClass: 'btn btn-primary',
+                    //cancelButtonClass: 'btn btn-danger ml-2',
+                    preConfirm: function () {
+                        return new Promise(function (resolve) { 
+                            $.ajax({
+                                type: "POST", // method type
+                                contentType: "application/json; charset=utf-8",
+                                url: url_, // /Target function that will be return result
+                                data: $data_, // parameter pass data is parameter name param is value
+                                dataType: "json",
+                                timeout: 120000, // 64241
+                                success: function (result) {
+                                    // $('.fa-sync').removeClass('fa-spin');
+                                    console.log(result);
+                                    
+                                    swal({
+                                        type: 'success', 
+                                        title: 'The graphs have been updated !',
+                                        // html: 'Submitted email: ' + email
+                                    });
+
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 2000);
+
+                                    if( Object.keys(result).length > 0 ){
+                                        var dateLabel = Object.values(result['date']);
+                                        //console.log(Object.values(result['CourbeCroisé']));
+                                        console.log(result);
+                                                                            
+                                        
+                                        displayNewData(MixedEnergy_Linechart, Object.values(result['dateE']), Object.values(result['MixedEnergy']), [startDate, endDate], 2, 'day');
+                                        
+                                        {% if smartMod.nbPhases == 3 %}
+                                        displayNewData(MixedActivePower_Linechart, dateLabel, Object.values(result['MixedActivePower']), [startDate, endDate], 3, 'day');
+                                        displayNewData(MixedCosfi_Linechart, dateLabel, Object.values(result['MixedCosfi']), [startDate, endDate], 3, 'day');
+                                        displayNewData(MixedVoltage_Linechart, dateLabel, Object.values(result['MixedVoltage']), [startDate, endDate], 3, 'day');
+                                        
+                                        {% elseif smartMod.nbPhases == 1 %}
+                                        displayNewData(MixedPSCos_Linechart, dateLabel, Object.values(result['MixedPSCos']), [startDate, endDate], 3, 'day');
+                                        displayNewData(Voltage_Linechart, dateLabel, Object.values(result['Voltage']), [startDate, endDate], 1, 'day');
+                                        
+                                        {% endif %}
+                                                                                                                
+                                    }
+                                },
+                                error: function (result) {
+                                    // console.log("Error");
+                                    // console.log(result);
+                                    swal('Oops...', 'Something went wrong!', 'error'
+                                    // footer: '<a href>Why do I have this issue?</a>'
+                                    );
+
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 5000);
+                                }
+                            });
+                        })
+                    },
+                    allowOutsideClick: false
+                }]);
+
+                $(".swal2-confirm").click();
+                //alert("Hello"); 
+                
+            }
+        , 500);
+    </script>
+
 
         
 {% endblock %}
