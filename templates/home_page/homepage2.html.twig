@@ -559,6 +559,15 @@
                                     if( Object.keys(result).length > 0 ){
                                         var dateLabel = Object.values(result['datePue']);
                                         console.log(result);
+
+                                        //Mise à jour des paramètres du générateur
+                                        $('#l1l2').text(String(result['Vcg'][0] + " V"))
+                                        $('#l1l3').text(String(result['Vcg'][1] + " V"))
+                                        $('#l2l3').text(String(result['Vcg'][2] + " V"))
+                                        $('#l1l2M').text(String(result['Vcm'][0] + " V"))
+                                        $('#l1l3M').text(String(result['Vcm'][1] + " V"))
+                                        $('#l2l3M').text(String(result['Vcm'][2] + " V"))
+                                        
                                         
                                         if(parseInt(result['CGCR'][0])){//CG = 1
                                             $('#cg').removeClass('badge-danger')
@@ -615,7 +624,7 @@
                                         if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
                                         {% if zone > 0 %}     
-                                        {# $("#instPUE").text(result['InstantPUE']); #}
+                                        $("#instPUE").text(result['InstantPUE']);
                                         //$("#intPUE").text(result['IntervalPUE']);
                                         //console.log(Object.values(result['climateDate']));
                                         {# var dataLabel = Object.values(result['date']); #}
@@ -660,6 +669,14 @@
                     if( Object.keys(result).length > 0 ){
                         var dateLabel = Object.values(result['datePue']);
                         console.log(result);
+
+                        //Mise à jour des paramètres du générateur
+                        $('#l1l2').text(String(result['Vcg'][0] + " V"))
+                        $('#l1l3').text(String(result['Vcg'][1] + " V"))
+                        $('#l2l3').text(String(result['Vcg'][2] + " V"))
+                        $('#l1l2M').text(String(result['Vcm'][0] + " V"))
+                        $('#l1l3M').text(String(result['Vcm'][1] + " V"))
+                        $('#l2l3M').text(String(result['Vcm'][2] + " V"))
                         
                         if(parseInt(result['CGCR'][0])){//CG = 1
                             $('#cg').removeClass('badge-danger')
@@ -715,7 +732,7 @@
                         if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
                         {% if zone > 0 %}     
-                        {# $("#instPUE").text(result['InstantPUE']); #}
+                        $("#instPUE").text(result['InstantPUE']);
                         //$("#intPUE").text(result['IntervalPUE']);
                         //console.log(Object.values(result['climateDate']));
                         {# var dataLabel = Object.values(result['date']); #}
