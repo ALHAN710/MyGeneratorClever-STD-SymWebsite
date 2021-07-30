@@ -1210,7 +1210,7 @@ class ZoneController extends ApplicationController
                         ))
                         ->getResult();*/
             } else {
-                $GensetParams = $manager->createQuery("SELECT MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
+                /*$GensetParams = $manager->createQuery("SELECT MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
                                         MAX(d.totalEnergy) - MIN(NULLIF(d.totalEnergy, 0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -1226,7 +1226,7 @@ class ZoneController extends ApplicationController
                     ->getResult();
                 // dump($GensetParams);
                 $NHU_FUEL = $GensetParams[0]['TRH'] ?? 0;
-                $NHU_Grid = $nbHours - $NHU_FUEL;
+                $NHU_Grid = $nbHours - $NHU_FUEL;*/
                 /*
                      SELECT  SUBSTRING(`date_time`,12,8) AS dt, SUM(`ea`) AS kWh, SUM(`pmoy`) AS kW 
                     FROM `load_data_energy` d
@@ -1241,7 +1241,7 @@ class ZoneController extends ApplicationController
                 foreach ($zone->getSmartMods() as $smartMod) {
                     if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) $smartMods[] = $smartMod->getId();
                 }
-
+                /*
                 $Energy = $manager->createQuery("SELECT SUM(CASE 
                                                                 WHEN (d.dateTime BETWEEN CONCAT( SUBSTRING(d.dateTime,1,10), :hp1 ) AND CONCAT( SUBSTRING(d.dateTime,1,10), :hp2 ) )
                                                                     OR (d.dateTime BETWEEN CONCAT( SUBSTRING(d.dateTime,1,10), :hp3 ) AND CONCAT( SUBSTRING(d.dateTime,1,10), :hp4 ) ) THEN d.ea
@@ -1280,7 +1280,7 @@ class ZoneController extends ApplicationController
                         'smartMods'  => $smartMods,
                         //'zoneId'     => $zone->getId()
                     ))
-                    ->getResult();
+                    ->getResult();*/
                 // dump($Energy);
                 //
 
@@ -1351,7 +1351,7 @@ class ZoneController extends ApplicationController
                 // $NHD_Psous = ($Duration[0]['NHD_Psous'] * 2.0) / 60.0;
                 $NHD_Psous = ($NHD_Psous * 2.0) / 60.0;
                 $NHD_Psous = number_format((float) $NHD_Psous, 2, '.', '');
-                $tarifGridHP = $zone->getSite()->getTarification()->getTarifAcGridHP();
+                /*$tarifGridHP = $zone->getSite()->getTarification()->getTarifAcGridHP();
                 $tarifGridP = $zone->getSite()->getTarification()->getTarifAcGridP();
                 $tarifFuelHP = $zone->getSite()->getTarification()->getTarifAcFuelHP();
                 $tarifFuelP = $zone->getSite()->getTarification()->getTarifAcFuelP();
@@ -1373,7 +1373,7 @@ class ZoneController extends ApplicationController
                     $amountEAP = number_format((float) $amountEAP, 2, '.', '');
                     $amountEA = number_format((float) $amountEA, 2, '.', '');
                     $EATotal = number_format((float) $EATotal, 2, '.', '');
-                }
+                }*/
 
                 $PowerMax = $manager->createQuery("SELECT d.dateTime AS jour, SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS Smoy
                                                 FROM App\Entity\LoadDataEnergy d
@@ -1450,17 +1450,17 @@ class ZoneController extends ApplicationController
 
                 return $this->json([
                     'code'    => 200,
-                    'EAHP'  => $EAHP,
-                    'EAP'  => $EAP,
-                    'EATotal'  => $EATotal,
-                    'ERHP'  => $ERHP,
-                    'ERP'  => $ERP,
-                    'FP'  => $FP,
-                    'amountEAHP'  => $amountEAHP,
-                    'amountEAP'  => $amountEAP,
-                    'amountEA'  => $amountEA,
-                    'NHU_Grid'  => $NHU_Grid,
-                    'NHU_FUEL'  => $NHU_FUEL,
+                    //'EAHP'  => $EAHP,
+                    //'EAP'  => $EAP,
+                    //'EATotal'  => $EATotal,
+                    //'ERHP'  => $ERHP,
+                    //'ERP'  => $ERP,
+                    //'FP'  => $FP,
+                    //'amountEAHP'  => $amountEAHP,
+                    //'amountEAP'  => $amountEAP,
+                    //'amountEA'  => $amountEA,
+                    //'NHU_Grid'  => $NHU_Grid,
+                    //'NHU_FUEL'  => $NHU_FUEL,
                     'Smax' => $Smax,
                     'NHU_Psous'  => $NHU_Psous,
                     'NHD_Psous'  => $NHD_Psous

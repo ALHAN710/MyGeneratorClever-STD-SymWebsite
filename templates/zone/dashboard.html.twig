@@ -36,7 +36,7 @@
         </li>
         
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#energybilling" role="tab">Energy Billing</a>
+            <a class="nav-link" data-toggle="tab" href="#energybilling" role="tab">Billing</a>
         </li>                                                
         {# <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#alarm" role="tab">Alarm</a>
@@ -942,8 +942,9 @@
             
             <div class="card">
                 <div class="card-body">
-                    <h5 class="mt-0 mb-3 "><a href="#" id="histo" class="text-decoration"><u>Consulter l'historique</u> <i class="dripicons-arrow-up"></i></a></h5>
-                    <h5 class="mt-0 mb-3 d-none"><a href="#" id="fact" class="text-decoration"><u>Voir Facture</u></a></h5>
+                    {# <h5 class="mt-0 mb-3 "><a href="#" id="histo" class="text-decoration"><u>Consulter l'historique</u> <i class="dripicons-arrow-up"></i></a></h5>
+                    <h5 class="mt-0 mb-3 d-none"><a href="#" id="fact" class="text-decoration"><u>Voir Facture</u></a></h5> #}
+                    
                     {# <div class="table-responsive shopping-cart">
                         <table class="table mb-0">
                             <thead>
@@ -972,8 +973,8 @@
                         </table>
                     </div><!--end re-table--> #}
                     <div class="row rowFact">
-                        <div class="row">
-                            <div class="col">
+                        <div class="col-4">
+                            <div class="row">
                                 <label class="my-3">Pick Date Ranges</label>
                                 <div class="input-group mb-3">  
                                     <input type="text" id="daterangebilling" class="form-control" value="">
@@ -983,110 +984,146 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
+                    </div>
+                    <div class="row rowFact">
+                        <div class="col-2"></div>
+                        <div class="col-8">
 
-                                <h4 class="header-title mt-0 mb-3 text-center">Données de puissance</h4>
-                
-                                <div class="total-payment">
-                                    <table class="table mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td class="payment-title">Puissance souscrite zone (kVA)</td>
-                                                <td>{{zone.powerSubscribed}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Facteur de puissance</td>
-                                                <td><span id="PF">0.85</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Nombre d'heures d'utilisation Psous</td>
-                                                <td><span id="NHU_Psous">0</span> heures</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Nb d'heures d'utilisation source AC GRID</td>
-                                                <td ><span id="NHU_Grid">0</span> heures</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Nb d'heures d'utilisation source GE</td>
-                                                <td ><span id="NHU_GE">0</span> heures</td>
-                                            </tr>
-                                            {# <tr>
-                                                <td class="payment-title">Nb d'heures d'utilisation source DC</td>
-                                                <td ><span id="NHU_DC">0</span> heures</td>
-                                            </tr> #}
-                                            <tr>
-                                                <td class="payment-title">Durée de dépassement</td>
-                                                <td ><span id="DuréeDépassement">0</span> heures</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Puissance Max lue (kVA)</td>
-                                                <td><span id="SmaxLue">0</span> </td>
-                                            </tr>
-                                        </tbody>
-                                    </table><!--end table-->
-                                </div><!--end total-payment-->
-                            </div>
-                            <div class="col">
-                                <div class="table-responsive shopping-cart">
-                                    <table class="table mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th class="text-center">Consommation (kWh)</th>                                                        
-                                                <th class="text-center">Tarif (XAF/kWh)</th>
-                                                <th class="text-center">Montant (XAF)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p class="d-inline-block align-middle mb-0 product-name">Energie Active Pointe</p> 
-                                                </td>
-                                                <td class="text-center"><span id="EAP">0</span></td>
-                                                <td class="text-center"><span id="EAP_tarif">{{zone.site.tarification.tarifAcGridP}}</span></td>                                                        
-                                                <td class="text-center"><span id="EAP_Amount">0</span></td>                                                        
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    {# <img src="../assets/images/products/3.png" alt="" height="52"> #}
-                                                    <p class="d-inline-block align-middle mb-0 product-name">Energie Active Hors Pointe</p> 
-                                                </td>
-                                                <td class="text-center"><span id="EAHP">0</span></td>
-                                                <td class="text-center"><span id="EAHP_tarif">{{zone.site.tarification.tarifAcGridHp}}</span></td>                                                       
-                                                <td class="text-center"><span id="EAHP_Amount">0</span></td>                                                       
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div><!--end re-table-->
-                                <div class="total-payment">
-                                    <table class="table mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td class="payment-title">Sous-total</td>
-                                                <td class="text-center"><span id="sTotal">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Prime Fixe</td>
-                                                <td class="text-center"><span id="primeFixe">{{zone.powerSubscribed * zone.site.tarification.primeFixe}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Total HT</td>
-                                                <td class="text-center"><span id="Amount_HT">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Taxes(TVA={{zone.site.tarification.tva}}%)</td>
-                                                <td class="text-center"><span id="taxes">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="payment-title">Total TTC</td>
-                                                <td class="text-center text-white"><span id="Amount_TTC">0</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table><!--end table-->
-                                </div><!--end total-payment-->
-                            </div>
+                            {# <h4 class="header-title mt-0 mb-3 text-center">Données de puissance</h4> #}
+            
+                            {# <div class="total-payment">
+                                <table class="table mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="payment-title">Puissance souscrite zone (kVA)</td>
+                                            <td>{{zone.powerSubscribed}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Facteur de puissance</td>
+                                            <td><span id="PF">0.85</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Nombre d'heures d'utilisation Psous</td>
+                                            <td><span id="NHU_Psous">0</span> heures</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Nb d'heures d'utilisation source AC GRID</td>
+                                            <td ><span id="NHU_Grid">0</span> heures</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Nb d'heures d'utilisation source GE</td>
+                                            <td ><span id="NHU_GE">0</span> heures</td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td class="payment-title">Nb d'heures d'utilisation source DC</td>
+                                            <td ><span id="NHU_DC">0</span> heures</td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="payment-title">Durée de dépassement</td>
+                                            <td ><span id="DuréeDépassement">0</span> heures</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Puissance Max lue (kVA)</td>
+                                            <td><span id="SmaxLue">0</span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table><!--end table-->
+                            </div><!--end total-payment--> #}
+                            {# <table id="billing" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;"> #}
+                            <table id="billing" class="table table-striped table-fixed dt-responsive nowrap table-bordered" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    
+                                    <tr>
+                                        <th>Puissance souscrite {{zone.name}} (kVA)</th>
+                                        <td class="text-center" id="">{{zone.powerSubscribed}}</td>
+                                       
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-title">Puissance Max lue (kVA)</td>
+                                        <td class="text-center"><span id="SmaxLue">0</span> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-title">Nombre d'heures de dépassement (heures)</td>
+                                        <td class="text-center"><span id="DuréeDépassement">0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-title">Tarif de dépassement (F CFA/KVA)</td>
+                                        <td class="text-center"><span id="primeFixe">{{zone.site.tarification.primeFixe}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-title text-right text-warning">Montant à payer (F CFA)</td>
+                                        <td class="text-center text-warning"><span id="amount">0</span></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
                         </div>
+                        <div class="col-2"></div>
+                        {# <div class="col">
+                            <div class="table-responsive shopping-cart">
+                                <table class="table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-center">Consommation (kWh)</th>                                                        
+                                            <th class="text-center">Tarif (XAF/kWh)</th>
+                                            <th class="text-center">Montant (XAF)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p class="d-inline-block align-middle mb-0 product-name">Energie Active Pointe</p> 
+                                            </td>
+                                            <td class="text-center"><span id="EAP">0</span></td>
+                                            <td class="text-center"><span id="EAP_tarif">{{zone.site.tarification.tarifAcGridP}}</span></td>                                                        
+                                            <td class="text-center"><span id="EAP_Amount">0</span></td>                                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p class="d-inline-block align-middle mb-0 product-name">Energie Active Hors Pointe</p> 
+                                            </td>
+                                            <td class="text-center"><span id="EAHP">0</span></td>
+                                            <td class="text-center"><span id="EAHP_tarif">{{zone.site.tarification.tarifAcGridHp}}</span></td>                                                       
+                                            <td class="text-center"><span id="EAHP_Amount">0</span></td>                                                       
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div><!--end re-table-->
+                            <div class="total-payment">
+                                <table class="table mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="payment-title">Sous-total</td>
+                                            <td class="text-center"><span id="sTotal">0</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Prime Fixe</td>
+                                            <td class="text-center"><span id="primeFixe">{{zone.powerSubscribed * zone.site.tarification.primeFixe}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Total HT</td>
+                                            <td class="text-center"><span id="Amount_HT">0</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Taxes(TVA={{zone.site.tarification.tva}}%)</td>
+                                            <td class="text-center"><span id="taxes">0</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="payment-title">Total TTC</td>
+                                            <td class="text-center text-white"><span id="Amount_TTC">0</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table><!--end table-->
+                            </div><!--end total-payment-->
+                        </div> #}
                     </div>
 
                     <div class="row rowHisto d-none">
@@ -1094,7 +1131,6 @@
                             <div class="card">
                                 <div class="card-body">
     
-                                    {# <h4 class="mt-0 header-title">Buttons example</h4> #}
                                     
                                     <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
@@ -1245,24 +1281,10 @@
 
 
 {% block javascripts %}
-    <script src="/plugins/justgage/justgage.js"></script>
-    <script src="/plugins/justgage/raphael-2.1.4.min.js"></script>
+    {# <script src="/plugins/justgage/justgage.js"></script>
+    <script src="/plugins/justgage/raphael-2.1.4.min.js"></script> #}
     {# <script src="/pages/jquery.justgage.init.js"></script> #}
     {#{{ encore_entry_script_tags('app') }}#}
-
-    <script src="/plugins/moment/moment.js"></script>
-    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
-    <!--  bootstrap-datetimepicker -->
-    <script src="/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="/pages/jquery.forms-advanced.js"> </script>
-
-    <script src="/plugins/apexcharts/apexcharts.min.js"></script>
-    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
-    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
-    <script src="/pages/jquery.apexcharts.init.js"></script>
-
-    <!-- Sweet-Alert  -->
-    <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
 
     <!-- Required datatable js -->
     <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
@@ -1280,10 +1302,53 @@
     <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
     <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
     {# <script src="/pages/jquery.datatable.init.js"></script> #}
+
+    <script src="/plugins/moment/moment.js"></script>
+    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+    <!--  bootstrap-datetimepicker -->
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/pages/jquery.forms-advanced.js"> </script>
+
+    <script src="/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
+    <script src="/pages/jquery.apexcharts.init.js"></script>
+
+    <!-- Sweet-Alert  -->
+    <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
+
+    {# <!-- Required datatable js -->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Buttons examples -->
+    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables/jszip.min.js"></script>
+    <script src="/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+    <!-- Responsive examples -->
+    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="/pages/jquery.datatable.init.js"></script> #}
     
     <script>
         //Buttons examples
         var table = $('#datatable-buttons').DataTable({
+            //lengthChange: false,
+            //buttons: ['copy', 'excel', 'pdf', 'colvis']
+            buttons: ['excel', 'pdf'],
+            searching: false, 
+            //paging: false, 
+            //info: false,
+            ordering: false,
+            lengthChange: false,
+            //buttons: ['copy', 'excel', 'pdf', 'colvis']
+            
+        });
+        {# var table = $('#datatable-buttons').DataTable({
             //sDom: 'lrtip',
             searching: false, 
             paging: false, 
@@ -1293,7 +1358,20 @@
             //buttons: ['copy', 'excel', 'pdf', 'colvis']
             buttons: ['excel', 'pdf']
         });
-        table.buttons().container().appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
+        table.buttons().container().appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)'); #}
+
+        var tableBilling = $('#billing').DataTable({
+            //sDom: 'lrtip',
+            searching: false, 
+            //paging: false, 
+            //info: false,
+            ordering: false,
+            lengthChange: false,
+            //buttons: ['copy', 'excel', 'pdf', 'colvis']
+            buttons: ['excel', 'pdf']
+        });
+        tableBilling.buttons().container().appendTo('#billing_wrapper .col-md-6:eq(0)');
+
         $('#histo').click(function(){
             $(this).parent().addClass('d-none');
             $('.rowFact').addClass('d-none');
@@ -1307,6 +1385,7 @@
             $('.rowFact').removeClass('d-none');
             $('#histo').parent().removeClass('d-none');
         })
+
                 
     </script>
 
@@ -1374,26 +1453,34 @@
                                     //console.log(result);
                                     {# console.log(Object.values(result['SymI']));
                                     console.log(Object.values(result['SymV'])); #}
-                                    $('#PF').text(result['FP']); 
+                                    {# $('#PF').text(result['FP']); 
                                     $('#NHU_Psous').text(result['NHU_Psous']); 
                                     $('#NHU_Grid').text(result['NHU_Grid']); 
-                                    $('#NHU_GE').text(result['NHU_FUEL']); 
+                                    $('#NHU_GE').text(result['NHU_FUEL']);  #}
                                     $('#DuréeDépassement').text(result['NHD_Psous']); 
                                     $('#SmaxLue').text(result['Smax']); 
-                                    $('#EAP').text(result['EAP']); 
+                                    var Smax = parseFloat(result['Smax']);
+                                    {# $('#EAP').text(result['EAP']); 
                                     $('#EAP_Amount').text(result['amountEAP']); 
                                     $('#EAHP').text(result['EAHP']); 
                                     $('#EAHP_Amount').text(result['amountEAHP']); 
-                                    $('#sTotal').text(result['amountEA']);
+                                    $('#sTotal').text(result['amountEA']); #}
                                     var prime = parseFloat($('#primeFixe').text());
                                     console.log("Prime Fixe = " + prime);
-                                    var amountHT = parseFloat(result['amountEA']) + prime;
+                                    if( Smax > {{zone.powerSubscribed}}){
+                                        var amount = (Smax - {{zone.powerSubscribed}})*prime;
+                                        $('#amount').text(amount.toFixed(2))
+                                    }
+                                    else{
+                                        $('#amount').text(0.0)
+                                    }
+                                    {# var amountHT = parseFloat(result['amountEA']) + prime;
                                      
                                     $('#Amount_HT').text(amountHT.toFixed(2)); 
                                     var taxes = (amountHT*{{zone.site.tarification.tva}})/100.0;
                                     $('#taxes').text(taxes.toFixed(2)); 
                                     var amountTTC = amountHT + taxes;
-                                    $('#Amount_TTC').text(amountTTC.toFixed(2)); 
+                                    $('#Amount_TTC').text(amountTTC.toFixed(2));  #}
                                                                         
                                     
                                 }
@@ -2454,8 +2541,272 @@
         }, 120000);
     </script>
 
+    {# Historical/Billing panel first show script #}
+    <script>
+        var firstTabHistorical = true; 
+        var firstTabEnergyBilling = true; 
+        $('.nav-tabs a').on('shown.bs.tab', function(event){
+            var x = $(event.target).text();         // active tab
+            var y = $(event.relatedTarget).text();  // previous tab
+            if( $(event.target).text() === 'Historicals'){
+                if(firstTabHistorical){
+                  firstTabHistorical = false; 
+                  var url_ = "{{ path('update_zone_graphs') }}";
+                  var drp_ = $('#daterange').data('daterangepicker');
+                  console.log('drp = ' + drp_.startDate.format('YYYY-MM-DD'));
+                  var startDate_ = drp_.startDate.format('YYYY-MM-DD');
+                  var endDate_ = drp_.endDate.format('YYYY-MM-DD');
+
+                  var $data_ = JSON.stringify({
+                    "startDate": startDate_ + ' 00:00:00',
+                    "endDate": endDate_ + ' 23:59:59', 
+                    {# "productionIds":{{smartModsProduction}}, #}
+                    "zoneId": {{zone.id}},
+                  });
+
+                    // Danger
+
+                  swal.queue([{
+                        title: 'Waiting...',
+                        confirmButtonText: 'Confirm',
+                        text: 'Please wait !',
+                        //showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                    
+                        //title: 'The graphs will be updated for the date range :',
+                        //confirmButtonText: 'Confirm',
+                        //text: 'From ' + startDate_ + ' To ' + endDate_,
+                        //showCancelButton: true,
+                        //showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                        preConfirm: function () {
+                            return new Promise(function (resolve) { 
+                                
+                                $.ajax({
+                                    type: "POST", // method type
+                                    contentType: "application/json; charset=utf-8",
+                                    url: url_, // /Target function that will be return result
+                                    data: $data_, // parameter pass data is parameter name param is value
+                                    dataType: "json",
+                                    timeout: 120000, // 64241
+                                    success: function (result) {
+                                        // $('.fa-sync').removeClass('fa-spin');
+                                        console.log(result);
+                                        
+                                        swal({
+                                            type: 'success', 
+                                            title: 'The graphs have been updated !',
+                                            // html: 'Submitted email: ' + email
+                                        });
+
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 2000);
+
+                                        if( Object.keys(result).length > 0 ){
+                                            var dateLabel = Object.values(result['date']);
+                                            console.log(result);
+                                            console.log(Object.values(result['PieActiveEnergy']));
+                                            {% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}
+                                                $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{loop.index0}}])
+                                                $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{loop.index0}}])
+                                                {% endif %}
+                                            {% endfor %}
+                                            /*Object.values(result['Smax']).forEach(function (item, index) {
+                                                var id = '#smax_' + index;
+                                                console.log(item);
+                                                $(id).text(item)
+                                            });
+                                            Object.values(result['Smax']).forEach(function (item, index) {
+                                                var id  = '#fp_' + index;
+                                                console.log(id);
+                                                $(id).text(item)
+                                            });*/
+                                            /*$.each(Object.values(result['Smax']) , function( key, value ) {
+                                                $('#smax_' + key).text(value)
+                                            });
+                                            $.each( Object.values(result['FP']), function( key, value ) {
+                                                $('#fp_' + key).text(value)
+                                            }); */           
+                                            
+                                            //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                                            //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
+                                            
+                                            
+                                            {% if zone.type == 'PUE Calculation' %}     
+                                            $("#instPUE").text(result['InstantPUE']);
+                                            //$("#intPUE").text(result['IntervalPUE']);
+                                            //console.log(Object.values(result['climateDate']));
+                                            displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                            displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
+                                            displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
+                                            {% endif %}
+
+                                            var dataArray = [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ];
+                                            updateDonutChart(ActiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ], dataArray);
+                                            dataArray = [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ];
+                                            updateDonutChart(ReactiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ], dataArray);
+                                        }
+                                    },
+                                    error: function (result) {
+                                        // console.log("Error");
+                                        // console.log(result);
+                                        swal('Oops...', 'Something went wrong!', 'error'
+                                        // footer: '<a href>Why do I have this issue?</a>'
+                                        );
+
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 5000);
+                                    }
+                                });
+                            })
+                        },
+                        allowOutsideClick: false
+                  }]); 
+
+                  $(".swal2-confirm").click();
+                }
+                //alert("Active tab " + x);
+            }
+
+            if( $(event.target).text() === 'Billing'){
+                if(firstTabEnergyBilling){
+                  //alert("Active tab " + x);
+                  firstTabEnergyBilling = false; 
+                  var drp_ = $('#daterangebilling').data('daterangepicker');
+                  console.log('drp = ' + drp_.startDate.format('YYYY-MM-DD'));
+                  startDate = drp_.startDate.format('YYYY-MM-DD');
+                  endDate = drp_.endDate.format('YYYY-MM-DD');
+
+                  var $data_ = JSON.stringify({
+                     //"selectedDate": $dat,
+                     "startDate": startDate + ' 00:00:00',
+                     "endDate": endDate + ' 23:59:59',
+                     //"type": "zone",
+                     "id":{{smartMod.id ?? 0}},
+                     "zoneId": {{zone.id}},
+                  });
+
+                    // Danger
+
+                  swal.queue([{
+                        title: 'Waiting...',
+                        confirmButtonText: 'Confirm',
+                        text: 'Please wait !',
+                        //showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                    
+                        //title: 'The graphs will be updated for the date range :',
+                        //confirmButtonText: 'Confirm',
+                        //text: 'From ' + startDate_ + ' To ' + endDate_,
+                        //showCancelButton: true,
+                        //showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                        preConfirm: function () {
+                            return new Promise(function (resolve) { 
+                                
+                                $.ajax({
+                                    type: "POST", // method type
+                                    contentType: "application/json; charset=utf-8",
+                                    url: urlBilling, // /Target function that will be return result
+                                    data: $data_, // parameter pass data is parameter name param is value
+                                    dataType: "json",
+                                    timeout: 120000, // 64241
+                                    success: function (result) {
+                                        // $('.fa-sync').removeClass('fa-spin');
+                                        console.log(result);
+                                        
+                                        swal({
+                                            type: 'success', 
+                                            title: 'The Bill have been updated !',
+                                            // html: 'Submitted email: ' + email
+                                        });
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 2000);
+                                        if( Object.keys(result).length > 0 ){
+                                            //var dateLabel = Object.values(result['date']);
+                                            //console.log(Object.values(result['CourbeCroisé']));
+                                            //console.log(result);
+                                            {# $('#PF').text(result['FP']); 
+                                            $('#NHU_Psous').text(result['NHU_Psous']); 
+                                            $('#NHU_Grid').text(result['NHU_Grid']); 
+                                            $('#NHU_GE').text(result['NHU_FUEL']);  #}
+                                            $('#DuréeDépassement').text(result['NHD_Psous']); 
+                                            $('#SmaxLue').text(result['Smax']); 
+                                            var Smax = parseFloat(result['Smax']);
+                                            {# $('#EAP').text(result['EAP']); 
+                                            $('#EAP_Amount').text(result['amountEAP']); 
+                                            $('#EAHP').text(result['EAHP']); 
+                                            $('#EAHP_Amount').text(result['amountEAHP']); 
+                                            $('#sTotal').text(result['amountEA']); #}
+                                            var prime = parseFloat($('#primeFixe').text());
+                                            console.log("Prime Fixe = " + prime);
+                                            if( Smax > {{zone.powerSubscribed}}){
+                                                var amount = (Smax - {{zone.powerSubscribed}})*prime;
+                                                $('#amount').text(amount.toFixed(2))
+                                            }
+                                            else{
+                                                $('#amount').text(0)
+                                            }
+                                            {# var amountHT = parseFloat(result['amountEA']) + prime; #}
+                                            
+                                            {# $('#Amount_HT').text(amountHT.toFixed(2)); 
+                                            var taxes = (amountHT*{{zone.site.tarification.tva}})/100.0;
+                                            $('#taxes').text(taxes.toFixed(2)); 
+                                            var amountTTC = amountHT + taxes;
+                                            $('#Amount_TTC').text(amountTTC.toFixed(2));  #}
+                                                                                
+                                            
+                                        }
+                                    },
+                                    error: function (result) {
+                                        // console.log("Error");
+                                        // console.log(result);
+                                        swal('Oops...', 'Something went wrong!', 'error'
+                                        // footer: '<a href>Why do I have this issue?</a>'
+                                        );
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 5000);
+                                    }
+                                });
+                            })
+                        },
+                        allowOutsideClick: false
+                  }]); 
+
+                  $(".swal2-confirm").click();
+                }
+                
+            }
+            
+        });
+    </script>
+
     {# Historical panel script #}
     <script>
+        
         var options = {
             chart: {
                 height: 320,
