@@ -24,6 +24,7 @@ class HomePageController extends ApplicationController
         if ($site) {
             $zones = $manager->getRepository('App:Zone')->findBy(['site' => $site, 'type' => 'PUE Calculation']);
             $gens = $manager->getRepository('App:SmartMod')->findBy(['site' => $site, 'modType' => 'FUEL']);
+            //dump($gens);
             $climates = [];
             if (count($zones) > 0) {
                 foreach ($zones[0]->getSmartMods() as $smartMod) {
@@ -40,7 +41,8 @@ class HomePageController extends ApplicationController
             $sites = $manager->getRepository('App:Site')->findBy(['enterprise' => $this->getUser()->getEnterprise(), 'isPublic' => true]);
             //dump($sites);
             if (count($sites) === 1) {
-                $gens = $manager->getRepository('App:SmartMod')->findBy(['site' => $site, 'modType' => 'FUEL']);
+                $gens = $manager->getRepository('App:SmartMod')->findBy(['site' => $sites[0], 'modType' => 'FUEL']);
+                //dump($gens);
                 $zones = $manager->getRepository('App:Zone')->findBy(['site' => $sites[0], 'type' => 'PUE Calculation']);
                 $climates = [];
                 if (count($zones) > 0) {
@@ -226,6 +228,10 @@ class HomePageController extends ApplicationController
                 'code'    => 200,
                 'datePue'    => $datePue,
                 'Date1'    => $lastRecord[0]['dt'] ?? '',
+                'Vcg'     => [$noDatetimeData->getL12G() ?? 0, $noDatetimeData->getL13G() ?? 0, $noDatetimeData->getL23G() ?? 0],
+                //'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
+                'Vcm'     => [$noDatetimeData->getL12M() ?? 0, $noDatetimeData->getL13M() ?? 0, $noDatetimeData->getL23M() ?? 0],
+                'InstantPUE' => $InstantPUE,
                 'PUE'   => $instantpue,
                 'CGCR'       => [$noDatetimeData->getCg() ?? 0, $noDatetimeData->getCr() ?? 0],
                 'Gensetrunning' => $noDatetimeData->getGensetRunning() ?? 0,
