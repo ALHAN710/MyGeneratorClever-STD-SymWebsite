@@ -107,6 +107,11 @@ class Site
     private $contacts;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isPublic;
+
+    /**
      * Permet d'initialiser le slug !
      *
      * @ORM\PrePersist
@@ -384,6 +389,18 @@ class Site
                 $contact->setSite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(?bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }

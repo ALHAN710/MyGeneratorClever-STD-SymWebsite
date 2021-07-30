@@ -111,6 +111,16 @@ class SmartMod
      */
     private $climateData;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isPublic;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $power;
+
     public function __construct()
     {
         $this->datetimeData = new ArrayCollection();
@@ -416,6 +426,30 @@ class SmartMod
                 $climateData->setSmartMod(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(?bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    public function getPower(): ?float
+    {
+        return $this->power;
+    }
+
+    public function setPower(?float $power): self
+    {
+        $this->power = $power;
 
         return $this;
     }

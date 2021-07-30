@@ -50,7 +50,8 @@ class SecurityController extends AbstractController
         //dump($user->getRoles()[0]);
         if ($user !== NULL) {
             if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') return $this->redirectToRoute('admin_enterprise_index');
-            else if ($user->getRoles()[0] === 'ROLE_CUSTOMER' || $user->getRoles()[0] === 'ROLE_MANAGER') {
+            else return $this->redirectToRoute('home_page');
+            /*else if ($user->getRoles()[0] === 'ROLE_CUSTOMER' || $user->getRoles()[0] === 'ROLE_MANAGER') {
                 $sites = $user->getSites();
                 if (count($sites) > 0) {
                     $zones = $sites[0]->getZones();
@@ -65,7 +66,7 @@ class SecurityController extends AbstractController
             } else {
                 $fuelMods = $manager->getRepository('App:SmartMod')->findBy(['modType' => 'FUEL']);
                 if (count($fuelMods) > 0) return $this->redirectToRoute('genset_home', ['id' => $fuelMods[0]->getId()]);
-            }
+            }*/
         } else {
             return $this->redirectToRoute('app_login');
         }

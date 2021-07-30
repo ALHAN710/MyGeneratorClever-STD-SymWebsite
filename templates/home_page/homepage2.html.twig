@@ -1,0 +1,794 @@
+{% extends 'home_page/base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block stylesheets %}
+    {#{{ encore_entry_link_tags('app') }}#}
+    <link href="/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+    <!-- Sweet Alert -->
+    <link href="/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+
+    <!-- DataTables -->
+    <link href="/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
+    
+
+{% endblock %}
+        
+{% block breadcrumbItem %}
+{# <li class="breadcrumb-item"><a href="javascript:void(0);">Metrica</a></li> #}
+{# <li class="breadcrumb-item"><a href="javascript:void(0);">{{smartMod.name}}</a></li> #}
+{# <li class="breadcrumb-item active">Home</li> #}
+{% endblock %}
+
+{% block pageTitle %}
+{# ST-DIGITAL Technical Monitoring web portal #}
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+
+    <div class="col-12 col-sm-3">
+
+        <div class="row">
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-warning">
+                    <div class="card-header text-center bg-soft-warning">
+                        <p class="text-white font-weight-bold mb-0">PUE</p>
+                    </div>
+                    <div class="card-body text-center mt-3 mb-3"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-spa bg-soft-warning rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="instPUE">0</span></h3>
+                                <p class="text-white font-weight-bold mb-0">PUE</p>
+                            </div><!-- end col-->
+                        </div><!-- end row-->                                                                                      #}
+                        <h3 class="text-white"><span id="instPUE">2.93</span></h3>
+                    </div><!--end card-body--> 
+                </div><!--end card--> 
+            
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-blue">
+                    <div class="card-header text-center bg-soft-blue">
+                        <p class="text-white font-weight-bold mb-0">Datacenter</p>
+                    </div>
+                    <div class="card-body text-center mt-3 mb-3"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-flash bg-soft-blue rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="datacenter_power">0</span> kW</h3>
+                                <p class="font-weight-bold text-white mb-0">DataCenter</p>
+                            </div><!-- end col-->
+                        </div><!-- end row-->                                                                                      #}
+                        <h3 class="text-white"><span id="datacenter_power">59.3</span> kW</h3>
+                    </div><!--end card-body--> 
+                </div><!--end card--> 
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-pink">
+                    <div class="card-header text-center bg-soft-pink">
+                        <p class="text-white font-weight-bold mb-0">Temp Indoor</p>
+                    </div>
+                    <div class="card-body text-center mt-3 mb-3"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-thermometer-lines bg-soft-pink rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="temp_indoor">0</span> °C</h3>
+                                <p class="text-white font-weight-bold mb-0">Temperature Indoor</p>
+                            </div><!-- end col-->
+                        
+                        </div> #}
+                        <h3 class="text-white"><span id="temp_indoor">23.4</span> °C</h3>
+                    </div><!--end card-body--> 
+                </div><!--end card-->
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-pink">
+                    <div class="card-header text-center bg-soft-pink">
+                        <p class="text-white font-weight-bold mb-0">Temp Outdoor</p>
+                    </div>
+                    <div class="card-body text-center mt-3 mb-3"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-thermometer-lines bg-soft-pink rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="temp_outdoor">0</span> °C</h3>
+                                <p class="text-white font-weight-bold mb-0">Temperature Outdoor</p>
+                            </div><!-- end col-->
+                        </div> #}
+                        <h3 class="text-white"><span id="temp_outdoor">27.4</span> °C</h3>
+                        
+                    </div><!--end card-body--> 
+                </div><!--end card-->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-success">
+                    <div class="card-header text-center bg-soft-success">
+                        <p class="text-white font-weight-bold mb-0">Humidity Indoor</p>
+                    </div>
+                    <div class="card-body text-center"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-opacity bg-soft-success rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="hum_indoor">0</span> %</h3>
+                                <p class="text-white font-weight-bold mb-0">Humidity Indoor</p>
+                            </div><!-- end col-->
+                        </div> #}
+                        <h3 class="text-white"><span id="hum_indoor">90.4</span> %</h3>
+                    </div><!--end card-body--> 
+                </div><!--end card-->
+            
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="card crm-data-card bg-soft-success">
+                    <div class="card-header text-center bg-soft-success">
+                        <p class="text-white font-weight-bold mb-0">Humidity Outdoor</p>
+                    </div>
+                    <div class="card-body text-center"> 
+                        {# <div class="row">
+                            <div class="col-sm-4 align-self-center">
+                                <div class="data-icon">
+                                    <i class="mdi mdi-opacity bg-soft-success rounded-circle"></i>
+                                </div>
+                            </div><!-- end col-->
+                            <div class="col-sm-8 text-center">
+                                <h3 class="text-white"><span id="hum_outdoor">0</span> %</h3>
+                                <p class="text-white font-weight-bold mb-0">Humidity Outdoor</p>
+                            </div><!-- end col-->
+                        
+                        </div> #}
+                        <h3 class="text-white"><span id="hum_outdoor">90.4</span> %</h3>
+                    </div><!--end card-body--> 
+                </div><!--end card-->                        
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-12 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mt-0 mb-4">Datacenter PUE Chart</h4>
+                <div class="chart-demo">
+                    <div id="apex_pue" class="apex-charts"></div>
+                </div>                                        
+            </div><!--end card-body-->
+        </div><!--end card-->
+        <div class="row float-right mr-3">
+            <div class="row float-right">
+                <small>Last update <span id="update">YYYY-MM-DD HH:mm:ss</span></small>
+            </div>
+        </div>
+    </div><!--end col-->
+    
+    <div class="col-sm-3 col-12">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="wallet-bal-usd">
+                                    <h4 class="text-center">Mains</h4>
+                                </div> 
+                                
+                                <div class="text-center"> 
+                                    <span class="badge badge-danger mr-2" id="mainsStatus"><h6>Absent</h6></span>
+                                    <span class="badge badge-danger" id="cr"><h6>CR <span>open</span> </h6></span>
+                                </div>
+                            </div>                                        
+                        </div>                                               
+                    </div><!--end card-body-->
+                    <div class="card-body pt-0">
+                        <ul class="list-group wallet-bal-crypto">
+                            <li class="list-group-item align-items-center d-flex justify-content-between">
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L1-L2</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-success" id="l1l2M">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L1-L3</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-pink" id="l1l3M">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L2-L3</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-primary" id="l2l3M">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                            </li>
+                                                
+                        </ul> 
+                    </div><!--end card-body--> 
+                </div><!--end card--> 
+            </div><!--end col-->
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="wallet-bal-usd">
+                                    <h4 class="text-center">Generator</h4>
+                                </div> 
+                                <div class="text-center"> 
+                                    <span class="badge badge-success mr-2 h6" id="gensetStatus"><h6>Running</h6></span>
+                                    <span class="badge badge-success" id="cg"><h6>CG <span>Closed</span> </h6></span>
+                                </div>
+                            </div>                                        
+                        </div>                                               
+                    </div><!--end card-body-->
+                    <div class="card-body pt-0">
+                        <ul class="list-group wallet-bal-crypto">
+                            <li class="list-group-item align-items-center d-flex justify-content-between">
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L1-L2</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-success" id="l1l2">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L1-L3</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-pink" id="l1l3">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                                <div class="media">
+                                    <div class="media-body text-center"> 
+                                        <div class="coin-bal">                                                        
+                                            <h5 class="m-0">L2-L3</h5>
+                                            <p class="text-muted mb-0"><h4><span class="badge badge-soft-primary" id="l2l3">380V</span></h4></p>
+                                        </div>                                                                                              
+                                    </div><!--end media body-->
+                                </div>
+                            </li>                                                                                
+                        </ul> 
+                    </div><!--end card-body--> 
+                </div><!--end card--> 
+            </div><!--end col-->
+        </div>    
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-sm-2"> </div>
+    <div class="col-12 col-sm-8 text-center">
+        <h3 class="">{{site.name|capitalize}} Overview</h3>
+    </div>
+    <div class="col-12 col-sm-2"> </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {# <script src="/plugins/justgage/justgage.js"></script>
+    <script src="/plugins/justgage/raphael-2.1.4.min.js"></script> #}
+    {# <script src="/pages/jquery.justgage.init.js"></script> #}
+    {#{{ encore_entry_script_tags('app') }}#}
+
+    <script src="/plugins/moment/moment.js"></script>
+    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+    <!--  bootstrap-datetimepicker -->
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+        
+    <script src="/pages/jquery.forms-advanced.js"> </script>
+
+    <script src="/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
+    {# <script src="/pages/jquery.apexcharts.init.js"></script> #}
+
+    <!-- Sweet-Alert  -->
+    <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
+
+    <!-- Required datatable js -->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Buttons examples -->
+    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables/jszip.min.js"></script>
+    <script src="/plugins/datatables/pdfmake.min.js"></script>
+    <script src="/plugins/datatables/vfs_fonts.js"></script>
+    <script src="/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="/plugins/datatables/buttons.print.min.js"></script>
+    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+    <!-- Responsive examples -->
+    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="/js/mqttws31.js" type="text/javascript"></script>
+    <script>
+        var mess = {
+            From: "user",
+            To: "Devices",
+            Object: "Connexion Status",
+            message: ""
+        };
+
+        var isConnected = false;
+        var wsbroker = "192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
+        var wsport = 15675; // port for above 1883
+
+        var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
+            "admin_{{app.user.id}}");
+
+        client.onConnectionLost = function (responseObject) {
+            isConnected = false;
+            console.log("CONNECTION LOST - " + responseObject.errorMessage);
+        };
+
+        client.onMessageArrived = function (message) {
+            console.log("RECEIVE ON " + message.destinationName + " PAYLOAD " + message.payloadString);
+            //print_first(message.payloadString);
+            var result;
+            var parse = true;
+            try {
+                result = JSON.parse(message.payloadString);
+            } catch (e) {
+                parse = false;
+                console.error("Parsing error:", e);
+            }
+
+            if(parse){
+                {# console.log("Received: " + message.payloadString); #}
+                if (result.hasOwnProperty("Intemp")) {
+                    $('#temp_indoor').text(String(result.Intemp))
+                    $('#temp_outdoor').text(String(result.Outtemp))
+                    $('#hum_indoor').text(String(result.Inhum))
+                    $('#hum_outdoor').text(String(result.Outhum))
+                    //$('#update').text(String( moment( new Date(result.date) ).format("DD MMM YYYY HH:mm:ss")) )
+                    
+                }
+            }
+        };
+
+        if (location.protocol == "https:") {
+            options.useSSL = true;
+        }
+        //console.log("CONNECT TO " + wsbroker + ":" + wsport);
+        //client.connect(options);
+        //client.reconnect();
+        // Try to reconnect after a few seconds
+        setInterval(function () {
+            if(isConnected === false){
+                console.log("CONNECT TO " + wsbroker + ":" + wsport);
+                client.connect({
+                    timeout: 3,
+                    keepAliveInterval: 30,
+                    userName: "mqtt-ESP-device",
+                    password: "mqtt-ESP-device",
+                    onSuccess: function () {
+                        isConnected = true;
+                        console.log("CONNECTION SUCCESS");
+                        //client.subscribe("/#", {qos: 1});
+                        {% if climate %}client.subscribe("/from/raspb/{{climate.name}}", {qos: 1});{%  endif %}
+                    },
+                    onFailure: function (message) {
+                        console.log("CONNECTION FAILURE - " + message.errorMessage);
+                    }
+                });
+            }
+            else{
+                //console.log("CONNECTED TO " + wsbroker + ":" + wsport);
+            } 
+        }, 10000);
+    </script>
+
+    {# Overview panel script #}
+    <script>
+        
+        //PUE area chart
+        var options = {
+            chart: {
+                type: 'area',
+                height: 350,
+            },
+            dataLabels: {
+                enabled: false
+            },
+            series: [{
+                name: 'PUE',
+                //type: 'line',
+                //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+                data: []
+            }],
+            markers: {
+                size: 0,
+                style: 'hollow',
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('MMMM YYYY').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
+                //tickAmount: 6,
+            },
+            colors: ['#dfa579'],
+            tooltip: {
+                theme: "dark",
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + "";
+                        }
+                        return y;
+
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                    }
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
+                    stops: [0, 100]
+                }
+            },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            
+        }
+        
+        var PUE_Linechart = new ApexCharts(
+            document.querySelector("#apex_pue"),
+            options
+        );
+
+        PUE_Linechart.render();
+            
+        var url_ = "{{ path('update_site_overview_graphs') }}";
+        {# console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
+        console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00') #}
+        var $data_ = JSON.stringify({
+            "genId": {{gen}},
+            "zoneId": {{zone}},
+        });
+
+        setTimeout(
+            function(){ 
+                swal.queue([{
+                    title: 'Waiting...',
+                    confirmButtonText: 'Confirm',
+                    text: 'Please wait !',
+                    //showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    //confirmButtonClass: 'btn btn-primary',
+                    //cancelButtonClass: 'btn btn-danger ml-2',
+                    preConfirm: function () {
+                        return new Promise(function (resolve) { 
+                            $.ajax({
+                                type: "POST", // method type
+                                contentType: "application/json; charset=utf-8",
+                                url: url_, // /Target function that will be return result
+                                data: $data_, // parameter pass data is parameter name param is value
+                                dataType: "json",
+                                timeout: 120000, // 64241
+                                success: function (result) {
+                                    // $('.fa-sync').removeClass('fa-spin');
+                                    console.log(result);
+                                    
+                                    swal({
+                                        type: 'success', 
+                                        title: 'The graphs have been updated !',
+                                        // html: 'Submitted email: ' + email
+                                    });
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 2000);
+                                    if( Object.keys(result).length > 0 ){
+                                        var dateLabel = Object.values(result['datePue']);
+                                        console.log(result);
+                                        
+                                        if(parseInt(result['CGCR'][0])){//CG = 1
+                                            $('#cg').removeClass('badge-danger')
+                                            $('#cg').addClass('badge-success')
+                                            $('#cg').children("h6").children("span").text('Closed')
+                                            //$('#cgStatus').text('Closed')
+                                            
+                                        }
+                                        else{//CG = 0
+                                            $('#cg').removeClass('badge-success')
+                                            $('#cg').addClass('badge-danger')
+                                            $('#cg').children("h6").children("span").text('Open')
+                                            //$('#cgStatus').text('Open')
+                                            
+                                        }      
+
+                                        if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                                            $('#gensetStatus').removeClass('badge-danger')
+                                            $('#gensetStatus').addClass('badge-success')
+                                            $('#gensetStatus').children("h6").text('Running')
+                                        }
+                                        else{
+                                            $('#gensetStatus').removeClass('badge-success')
+                                            $('#gensetStatus').addClass('badge-danger')
+                                            $('#gensetStatus').children("h6").text('Stop')
+                                        }
+
+                                        
+                                        if(parseInt(result['CGCR'][1])){//CR = 1
+                                            $('#cr').removeClass('badge-danger')
+                                            $('#cr').addClass('badge-success')
+                                            $('#cr').children("h6").children("span").text('Closed')
+                                            //$('#crStatus').text('Closed')
+                                            
+                                        }
+                                        else{//CR = 0
+                                            $('#cr').removeClass('badge-success')
+                                            $('#cr').addClass('badge-danger')
+                                            $('#cr').children("h6").children("span").text('Open')
+                                            //$('#crStatus').text('Open')
+                                            
+                                        }     
+
+                                        if(parseInt(result['MainsPresence'])){//Mains Presence = 1
+                                            $('#mainsStatus').removeClass('badge-danger')
+                                            $('#mainsStatus').addClass('badge-success')
+                                            $('#mainsStatus').children("h6").text('Present')
+                                        }
+                                        else{
+                                            $('#mainsStatus').removeClass('badge-success')
+                                            $('#mainsStatus').addClass('badge-danger')
+                                            $('#mainsStatus').children("h6").text('Absent')
+                                        }    
+                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+                                        {% if zone > 0 %}     
+                                        {# $("#instPUE").text(result['InstantPUE']); #}
+                                        //$("#intPUE").text(result['IntervalPUE']);
+                                        //console.log(Object.values(result['climateDate']));
+                                        {# var dataLabel = Object.values(result['date']); #}
+                                        displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
+                                        {% endif %}
+                                    }
+                                },
+                                error: function (result) {
+                                    // console.log("Error");
+                                    // console.log(result);
+                                    swal('Oops...', 'Something went wrong!', 'error'
+                                    // footer: '<a href>Why do I have this issue?</a>'
+                                    );
+                                    setTimeout(function () {
+                                        resolve()
+                                    }, 5000);
+                                }
+                            });
+                        })
+                    },
+                    allowOutsideClick: false
+                }]);
+
+                $(".swal2-confirm").click();
+                //alert("Hello"); 
+                    
+            }
+        , 500);
+
+        setInterval(function () {
+            $.ajax({
+                type: "POST", // method type
+                contentType: "application/json; charset=utf-8",
+                url: url_, // /Target function that will be return result
+                data: $data_, // parameter pass data is parameter name param is value
+                dataType: "json",
+                timeout: 120000, // 64241
+                success: function (result) {
+                    // $('.fa-sync').removeClass('fa-spin');
+                    console.log(result);
+                    
+                    if( Object.keys(result).length > 0 ){
+                        var dateLabel = Object.values(result['datePue']);
+                        console.log(result);
+                        
+                        if(parseInt(result['CGCR'][0])){//CG = 1
+                            $('#cg').removeClass('badge-danger')
+                            $('#cg').addClass('badge-success')
+                            $('#cg').children("h6").children("span").text('Closed')
+                            //$('#cgStatus').text('Closed')
+                            
+                        }
+                        else{//CG = 0
+                            $('#cg').removeClass('badge-success')
+                            $('#cg').addClass('badge-danger')
+                            $('#cg').children("h6").children("span").text('Open')
+                            //$('#cgStatus').text('Open')
+                            
+                        }      
+
+                        if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                            $('#gensetStatus').removeClass('badge-danger')
+                            $('#gensetStatus').addClass('badge-success')
+                            $('#gensetStatus').children("h6").text('Running')
+                        }
+                        else{
+                            $('#gensetStatus').removeClass('badge-success')
+                            $('#gensetStatus').addClass('badge-danger')
+                            $('#gensetStatus').children("h6").text('Stop')
+                        }
+                       
+                        if(parseInt(result['CGCR'][1])){//CR = 1
+                            $('#cr').removeClass('badge-danger')
+                            $('#cr').addClass('badge-success')
+                            $('#cr').children("h6").children("span").text('Closed')
+                            //$('#crStatus').text('Closed')
+                            
+                        }
+                        else{//CR = 0
+                            $('#cr').removeClass('badge-success')
+                            $('#cr').addClass('badge-danger')
+                            $('#cr').children("h6").children("span").text('Open')
+                            //$('#crStatus').text('Open')
+                            
+                        }     
+
+                        if(parseInt(result['MainsPresence'])){//Mains Presence = 1
+                            $('#mainsStatus').removeClass('badge-danger')
+                            $('#mainsStatus').addClass('badge-success')
+                            $('#mainsStatus').children("h6").text('Present')
+                        }
+                        else{
+                            $('#mainsStatus').removeClass('badge-success')
+                            $('#mainsStatus').addClass('badge-danger')
+                            $('#mainsStatus').children("h6").text('Absent')
+                        }    
+                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+                        {% if zone > 0 %}     
+                        {# $("#instPUE").text(result['InstantPUE']); #}
+                        //$("#intPUE").text(result['IntervalPUE']);
+                        //console.log(Object.values(result['climateDate']));
+                        {# var dataLabel = Object.values(result['date']); #}
+                        displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
+                        {% endif %}
+                    }
+                },
+                error: function (result) {
+                    console.log("Something went wrong!");
+                    // console.log(result);
+                }
+            });
+        }, 120000);
+        
+        function displayNewData(chart, label, data, dateopt, multiple, xscale){
+            //chart.data.labels = [];
+            chart.updateOptions({
+                xaxis: {
+                    categories: []
+                },
+            });
+            /*chart.updateOptions({
+                xaxis: {
+                    categories: label
+                },
+            });*/
+            //chart.opts.labels = label;
+            chart.updateOptions({
+                labels: label
+                
+            });
+            if(multiple > 1){
+                var i = 0;
+                chart.opts.series.forEach((dataset) => {
+                    if( i < multiple){
+                        dataset.data = [];
+                        dataset.data = data[i++];
+                        console.log(dataset.name);
+                    }
+                });
+            }
+            else if(multiple == 1){
+                chart.updateSeries([{
+                    data: []
+                }]);
+            
+                chart.updateSeries([{
+                    data: data
+                }]);
+            }
+            
+            {# if(xscale === 'day'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            //text: moment(dateopt).format('DD MMMM').toString(),
+                            text: moment(dateopt[0]).format('DD MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('DD MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            }
+            else if( xscale === 'month'){
+                chart.updateOptions({
+                    xaxis: {
+                        title: {
+                            text: moment(dateopt[0]).format('MMMM YYYY').toString() + ' - ' + moment(dateopt[1]).format('MMMM YYYY').toString(),
+                        }
+                    },
+                });
+            } #}
+            //console.log(chart.options.scales.xAxes[0].scaleLabel.labelString);
+            //preloaderChart(id, false);
+            //chart.render();
+        }
+    </script>
+{% endblock %}
