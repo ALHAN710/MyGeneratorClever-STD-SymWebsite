@@ -75,7 +75,7 @@ class GensetController extends ApplicationController
             ))
             ->getResult();*/
 
-        $data = $manager->createQuery("SELECT d.dateTime as dat, d.p, d.s, d.cosfi
+        $data = $manager->createQuery("SELECT d.dateTime as dat, d.p, (d.s*100.0)/:genpower as s, d.cosfi
                                         FROM App\Entity\DatetimeData d 
                                         JOIN d.smartMod sm
                                         WHERE d.dateTime LIKE :nowDate
@@ -86,6 +86,7 @@ class GensetController extends ApplicationController
             ->setParameters(array(
                 //'selDate'      => $dateparam,
                 'nowDate'     => date("Y-m-d") . "%",
+                'genpower'  => $id->getPower(),
                 'smartModId'  => $id->getId()
             ))
             ->getResult();
@@ -94,9 +95,9 @@ class GensetController extends ApplicationController
         // dump($data);
         foreach ($data as $d) {
             $date[]    = $d['dat']->format('Y-m-d H:i:s');
-            $P[]       = number_format((float) $d['p'], 2, '.', '');
+            //$P[]       = number_format((float) $d['p'], 2, '.', '');
             $S[]    = number_format((float) $d['s'], 2, '.', '');
-            $Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
+            //$Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
         }
 
         $NMIDay = $manager->createQuery("SELECT SUM(d.nbMainsInterruption) AS NMID
@@ -578,7 +579,8 @@ class GensetController extends ApplicationController
             'DifferentialIntervention' => $noDatetimeData->getDifferentialIntervention() ?? 0,
             'Date1' => $noDatetimeData->getDateTime() ?? '',
             'date' => $date,
-            'Mix_PSCosfi'            => [$S, $P, $Cosfi],
+            //'Mix_PSCosfi'            => [$S, $P, $Cosfi],
+            'Load_Level'    => $S
             // 'ActivePower'            => $P,
             // 'Apparent Power'         => $S,
             // 'Cosfi'            => $Cosfi,
@@ -666,7 +668,7 @@ class GensetController extends ApplicationController
                                                 ORDER BY dat ASC
         */
 
-        $data = $manager->createQuery("SELECT d.dateTime as dat, d.p, d.s, d.cosfi
+        $data = $manager->createQuery("SELECT d.dateTime as dat, d.p, (d.s*100.0)/:genpower as s, d.cosfi
                                         FROM App\Entity\DatetimeData d 
                                         JOIN d.smartMod sm
                                         WHERE d.dateTime BETWEEN :startDate AND :endDate
@@ -678,6 +680,7 @@ class GensetController extends ApplicationController
                 //'selDate'      => $dateparam,
                 'startDate'   => $startDate,
                 'endDate'     => $endDate,
+                'genpower'  => $smartMod->getPower(),
                 'smartModId'  => $smartMod->getId()
             ))
             ->getResult();
@@ -686,9 +689,9 @@ class GensetController extends ApplicationController
         // dump($data);
         foreach ($data as $d) {
             $date[]    = $d['dat']->format('Y-m-d H:i:s');
-            $P[]       = number_format((float) $d['p'], 2, '.', '');
+            //$P[]       = number_format((float) $d['p'], 2, '.', '');
             $S[]    = number_format((float) $d['s'], 2, '.', '');
-            $Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
+            //$Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
         }
 
         return $this->json([
@@ -697,7 +700,8 @@ class GensetController extends ApplicationController
             //'endDate'      => $endDate,
             'date'         => $date,
             'Mix1'            => [$TRH, $TEP, $FC],
-            'Mix2'            => [$S, $P, $Cosfi],
+            //'Mix2'            => [$S, $P, $Cosfi],
+            'Load_Level'    => $S,
             // 'S3ph'         => $S3ph,
             'dateE'           => $dateE,
             // 'kWh'          => $kWh,
