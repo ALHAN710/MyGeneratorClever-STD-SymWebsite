@@ -1112,8 +1112,17 @@ class GensetController extends ApplicationController
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
                 }
-                $messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
-                $messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
+
+                $adminUsers = [];
+                $Users = $manager->getRepository('App:User')->findAll();
+                foreach ($Users as $user) {
+                    if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') $adminUsers[] = $user;
+                }
+                foreach ($adminUsers as $user) {
+                    $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message, 'Email', $alarmCode->getAlerte()));
+                }
+                //$messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
+                //$messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));
                 $manager->persist($alarmReporting);
                 $manager->flush();
                 return $this->json([
