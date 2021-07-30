@@ -213,7 +213,7 @@
                                     <div class="card-body">
                                         <h4 class="header-title mt-0 mb-4"></h4>
                                         <div class="chart-demo">
-                                            <div id="apex_mixed_PSCosfi" class="apex-charts"></div>
+                                            <div id="apex_load_level_overview" class="apex-charts"></div>
                                         </div>                                        
                                     </div><!--end card-body-->
                                 </div><!--end card-->
@@ -756,7 +756,8 @@
                                     <div class="card-body">
                                         <h4 class="header-title mt-0 mb-4"></h4>
                                         <div class="chart-demo">
-                                            <div id="apex_mixed2" class="apex-charts"></div>
+                                            <div id="apex_load_level" class="apex-charts"></div>
+                                            {# <div id="apex_mixed2" class="apex-charts"></div> #}
                                         </div>                                        
                                     </div><!--end card-body-->
                                 </div><!--end card-->
@@ -1280,6 +1281,9 @@
     </script>
 
     <script>
+        var firstTabEnergy = true;
+        var firstTabAlarm = true;
+            
         var fuel_level = new JustGage({
             id: "fuel_level",
             value: 0,
@@ -1476,7 +1480,7 @@
                 type: 'line',
                 //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
                 data: []
-            }, {
+            }{#, {
                 name: 'Active Power',
                 type: 'line',
                 //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
@@ -1486,7 +1490,7 @@
                 type: 'line',
                 //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
                 data: []
-            }],
+            }#}],
             fill: {
                 opacity: [1, 1, 1],
                 gradient: {
@@ -1543,11 +1547,11 @@
                         }
                     },
                     title: {
-                        text: "kVA"
+                        text: "Load Level (%)"
                     },
                 },
 
-                {
+                {# {
                     axisTicks: {
                         show: true,
                     },
@@ -1582,7 +1586,7 @@
                     title: {
                         text: ""
                     }
-                },
+                }, #}
 
             ],    
             tooltip: {
@@ -1592,7 +1596,7 @@
                 y: {
                     formatter: function (y) {
                         if (typeof y !== "undefined") {
-                            return y.toFixed(2) + "";
+                            return y.toFixed(2) + " %";
                         }
                         return y;
 
@@ -1609,12 +1613,12 @@
             }
         }
         
-        var Mixed_PSCosfi_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed_PSCosfi"),
+        var LoadLevel_overview_Linechart = new ApexCharts(
+            document.querySelector("#apex_load_level_overview"),
             options
         );
 
-        Mixed_PSCosfi_Linechart.render();
+        LoadLevel_overview_Linechart.render();
 
         setTimeout(
                 function(){ 
@@ -1674,7 +1678,7 @@
                                     $('#freq').text(String(result['Freq'] + " Hz")) #}
                                     $('#htm').text(String(result['HTM']))  
                                     $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                                    displayNewData(Mixed_PSCosfi_Linechart, Object.values(result['date']), Object.values(result['Mix_PSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                    displayNewData(LoadLevel_overview_Linechart, Object.values(result['date']), Object.values(result['Load_Level']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 1, 'day');
                     
                                     //Affichage des derniers enregistrements données dynamiques
                                 {# 
@@ -1861,7 +1865,7 @@
                     $('#freq').text(String(result['Freq'] + " Hz")) #}
                     $('#htm').text(String(result['HTM']))  
                     $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                    displayNewData(Mixed_PSCosfi_Linechart, Object.values(result['date']), Object.values(result['Mix_PSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                    displayNewData(LoadLevel_overview_Linechart, Object.values(result['date']), Object.values(result['Load_Level']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 1, 'day');
                                     
                     //Affichage des derniers enregistrements données dynamiques
                     {# $('#activePower').text(String(result['Power'][0] + " kW"))
@@ -2002,6 +2006,107 @@
     </script>
 
     <script>
+
+        $('.nav-tabs a').on('shown.bs.tab', function(event){
+            var x = $(event.target).text();         // active tab
+            var y = $(event.relatedTarget).text();  // previous tab
+            if( $(event.target).text() === 'Energy'){
+                if(firstTabEnergy){
+                  firstTabEnergy = false; 
+                  var drp_ = $('#daterange').data('daterangepicker');
+                  console.log('drp = ' + drp.startDate.format('YYYY-MM-DD'));
+                  var startDate_ = drp.startDate.format('YYYY-MM-DD');
+                  var endDate_ = drp.endDate.format('YYYY-MM-DD');
+
+                  $data = JSON.stringify({
+                    //"selectedDate": $dat, // tabGridId,
+                    "startDate": startDate_ + ' 00:00:00', // tabGridId,
+                    "endDate": endDate_ + '23:59:59', // tabFuelId,
+                  });
+
+                    // Danger
+
+                  swal.queue([{
+                        title: 'Waiting...',
+                        confirmButtonText: 'Confirm',
+                        text: 'Please wait !',
+                        //showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                    
+                        //title: 'The graphs will be updated for the date range :',
+                        //confirmButtonText: 'Confirm',
+                        //text: 'From ' + startDate_ + ' To ' + endDate_,
+                        //showCancelButton: true,
+                        //showLoaderOnConfirm: true,
+                        //confirmButtonClass: 'btn btn-primary',
+                        //cancelButtonClass: 'btn btn-danger ml-2',
+                        preConfirm: function () {
+                            return new Promise(function (resolve) { 
+                                
+                                $.ajax({
+                                    type: "POST", // method type
+                                    contentType: "application/json; charset=utf-8",
+                                    url: "{{ path('update_genset_graphs', {'smartMod':smartMod.id}) }}", // /Target function that will be return result
+                                    data: $data, // parameter pass data is parameter name param is value
+                                    dataType: "json",
+                                    timeout: 120000, // 64241
+                                    success: function (result) {
+                                        // $('.fa-sync').removeClass('fa-spin');
+                                        console.log(result);
+                                        
+                                        swal({
+                                            type: 'success', 
+                                            title: 'The graphs have been updated !',
+                                            // html: 'Submitted email: ' + email
+                                        });
+
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 2000);
+
+                                        if( Object.keys(result).length > 0 ){
+                                            var dateLabel = Object.values(result['date']);
+                                            //console.log(Object.values(result['CourbeCroisé']));
+                                            {# console.log(result); #}
+                                            
+                                            
+                                            displayNewData(PowerProduction_Barchart, Object.values(result['dateE']), Object.values(result['Mix1']), [startDate, endDate], 3, 'day');
+                                            //displayNewData(PowerProduction_Barchart, Object.values(result['dateE']), Object.values(result['Mix1']), date, 3, 'month');
+                                            //displayNewData1(PowerProduction_Barchart, Object.values(result['dateE']), Object.values(result['Mix1']), date, 1, 'month', '#spinPowerConsumption');
+                                            
+                                            displayNewData(Load_Level_Linechart, dateLabel, Object.values(result['Load_Level']), [startDate, endDate], 1, 'day');
+                                            //displayNewData(PowerProfile_Linechart, dateLabel, Object.values(result['Mix2']), [startDate, endDate], 3, 'day');
+                                            //displayNewData(PowerProfile_Linechart, dateLabel, Object.values(result['Mix2']), date, 3, 'day');
+                                            
+                                        }
+                                    },
+                                    error: function (result) {
+                                        // console.log("Error");
+                                        // console.log(result);
+                                        swal('Oops...', 'Something went wrong!', 'error'
+                                        // footer: '<a href>Why do I have this issue?</a>'
+                                        );
+
+                                        setTimeout(function () {
+                                            resolve()
+                                        }, 5000);
+                                    }
+                                });
+                            })
+                        },
+                        allowOutsideClick: false
+                  }]); 
+
+                  $(".swal2-confirm").click();
+                }
+                //alert("Active tab " + x);
+            }
+
+            
+        });
+
         //Mixed Running Time - Energy Produced - Fuel Consumption(XAF) charts
 
         var options = {
@@ -2308,7 +2413,7 @@
 
 
         //Mixed Apparent Power - Active Power - Cosphi charts
-        var options = {
+        {# var options = {
             chart: {
                 height: 380,
                 type: 'line',
@@ -2452,12 +2557,7 @@
                     }
                 },
 
-            ],    
-            {# yaxis: {
-                title: {
-                    text: 'Points',
-                },
-            }, #}
+            ],
             tooltip: {
                 shared: true,
                 intersect: false,
@@ -2480,38 +2580,102 @@
             grid: {
                 borderColor: '#f1f3fa'
             }
-        }
-        {# var options = {
+        } #}
+        
+        {# var PowerProfile_Linechart = new ApexCharts(
+            document.querySelector("#apex_mixed2"),
+            options
+        );
+
+        PowerProfile_Linechart.render(); #}
+
+        var options = {
             chart: {
                 height: 380,
                 type: 'line',
                 stacked: false,
                 toolbar: {
-                    show: false
+                    show: true
                 }
             },
-            dataLabels: {
-                enabled: false
-            },
             stroke: {
-                width: [0, 0, 3]
+                width: [2, 2, 2],
+                curve: 'smooth'
             },
+            noData: {
+                text: 'Data not yet available',
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    color: undefined,
+                    fontSize: '14px',
+                    fontFamily: undefined
+                }
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%'
+                }
+            },
+            colors: ["#1ecab8", "#fbb624", "#f93b7a"],
             series: [{
                 name: 'Apparent Power',
                 type: 'line',
-                data: [1.4, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-            }, {
+                //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+                data: []
+            }{#, {
                 name: 'Active Power',
                 type: 'line',
-                data: [1.1, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+                //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+                data: []
             }, {
                 name: 'CosPhi',
                 type: 'line',
-                data: [0.85, 0.84, 0.86, 0.8, 0.83, 0.87, 0.86, 0.81]
-            }],
-            colors: ["#20016c", "#77d0ba", "#fa5c7c"],
+                //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
+                data: []
+            }#}],
+            fill: {
+                opacity: [1, 1, 1],
+                gradient: {
+                    inverseColors: false,
+                    shade: 'light',
+                    type: "vertical",
+                    opacityFrom: 0.85,
+                    opacityTo: 0.55,
+                    stops: [0, 100, 100, 100]
+                }
+            },
+            //labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+            labels: [],
+            markers: {
+                size: 0
+            },
+            legend: {
+                //offsetY: -10,
+                position: 'top',
+            },
             xaxis: {
-                categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                type: 'datetime',
+                categories: [],
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: {
+                    text: moment().format('DD MMMM').toString(),
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#444'
+                    },
+                }
             },
             yaxis: [
                 {
@@ -2520,91 +2684,49 @@
                     },
                     axisBorder: {
                         show: true,
-                        color: '#20016c'
+                        color: '#1ecab8'
                     },
                     labels: {
                         style: {
-                            color: '#20016c',
+                            color: '#1ecab8',
                         }
                     },
                     title: {
-                        text: "kVA"
+                        text: "Load Level (%)"
                     },
-                },
-
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
-                        },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "kW",
-                    },
-                },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fa5c7c'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fa5c7c',
-                        }
-                    },
-                    title: {
-                        text: ""
-                    }
-                },
+                }
 
             ],
             tooltip: {
+                shared: true,
+                intersect: false,
                 theme: "dark",
-                followCursor: true,
                 y: {
                     formatter: function (y) {
-                        
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(2) + " %";
+                        }
                         return y;
+
+                    }
+                },
+                x: {
+                    formatter: function (val, timestamp) {
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
                     }
                 }
             },
             grid: {
                 borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
-                    },
-                    legend: {
-                        show: false
-                    }
-                }
-            }]
-        } #}
-
-        var PowerProfile_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed2"),
+            }
+        }
+        
+        var Load_Level_Linechart = new ApexCharts(
+            document.querySelector("#apex_load_level"),
             options
         );
 
-        PowerProfile_Linechart.render();
+        Load_Level_Linechart.render();
 
         {# // line-3
 
@@ -2910,7 +3032,8 @@
                                     //displayNewData(PowerProduction_Barchart, Object.values(result['dateE']), Object.values(result['Mix1']), date, 3, 'month');
                                     //displayNewData1(PowerProduction_Barchart, Object.values(result['dateE']), Object.values(result['Mix1']), date, 1, 'month', '#spinPowerConsumption');
                                       
-                                    displayNewData(PowerProfile_Linechart, dateLabel, Object.values(result['Mix2']), [startDate, endDate], 3, 'day');
+                                    displayNewData(Load_Level_Linechart, dateLabel, Object.values(result['Load_Level']), [startDate, endDate], 1, 'day');
+                                    //displayNewData(PowerProfile_Linechart, dateLabel, Object.values(result['Mix2']), [startDate, endDate], 3, 'day');
                                     //displayNewData(PowerProfile_Linechart, dateLabel, Object.values(result['Mix2']), date, 3, 'day');
                                     
                                 }
