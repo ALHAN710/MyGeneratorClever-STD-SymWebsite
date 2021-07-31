@@ -1050,6 +1050,10 @@
                                         <td class="text-center"><span id="SmaxLue">0</span> </td>
                                     </tr>
                                     <tr>
+                                        <td class="payment-title">Dépassement (kVA)</td>
+                                        <td class="text-center"><span id="puissanceDépassement">0</span> </td>
+                                    </tr>
+                                    <tr>
                                         <td class="payment-title">Nombre d'heures de dépassement (heures)</td>
                                         <td class="text-center"><span id="DuréeDépassement">0</span></td>
                                     </tr>
@@ -1625,20 +1629,25 @@
                                     var prime = parseFloat($('#primeFixe').text());
                                     console.log("Prime Fixe = " + prime);
                                     var amount = 0.0;
+                                    var diffP = 0.0;
+                                    console.log("Prime Fixe = " + prime);
                                     if( Smax > {{zone.powerSubscribed}}){
-                                        amount = (Smax - {{zone.powerSubscribed}})*prime;
+                                        diffP = Smax - {{zone.powerSubscribed}};
+                                        amount = diffP*prime;
                                         //$('#amount').text(amount.toFixed(2))
                                     }
                                     else{
-                                        //$('#amount').text(0.0)
-                                        amount = 0.0;
+                                        //$('#amount').text(0);
+                                        amount = 0;
+                                        diffP = 0.0;
                                     }
                                     //tableBilling.cell(0,1).data(value['AVG']).draw();
                                     tableBilling.cell(1,1).data(Smax.toFixed(2)).draw();
-                                    tableBilling.cell(2,1).data(result['NHD_Psous']).draw();
+                                    tableBilling.cell(2,1).data(diffP.toFixed(2)).draw();
+                                    tableBilling.cell(3,1).data(result['NHD_Psous']).draw();
                                     //tableBilling.cell(3,1).data(data['available'][index]['av']).draw();
-                                    tableBilling.cell(4,1).data(amount.toFixed(2)).draw();
-                                    
+                                    tableBilling.cell(5,1).data(amount.toFixed(0)).draw();
+                                            
                                     {# var amountHT = parseFloat(result['amountEA']) + prime;
                                      
                                     $('#Amount_HT').text(amountHT.toFixed(2)); 
@@ -2927,20 +2936,24 @@
                                             $('#sTotal').text(result['amountEA']); #}
                                             var prime = parseFloat($('#primeFixe').text());
                                             var amount = 0;
+                                            var diffP = 0.0;
                                             console.log("Prime Fixe = " + prime);
                                             if( Smax > {{zone.powerSubscribed}}){
-                                                amount = (Smax - {{zone.powerSubscribed}})*prime;
+                                                diffP = Smax - {{zone.powerSubscribed}};
+                                                amount = diffP*prime;
                                                 //$('#amount').text(amount.toFixed(2))
                                             }
                                             else{
                                                 //$('#amount').text(0);
                                                 amount = 0;
+                                                diffP = 0.0;
                                             }
                                             //tableBilling.cell(0,1).data(value['AVG']).draw();
                                             tableBilling.cell(1,1).data(Smax.toFixed(2)).draw();
-                                            tableBilling.cell(2,1).data(result['NHD_Psous']).draw();
+                                            tableBilling.cell(2,1).data(diffP.toFixed(2)).draw();
+                                            tableBilling.cell(3,1).data(result['NHD_Psous']).draw();
                                             //tableBilling.cell(3,1).data(data['available'][index]['av']).draw();
-                                            tableBilling.cell(4,1).data(amount.toFixed(2)).draw();
+                                            tableBilling.cell(5,1).data(amount.toFixed(0)).draw();
                                             {# var amountHT = parseFloat(result['amountEA']) + prime; #}
                                             
                                             {# $('#Amount_HT').text(amountHT.toFixed(2)); 
