@@ -1080,30 +1080,30 @@
                 if (result.hasOwnProperty("L1")) {
                     //Mise à jour des jauges des données mécaniques
                     fuel_level.refresh( parseFloat(result.FL) ?? 0);
-                    oil_level.refresh( parseFloat(result.OL) ?? 0);
+                    {# oil_level.refresh( parseFloat(result.OL) ?? 0);
                     water_level.refresh( parseFloat(result.WL) ?? 0);
                     air_pressure.refresh( parseFloat(result.AP) ?? 0);
-                    oil_pressure.refresh( parseFloat(result.OP) ?? 0);
+                    oil_pressure.refresh( parseFloat(result.OP) ?? 0); #}
                     water_temp.refresh( parseFloat(result.WT) ?? 0);
                     cooler_temp.refresh( parseFloat(result.CT) ?? 0);
-                    engine_speed.refresh( parseFloat(result.ESD) ?? 0);
+                    {# engine_speed.refresh( parseFloat(result.ESD) ?? 0); #}
                     batt_voltage.refresh( parseFloat(result.BV) ?? 0);
 
                     //Mise à jour des paramètres du générateur
                     $('#l1l2').text(String(result.L12 + " V"))
                     $('#l1l3').text(String(result.L13 + " V"))
                     $('#l2l3').text(String(result.L23 + " V"))
-                    $('#l1N').text(String(result.L1 + " V"))
+                    {# $('#l1N').text(String(result.L1 + " V"))
                     $('#l2N').text(String(result.L2 + " V"))
-                    $('#l3N').text(String(result.L3 + " V"))
+                    $('#l3N').text(String(result.L3 + " V")) #}
                     $('#l1l2M').text(String(result.L12M + " V"))
                     $('#l1l3M').text(String(result.L13M + " V"))
                     $('#l2l3M').text(String(result.L23M + " V"))
-                    $('#I1').text(String(result.I1 + " A"))
+                    {# $('#I1').text(String(result.I1 + " A"))
                     $('#I2').text(String(result.I2 + " A"))
                     $('#I3').text(String(result.I1 + " A"))
                     $('#idiff').text(String(result.Id + " mA"))   
-                    $('#freq').text(String(result.Fr + " Hz"))
+                    $('#freq').text(String(result.Fr + " Hz")) #}
                     $('#htm').text(String(result.HTM))  
                 }
 
