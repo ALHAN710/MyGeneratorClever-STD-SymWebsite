@@ -129,7 +129,7 @@
                         
                         {# <div class="float-left mt-0">
                         </div> #}
-                        <small>Last update <span id="update">Y-m-d HH:mm:ss</span></small>
+                        <small>Last update <span id="update">{{lastDate}}</span></small>
 
                         <div class="card crm-data-card bg-soft-pink">
                             <div class="card-body text-center"> 
@@ -140,7 +140,7 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="temp_indoor">0</span> °C</h3>
+                                        <h3 class="text-white"><span id="temp_indoor">{{inTemp}}</span> °C</h3>
                                         <p class="text-white font-weight-bold mb-0">Temperature Indoor</p>
                                     </div><!-- end col-->
                                 
@@ -157,7 +157,7 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="temp_outdoor">0</span> °C</h3>
+                                        <h3 class="text-white"><span id="temp_outdoor">{{outTemp}}</span> °C</h3>
                                         <p class="text-white font-weight-bold mb-0">Temperature Outdoor</p>
                                     </div><!-- end col-->
                                 </div><!--end card-body--> 
@@ -174,7 +174,7 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="hum_indoor">0</span> %</h3>
+                                        <h3 class="text-white"><span id="hum_indoor">{{inHum}}</span> %</h3>
                                         <p class="text-white font-weight-bold mb-0">Humidity Indoor</p>
                                     </div><!-- end col-->
                                     
@@ -191,7 +191,7 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="hum_outdoor">0</span> %</h3>
+                                        <h3 class="text-white"><span id="hum_outdoor">{{outHum}}</span> %</h3>
                                         <p class="text-white font-weight-bold mb-0">Humidity Outdoor</p>
                                     </div><!-- end col-->
                                 

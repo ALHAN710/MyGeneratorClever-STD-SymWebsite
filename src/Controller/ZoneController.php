@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+//use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/zone")
@@ -41,10 +41,64 @@ class ZoneController extends ApplicationController
             $smartModsProduction[] = $smartMod['Id'];
         }*/
         // //dump($smartModsProduction);
+        $climates = [];
+        $climatesOut = [];
+        $inTemp = 0.0;
+        $inHum = 0.0;
+        $outTemp = 0.0;
+        $outHum = 0.0;
+        $lastDate = 'Y-m-d HH:mm:ss';
+        if ($zone->getType() === 'PUE Calculation') {
+
+            foreach ($zone->getSmartMods() as $smartMod) {
+                if ($smartMod->getModType() === 'Climate' && $smartMod->getSubType() === 'Indoor') $climates[] = $smartMod;
+                else if ($smartMod->getModType() === 'Climate' && $smartMod->getSubType() === 'Outdoor') $climatesOut[] = $smartMod;
+            }
+            $LastIndoorData = $manager->createQuery("SELECT d.temperature AS temp, d.humidity AS hum, d.dateTime AS dt
+                                                            FROM App\Entity\ClimateData d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (:smartMods)
+                                                            AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\ClimateData d1 WHERE d1.dateTime LIKE :nowDate)
+                                                                                                                                                                                                            
+                                                            ")
+                ->setParameters(array(
+                    'smartMods'      => $climates,
+                    //'nowDate'     => "2021-07-20%",
+                    'nowDate'     => date("Y-m-d") . "%",
+                ))
+                ->getResult();
+            $LastOutdoorData = $manager->createQuery("SELECT d.temperature AS temp, d.humidity AS hum 
+                                                            FROM App\Entity\ClimateData d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (:smartMods)
+                                                            AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\ClimateData d1 WHERE d1.dateTime LIKE :nowDate)
+                                                                                                                                                                                                            
+                                                            ")
+                ->setParameters(array(
+                    'smartMods'      => $climatesOut,
+                    'nowDate'     => date("Y-m-d") . "%",
+                ))
+                ->getResult();
+
+            if (count($LastIndoorData) > 0) {
+                $inTemp = $LastIndoorData[0]['temp'];
+                $inHum = $LastIndoorData[0]['hum'];
+                $lastDate = $LastIndoorData[0]['dt']->format('Y-m-d H:m:s');
+            }
+            if (count($LastOutdoorData) > 0) {
+                $outTemp = $LastOutdoorData[0]['temp'];
+                $outHum = $LastOutdoorData[0]['hum'];
+            }
+        }
         return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
             //'smartModsProduction' => $smartModsProduction,
             'alarms'    => $manager->getRepository('App:Alarm')->findBy(['type' => 'Load Meter']),
+            'inTemp'    => $inTemp,
+            'inHum'    => $inHum,
+            'outTemp'    => $outTemp,
+            'outHum'    => $outHum,
+            'lastDate'  => $lastDate,
         ]);
     }
 
