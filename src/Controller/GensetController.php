@@ -748,7 +748,8 @@ class GensetController extends ApplicationController
                 } else {
                     $oldData = clone $smartMod->getNoDatetimeData();
                 }
-                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
+                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
+                $date = new DateTime('now');
 
                 /*$dataMod->setL12G($paramJSON['L12G'])
                     ->setL13G($paramJSON['L13G'])
@@ -855,7 +856,8 @@ class GensetController extends ApplicationController
                     $WATFL = "WATFL"; // 9
 
                     if ($oldData->getMinBattVolt()  === 0 && $paramJSON['MinBV']  === 1) {
-                        $mess = "{\"code\":\"{$BATT}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$BATT}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$BATT}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -866,7 +868,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getCr()  === 1 && $paramJSON['CR']  === 0) {
-                        $mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -877,7 +880,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getOverspeed() === 0 && $paramJSON['Overspeed']  === 1) {
-                        $mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -888,7 +892,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getOverload() === 0 && $paramJSON['Overload'] === 1) {
-                        $mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -899,7 +904,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getMinVolt() === 0 && $paramJSON['MinVolt'] === 1) {
-                        $mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -910,7 +916,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getMinFreq() === 0 && $paramJSON['MinFr'] === 1) {
-                        $mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
@@ -921,7 +928,8 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getGensetRunning() === 0 && $paramJSON['GenRun'] === 1) {
-                        $mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                             'mess' => $mess,
@@ -929,7 +937,8 @@ class GensetController extends ApplicationController
                         ]);
                     }
                     if ($oldData->getLowFuel() === 0 && $paramJSON['LowFuel'] === 1) {
-                        $mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                             'mess' => $mess,
@@ -937,7 +946,8 @@ class GensetController extends ApplicationController
                         ]);
                     }
                     if ($oldData->getDifferentialIntervention() === 0 && $paramJSON['DIT'] === 1) {
-                        $mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                             'mess' => $mess,
@@ -945,7 +955,8 @@ class GensetController extends ApplicationController
                         ]);
                     }
                     if ($oldData->getPresenceWaterInFuel() === 0 && $paramJSON['PWF'] === 1) {
-                        $mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$date}\"}";
+                        //$mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                             'mess' => $mess,
@@ -1090,8 +1101,8 @@ class GensetController extends ApplicationController
         if ($smartMod) {
             $alarmCode = $manager->getRepository('App:Alarm')->findOneBy(['code' => $paramJSON['code']]);
             if ($alarmCode) {
-                $date = new DateTime('now');
-                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) !== false ? DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) : new DateTime('now');
+                //$date = new DateTime('now');
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) !== false ? DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']) : new DateTime('now');
                 //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                 $alarmReporting = new AlarmReporting();
                 $alarmReporting->setSmartMod($smartMod)
