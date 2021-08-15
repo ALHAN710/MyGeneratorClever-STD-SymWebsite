@@ -183,6 +183,7 @@ class AccountController extends ApplicationController
      */
     public function userVerification(Request $request, UserRepository $userRepo, EntityManagerInterface $manager, MessageBusInterface $messageBus): JsonResponse
     {
+        $id = "";
         $paramJSON = $this->getJSONRequest($request->getContent());
         // dump($request->getContent());
         $email = $paramJSON['email'];
@@ -197,7 +198,7 @@ class AccountController extends ApplicationController
                 ->setVerified(false);
             $manager->persist($user);
             $manager->flush();
-            $code = 'PowerMon-' . $codeVerification . $user->getId();
+            $code = 'TechMon-' . $codeVerification . $user->getId();
             // //dump($code);
             //$object = "PASSWORD RESET";
             $message = 'Your verification code is ' . $code;
@@ -237,6 +238,7 @@ The ST DIGITAL Technical Monitoring Team";
             [
                 'code'    => $status,
                 'message' => $mess,
+                'id'    => $user->getVerified()
             ],
             200
         );
@@ -273,18 +275,18 @@ The ST DIGITAL Technical Monitoring Team";
                 $hash = $encoder->encodePassword($user, $newPassword);
 
                 $user->setPassword($hash)
-                    ->setVerificationcode("")
+                    ->setVerificationcode(null)
                     ->setVerified(true);
 
                 $manager->persist($user);
                 $manager->flush();
 
-                $this->addFlash(
+                /*$this->addFlash(
                     'success',
                     "Your password has been changed"
-                );
+                );*/
 
-                return $this->redirectToRoute('account_login');
+                return $this->redirectToRoute('app_login');
             } else {
                 $this->addFlash(
                     'danger',
@@ -296,7 +298,7 @@ The ST DIGITAL Technical Monitoring Team";
             }
         }
 
-        return $this->render('account/resetpassword.html.twig', [
+        return $this->render('account/password.html.twig', [
             'form' => $form->createView(),
             'user' => $user
         ]);

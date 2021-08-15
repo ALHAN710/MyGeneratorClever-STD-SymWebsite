@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>PowerMon web portal | Password Recover</title>
+        <title>ST-DIGITAL Technical Monitoring web portal | Password Recover</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A template by CLETECH" name="description" />
         <meta content="My Generator themes" name="Pascal ALHADOUM" />
@@ -46,7 +46,7 @@
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true"><i class="mdi mdi-close"></i></span>
                                     </button>
-                                    Oups, <strong>something went wrong.</strong>
+                                    Oops, <strong>something went wrong.</strong>
                                 </div>
 
                                 <form class="form-horizontal my-4" action="#"> 
@@ -55,7 +55,7 @@
                                         <label for="userCode">Verification Code</label>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon1">PowerMon-</i></span>
+                                                <span class="input-group-text" id="basic-addon1">TechMon-</i></span>
                                             </div>
                                             <input type="text" class="form-control" id="userCode" placeholder="Code">
                                         </div>                                    
@@ -99,7 +99,7 @@
             var userCode = $("#userCode");
             userCode.on('input', function() { 
                 //console.log($(this).val()); // get the current value of the input field.
-                if( $(this).val().indexOf("PowerMon-") >= 0  ){
+                if( $(this).val().indexOf("TechMon-") >= 0  ){
                     userCode.addClass("is-invalid");
                     $('#validBtn').prop('disabled', true);
                                         
@@ -115,7 +115,7 @@
                 $(this).children('i').addClass('d-none');
                 $(this).children('span').removeClass('d-none');
                 var $code = userCode.val();
-                if($code.indexOf("PowerMon-") < 0){
+                if($code.indexOf("TechMon-") < 0){
                     console.log("userVerification url : " + _url);
                     var $data = JSON.stringify({
                         "email": "null",
