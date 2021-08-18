@@ -40,7 +40,7 @@ class ZoneUserCollectionType extends ApplicationType
                     ),
                 ]
             )
-            ->add(
+            /*->add(
                 'site',
                 EntityType::class,
                 [
@@ -60,7 +60,7 @@ class ZoneUserCollectionType extends ApplicationType
                     // 'multiple' => true,
                     // 'expanded' => true,
                 ]
-            )
+            )*/
             //->add('name')
             //->add('powerSubscribed')
             //->add('type')

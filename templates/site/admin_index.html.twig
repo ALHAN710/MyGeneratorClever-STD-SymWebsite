@@ -19,9 +19,9 @@
         <thead>
             <tr class="text-center">
                 <th>Name</th>
-                <th >Daily Mains Interruption Limit</th>
-                <th>Currency</th>
-                <th >Authorized number</th>
+                {# <th >Daily Mains Interruption Limit</th>
+                <th>Currency</th> #}
+                <th>Users</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -29,8 +29,8 @@
         {% for site in sites %}
             <tr class="text-center">
                 <td>{{ site.name }}</td>
-                <td>{{ site.mainsInterruptDayLimit }}</td>
-                <td>{{ site.currency }}</td>
+                {# <td>{{ site.mainsInterruptDayLimit }}</td>
+                <td>{{ site.currency }}</td> #}
                 <td>{{ site.users|length }}</td>
                 <td>
                     <a href="{{ path('site_setting', {'site': site.id}) }}" class="btn btn-soft-primary btn-xs rounded waves-effect mr-2" data-toggle="tooltip" data-placement="top" title="Edit site ?"><i class="far fa-edit mr-2"></i>Edit</a>

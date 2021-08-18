@@ -26,16 +26,16 @@
         {{ form_widget(form.name, {'attr': {'class': "form-control"}}) }}
         <small class="form-text text-muted">* Obligatoire</small>
     </div>
-    <div class="form-group">
+    {# <div class="form-group">
         {{ form_label(form.mainsInterruptDayLimit, null, {'label_attr': {'class': ''}}) }}
         {{ form_widget(form.mainsInterruptDayLimit, {'attr': {'class': "form-control"}}) }}
-        {# <small class="form-text text-muted">* Obligatoire</small> #}
-    </div>
-    <div class="form-group">
+        { <small class="form-text text-muted">* Obligatoire</small> }
+    </div> #}
+    {# <div class="form-group">
         {{ form_label(form.currency, null, {'label_attr': {'class': ''}}) }}
         {{ form_widget(form.currency, {'attr': {'class': "form-control"}}) }}
-        {# <small class="form-text text-muted">* Obligatoire</small> #}
-    </div>
+        { <small class="form-text text-muted">* Obligatoire</small> }
+    </div> #}
     
     {{ form_widget(form.users) }}
 

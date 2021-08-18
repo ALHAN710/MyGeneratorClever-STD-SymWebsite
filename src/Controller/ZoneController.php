@@ -176,7 +176,7 @@ class ZoneController extends ApplicationController
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($zone->getUsers() as $user) {
 
-                // //dump($user->getUserName());
+                //dump($user->getUserNam());
                 // $zone->addUser($user);
                 //$user->addZone($zone);
                 //Je vérifie si le produit est déjà existant en BDD pour éviter les doublons 
@@ -184,26 +184,34 @@ class ZoneController extends ApplicationController
                 //dd($user_);
                 // $user->addZone($zone);
                 // $manager->persist($user);
-
-                if (empty($user_)) {
-                    //$user->addZone($zone);
-                    //$manager->persist($user);
-                    $zone->removeUser($user);
-                    // //dump('user dont exists ');
-                } else {
-                    // //dump('user exists with id = ' . $user_->getId());
-                    if (!$user_->getZones()->contains($zone)) {
-                        // //dump("user don't have a zone " . $zone->getName());
+                if (empty($user->getId())) {
+                    if (empty($user_)) {
+                        //$user->addZone($zone);
+                        //$manager->persist($user);
                         $zone->removeUser($user);
-                        $user = $user_;
-                        $user->addZone($zone);
-                        $zone->addUser($user);
-                        $manager->persist($user);
+                        // //dump('user dont exists ');
+                    } else {
+                        // //dump('user exists with id = ' . $user_->getId());
+                        if (!$user_->getZones()->contains($zone)) {
+                            // //dump("user don't have a zone " . $zone->getName());
+                            $zone->removeUser($user);
+                            $user = $user_;
+                            $user->addZone($zone);
+                            $zone->addUser($user);
+                            if (!$zone->getSite()->getUsers()->contains($user)) {
+                                $user->addSite($zone->getSite());
+                                $zone->getSite()->addUser($user);
+                                $manager->persist($zone->getSite());
+                            }
+                            $manager->persist($user);
+                        }
                     }
                 }
                 // $manager->persist($zone);
                 //$manager->persist($user);
             }
+            dump($zone);
+            dd($zone->getSite());
             $manager->persist($zone);
             //die();
             $manager->flush();

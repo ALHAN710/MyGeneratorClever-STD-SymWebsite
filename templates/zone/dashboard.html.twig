@@ -34,10 +34,11 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#historical" role="tab">Historicals</a>
         </li>
-        
+        {% if zone.type == 'No PUE Calculation' %}
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#energybilling" role="tab">Billing</a>
-        </li>                                                
+        </li>
+        {% endif %}                                                
         {# <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#alarm" role="tab">Alarm</a>
         </li>                               #}

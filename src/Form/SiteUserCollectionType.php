@@ -23,7 +23,7 @@ class SiteUserCollectionType extends ApplicationType
                 TextType::class,
                 $this->getConfiguration("Name *", "Please enter the name...")
             )
-            ->add(
+            /*->add(
                 'mainsInterruptDayLimit',
                 NumberType::class,
                 $this->getConfiguration("Daily Mains Interruption Limit ", "Please enter the limit...", [
@@ -32,8 +32,8 @@ class SiteUserCollectionType extends ApplicationType
                         'min' => 1
                     ]
                 ])
-            )
-            ->add(
+            )*/
+            /*->add(
                 'currency',
                 ChoiceType::class,
                 [
@@ -44,7 +44,7 @@ class SiteUserCollectionType extends ApplicationType
                     ],
                     'label'    => 'Currency'
                 ]
-            )
+            )*/
             ->add(
                 'users',
                 CollectionType::class,

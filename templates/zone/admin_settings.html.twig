@@ -26,11 +26,11 @@
         {{ form_widget(form.name, {'attr': {'class': "form-control"}}) }}
         <small class="form-text text-muted">* Obligatoire</small>
     </div>
-    <div class="form-group">
+    {# <div class="form-group">
         {{ form_label(form.site, null, {'label_attr': {'class': ''}}) }}
         {{ form_widget(form.site, {'attr': {'class': "form-control"}}) }}
-        {# <small class="form-text text-muted">* Obligatoire</small> #}
-    </div>
+        { <small class="form-text text-muted">* Obligatoire</small> }
+    </div> #}
     
     {{ form_widget(form.users) }}
 

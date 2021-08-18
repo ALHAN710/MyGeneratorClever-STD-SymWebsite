@@ -215,8 +215,53 @@
                     {# <li class="nav-item"><a class="nav-link" href="#"><i class="dripicons-meter"></i>Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="../analytics/analytics-customers.html"><i class="dripicons-user-group"></i>Customers</a></li>
                     <li class="nav-item"><a class="nav-link" href="../analytics/analytics-reports.html"><i class="dripicons-document"></i>Reports</a></li>  #}
-                    {% if is_granted('ROLE_NOC_SUPERVISOR') %}
+                    {% if is_granted('ROLE_ADMIN') %}
                         {% for site in app.user.enterprise.sites %}{# path('sites_show',{'slug':site.slug}) #}
+                            {# {% set url = '' %} #}
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="mdi mdi-office-building"></i><span class="w-100">{{site.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav-second-level" aria-expanded="false">
+                                    {# <li class="active"><a href="{{url}}"><i class="mdi mdi-monitor"></i><span>Dashboard</span></a></li> #}
+                                    {% set categorie = ['FUEL', 'GRID'] %}
+                                    {% for cat in categorie %}
+                                        {% for type in site.smartMods %}
+                                            {% if type.modType == cat %}
+                                                <li><a href="{% if cat == 'FUEL' %}{{ path('genset_home', {'id':type.id}) }}{% else %}#{% endif %}">{{type.name}}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %} 
+
+                                    {% if site.zones|length > 0 %}
+                                    {% set nbZone = nbZone + site.zones|length %}
+                                    {# <ul class="nav metismenu main_menu_side_nav" id=""> #}
+                                        {% for zone in site.zones %}
+                                        <li class="nav ">{# <i class="mdi mdi-crop-free"></i> #}
+                                            <a class="" href="#"><span class="w-100">{{zone.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                            <ul class="nav-second-level metismenu main_menu_side_nav" aria-expanded="false">
+                                                {# {% set id = 0 %}
+                                                {% for modZone1 in zone.smartMods %}
+                                                    {% if modZone1.levelZone == 1 %}
+                                                        {% set id = modZone1.id %}
+                                                    {% endif %}
+                                                {% endfor %}            #}
+                                                <li><a href="{{ path('home_zone', {'zone':zone.id}) }}">Dashboard</a></li>
+                                                {% for modZone in zone.smartMods %}
+                                                    {% if modZone.levelZone == 2 %}
+                                                        <li><a href="{{ path('load_meter', {'smartMod': modZone.id,'zone':zone.id}) }}">{{modZone.name}}</a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}           
+                                            </ul>            
+                                        </li><!--end nav-item--> 
+                                        {% endfor %}
+                                    {# </ul> #}
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    {% elseif is_granted('ROLE_NOC_SUPERVISOR') %}
+                        {% for site in app.user.sites %}{# path('sites_show',{'slug':site.slug}) #}
                             {# {% set url = '' %} #}
                             <li class="nav-item">
                                 <a class="nav-link" href="#"><i class="mdi mdi-office-building"></i><span class="w-100">{{site.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
@@ -271,6 +316,8 @@
                                     {% if site.zones|length > 0 %}
                                     {# <ul class="nav metismenu main_menu_side_nav" id=""> #}
                                         {% for zone in site.zones %}
+                                        {% for zone_ in app.user.zones %}
+                                        {% if zone_.id == zone.id %}
                                         <li class="nav ">{# <i class="mdi mdi-crop-free"></i> #}
                                             <a class="" href="#"><span class="w-100">{{zone.name}}</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
                                             <ul class="nav-second-level metismenu main_menu_side_nav" aria-expanded="false">
@@ -289,6 +336,8 @@
                                                 {% endfor %}           
                                             </ul>            
                                         </li><!--end nav-item--> 
+                                        {% endif %}
+                                        {% endfor %}
                                         {% endfor %}
                                     {# </ul> #}
                                     {% endif %}

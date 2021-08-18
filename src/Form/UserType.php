@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 class UserType extends ApplicationType
 {
     private $entId;
-    private $role = 'ROLE_MANAGEMENT';
+    private $role = "ROLE_ADMIN";
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -55,6 +55,7 @@ class UserType extends ApplicationType
                             'label' => false,
                             'attr' => ['class' => 'form-control'],
                             'choices' => [
+                                'CUSTOMER'  => 'ROLE_CUSTOMER',
                                 'MANAGEMENT' => 'ROLE_MANAGER',
                                 'NOC-SUPERVISOR' => 'ROLE_NOC_SUPERVISOR',
                                 'ADMINISTRATOR' => 'ROLE_ADMIN',
@@ -95,15 +96,17 @@ class UserType extends ApplicationType
                         // looks for choices from this entity
                         'class' => User::class,
                         'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('u')
+                            $user_ = $er->createQueryBuilder('u')
                                 ->innerJoin('u.enterprise', 'e')
                                 ->where('e.id = :entId')
-                                //->andWhere(':role in u.roles')
+                                //->andWhere('u.roles = :role')
                                 ->setParameters(array(
                                     'entId'    => $this->entId,
                                     //'role'  => $this->role,
                                 ));
                             //->orderBy('u.username', 'ASC');
+                            //dump($user_);
+                            return $user_;
                         },
                         // uses the User.username property as the visible option string
                         'choice_label' => function ($user) {
@@ -124,6 +127,7 @@ class UserType extends ApplicationType
         $resolver->setDefaults([
             'data_class' => User::class,
             'entId'      => 0,
+            'role'      => '',
             'forZone'    => false,
             'forSite'    => false,
             'isEdit'     => false,
