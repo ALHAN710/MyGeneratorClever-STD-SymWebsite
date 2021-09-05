@@ -2064,7 +2064,7 @@
 
                                         setTimeout(function () {
                                             resolve()
-                                        }, 2000);
+                                        }, 1000);
 
                                         if( Object.keys(result).length > 0 ){
                                             var dateLabel = Object.values(result['date']);
@@ -2268,6 +2268,19 @@
             },
             grid: {
                 borderColor: '#f1f3fa'
+            },
+            animations: {
+                enabled: false,
+                easing: 'easeinout',
+                speed: 800,
+                animateGradually: {
+                    enabled: false,
+                    delay: 150
+                },
+                dynamicAnimation: {
+                    enabled: false,
+                    speed: 350
+                }
             },
             legend: {
                 //offsetY: -10,
@@ -2716,9 +2729,23 @@
                     }
                 }
             },
+            animations: {
+                enabled: false,
+                easing: 'easeinout',
+                speed: 800,
+                animateGradually: {
+                    enabled: false,
+                    delay: 150
+                },
+                dynamicAnimation: {
+                    enabled: false,
+                    speed: 350
+                }
+            },
             grid: {
                 borderColor: '#f1f3fa'
             }
+
         }
         
         var Load_Level_Linechart = new ApexCharts(
@@ -3018,7 +3045,7 @@
 
                                 setTimeout(function () {
                                     resolve()
-                                }, 2000);
+                                }, 1000);
 
                                 if( Object.keys(result).length > 0 ){
                                     var dateLabel = Object.values(result['date']);
