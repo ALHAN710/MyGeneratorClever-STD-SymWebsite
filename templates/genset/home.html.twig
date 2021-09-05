@@ -687,7 +687,7 @@
                             <div class="col-12">
                                 <label class="my-3">Pick Date Ranges</label>
                                 <div class="input-group mb-3">  
-                                    <input type="text" id="daterange" class="form-control" value="10/24/1984">
+                                    <input type="text" id="gendaterange" class="form-control" value="10/24/1984">
                                     <div class="input-group-append">
                                         <span class="input-group-text"><i class="dripicons-calendar"></i></span>
                                     </div>
@@ -1018,7 +1018,7 @@
     <!--  bootstrap-datetimepicker -->
     <script src="/js/bootstrap-datetimepicker.min.js"></script>
         
-    <script src="/pages/jquery.forms-advanced.js"> </script>
+    <script src="/pages/jquery.forms-advanced1.js"> </script>
 
     <script src="/plugins/apexcharts/apexcharts.min.js"></script>
     <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
@@ -2013,7 +2013,7 @@
             if( $(event.target).text() === 'Energy'){
                 if(firstTabEnergy){
                   firstTabEnergy = false; 
-                  var drp_ = $('#daterange').data('daterangepicker');
+                  var drp_ = $('#gendaterange').data('daterangepicker');
                   console.log('drp = ' + drp.startDate.format('YYYY-MM-DD'));
                   var startDate_ = drp.startDate.format('YYYY-MM-DD');
                   var endDate_ = drp.endDate.format('YYYY-MM-DD');
@@ -2892,13 +2892,13 @@
         var startDate = dp.startDate.format('YYYY-MM-DD');
         var endDate = dp.endDate.format('YYYY-MM-DD'); #}
 
-        var drp = $('#daterange').data('daterangepicker');
+        var drp = $('#gendaterange').data('daterangepicker');
         console.log('drp = ' + drp.startDate.format('YYYY-MM-DD'));
         var startDate = drp.startDate.format('YYYY-MM-DD');
         var endDate = drp.endDate.format('YYYY-MM-DD');
         
 
-        $('#daterange').on('apply.daterangepicker', function (ev, picker) {
+        $('#gendaterange').on('apply.daterangepicker', function (ev, picker) {
             //console.log(picker.startDate.format('YYYY-MM-DD'));
             //console.log(picker.endDate.format('YYYY-MM-DD'));
         
