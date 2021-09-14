@@ -780,6 +780,8 @@ class ZoneController extends ApplicationController
         $FP_flow = [];
         $IntervalPUE = 0;
         $InstantPUE = 0;
+        $InstantTotal_AP = 0;
+        $InstantIT_AP = 0;
         $instantpue = [];
         $intervalpue = [];
         $diffEnergy = [];
