@@ -201,8 +201,8 @@ class HomePageController extends ApplicationController
         // //dump($temps);
         //die();
         $InstantPUE = 0;
-        $InstantPUE = 0;
         $InstantTotal_AP = 0;
+        $InstantIT_AP = 0;
 
         $instantpue = [];
         $datePue = [];
@@ -331,8 +331,8 @@ class HomePageController extends ApplicationController
                 //'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
                 'Vcm'     => [$noDatetimeData->getL12M() ?? 0, $noDatetimeData->getL13M() ?? 0, $noDatetimeData->getL23M() ?? 0],
                 'InstantPUE' => $InstantPUE,
-                'InstantPUE' => $InstantPUE,
                 'InstantTotal_AP'   => $InstantTotal_AP,
+                'InstantIT_AP'  => $InstantIT_AP,
                 'PUE'   => $instantpue,
                 'CGCR'       => [$noDatetimeData->getCg() ?? 0, $noDatetimeData->getCr() ?? 0],
                 'Gensetrunning' => $noDatetimeData->getGensetRunning() ?? 0,

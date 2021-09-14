@@ -629,6 +629,7 @@
 
                                         {% if zone > 0 %}     
                                         $("#instPUE").text(result['InstantPUE']);
+                                        $("#datacenter_power").text(result['InstantTotal_AP']);
                                         //$("#intPUE").text(result['IntervalPUE']);
                                         //console.log(Object.values(result['climateDate']));
                                         {# var dataLabel = Object.values(result['date']); #}
@@ -737,6 +738,7 @@
 
                         {% if zone > 0 %}     
                         $("#instPUE").text(result['InstantPUE']);
+                        $("#datacenter_power").text(result['InstantTotal_AP']);
                         //$("#intPUE").text(result['IntervalPUE']);
                         //console.log(Object.values(result['climateDate']));
                         {# var dataLabel = Object.values(result['date']); #}
