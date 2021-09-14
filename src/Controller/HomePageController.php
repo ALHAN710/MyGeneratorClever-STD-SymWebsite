@@ -201,6 +201,9 @@ class HomePageController extends ApplicationController
         // //dump($temps);
         //die();
         $InstantPUE = 0;
+        $InstantPUE = 0;
+        $InstantTotal_AP = 0;
+
         $instantpue = [];
         $datePue = [];
         $productionAP = [];
@@ -256,6 +259,8 @@ class HomePageController extends ApplicationController
                     ))
                     ->getResult();
                 // dump($InstantTotalActivePower);
+                $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
+                $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
                 $InstantPUE = 0;
                 if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
                     $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
@@ -326,6 +331,8 @@ class HomePageController extends ApplicationController
                 //'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
                 'Vcm'     => [$noDatetimeData->getL12M() ?? 0, $noDatetimeData->getL13M() ?? 0, $noDatetimeData->getL23M() ?? 0],
                 'InstantPUE' => $InstantPUE,
+                'InstantPUE' => $InstantPUE,
+                'InstantTotal_AP'   => $InstantTotal_AP,
                 'PUE'   => $instantpue,
                 'CGCR'       => [$noDatetimeData->getCg() ?? 0, $noDatetimeData->getCr() ?? 0],
                 'Gensetrunning' => $noDatetimeData->getGensetRunning() ?? 0,
