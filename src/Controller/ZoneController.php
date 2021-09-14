@@ -259,6 +259,8 @@ class ZoneController extends ApplicationController
         $fp = [];
         $IntervalPUE = 0;
         $InstantPUE = 0;
+        $InstantTotal_AP = 0;
+        $InstantIT_AP = 0;
         $instantpue = [];
         $intervalpue = [];
         $diffEnergy = [];
@@ -413,6 +415,8 @@ class ZoneController extends ApplicationController
                     ))
                     ->getResult();
                 // dump($InstantTotalActivePower);
+                $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
+                $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
                 $InstantPUE = 0;
                 if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
                     $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
@@ -735,6 +739,8 @@ class ZoneController extends ApplicationController
                 'climateDate'   => $dateClimate,
                 'xscale'    => $xScale,
                 'InstantPUE' => $InstantPUE,
+                'InstantTotal_AP'   => $InstantTotal_AP,
+                'InstantIT_AP'  => $InstantIT_AP,
                 'IntervalPUE' => $IntervalPUE,
                 'PieActiveEnergy'      => $EA_flow,
                 'PieReactiveEnergy'   => $ER_flow,
