@@ -2681,6 +2681,8 @@
                     
                         {% if zone.type == 'PUE Calculation' %}     
                         $("#instPUE").text(result['InstantPUE']);
+                        $("#it_power").text(result['InstantIT_AP']);
+                        $("#datacenter_power").text(result['InstantTotal_AP']);
                         //$("#intPUE").text(result['IntervalPUE']);
                         //console.log(Object.values(result['climateDate']));
                         displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');

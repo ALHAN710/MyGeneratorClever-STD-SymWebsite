@@ -142,7 +142,7 @@ class LoadMeterController extends ApplicationController
                         if (array_key_exists("Qb", $paramJSON)) {
                             $datetimeData->setQbmoy($paramJSON['Qb']);
                         }
-                        if (array_key_exists("Sc", $paramJSON)) {
+                        if (array_key_exists("Qc", $paramJSON)) {
                             $datetimeData->setQcmoy($paramJSON['Qc']);
                         }
                         if (array_key_exists("Q", $paramJSON)) {
