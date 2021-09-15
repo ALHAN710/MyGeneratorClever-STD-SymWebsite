@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use DateTime;
+use DateInterval;
 use App\Entity\Zone;
 use App\Form\ZoneType;
 use App\Repository\ZoneRepository;
@@ -387,16 +388,31 @@ class ZoneController extends ApplicationController
                 ->getResult();
             //dump($lastRecord);
             if ($zone->getType() === 'PUE Calculation') {
+                $lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND sm.levelZone = 2                                                                                                                                               
+                                                    ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                //dump($lastDatetimeForPUE[0]['dt']);
+                $date = new DateTime($lastDatetimeForPUE[0]['dt']);
+                $date->sub(new DateInterval('PT2M'));
+                //dump($date);
                 $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
                                                             FROM App\Entity\LoadDataEnergy d
                                                             JOIN d.smartMod sm 
                                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                            AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 JOIN d1.smartMod sm1 JOIN sm1.zones zn1 WHERE zn1.id = :zoneId)
+                                                            AND d.dateTime = :lastDate
                                                             AND sm.levelZone = 2
                                                             AND sm.subType = 'Production'                                                                                                                                                
                                                             ")
                     ->setParameters(array(
-                        //'selDate'      => $dat,
+                        'lastDate'      => $date->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
@@ -406,11 +422,11 @@ class ZoneController extends ApplicationController
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
                                                     WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 JOIN d1.smartMod sm1 JOIN sm1.zones zn1 WHERE zn1.id = :zoneId)
+                                                    AND d.dateTime = :lastDate
                                                     AND sm.levelZone = 2                                                                                                                                               
                                                     ")
                     ->setParameters(array(
-                        //'selDate'      => $dat,
+                        'lastDate'      => $date->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
@@ -873,16 +889,31 @@ class ZoneController extends ApplicationController
             }
 
             if ($zone->getType() === 'PUE Calculation') {
+                $lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND sm.levelZone = 2                                                                                                                                               
+                                                    ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                //dump($lastDatetimeForPUE[0]['dt']);
+                $date = new DateTime($lastDatetimeForPUE[0]['dt']);
+                $date->sub(new DateInterval('PT2M'));
+                //dump($date);
                 $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
                                                             FROM App\Entity\LoadDataEnergy d
                                                             JOIN d.smartMod sm 
                                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                            AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 JOIN d1.smartMod sm1 JOIN sm1.zones zn1 WHERE zn1.id = :zoneId)
+                                                            AND d.dateTime = :lastDate
                                                             AND sm.levelZone = 2
                                                             AND sm.subType = 'Production'                                                                                                                                                
                                                             ")
                     ->setParameters(array(
-                        //'selDate'      => $dat,
+                        'lastDate'      => $date->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
@@ -892,11 +923,11 @@ class ZoneController extends ApplicationController
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
                                                     WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = (SELECT MAX(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 JOIN d1.smartMod sm1 JOIN sm1.zones zn1 WHERE zn1.id = :zoneId)
+                                                    AND d.dateTime = :lastDate
                                                     AND sm.levelZone = 2                                                                                                                                               
                                                     ")
                     ->setParameters(array(
-                        //'selDate'      => $dat,
+                        'lastDate'      => $date->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
