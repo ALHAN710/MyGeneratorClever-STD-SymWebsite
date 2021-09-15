@@ -685,19 +685,6 @@ class ZoneController extends ApplicationController
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
                     $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
-
-                // dump($dataTotalActivePower);
-                //die();
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalAP, $productionAP);
-
-                $intervalpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalEA, $productionEA);
-                // dump($intervalpue);
-
                 foreach ($dataTotalActivePower as $d) {
                     //$dateE[] = $d['dt'];
                     $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
@@ -714,6 +701,19 @@ class ZoneController extends ApplicationController
                     //$dateE[] = $d['dt'];
                     $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
                 }
+                // dump($dataTotalActivePower);
+                //die();
+
+                $instantpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalAP, $productionAP);
+
+                $intervalpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalEA, $productionEA);
+                // dump($intervalpue);
+
+
                 /*$diffEnergy =  array_map(function ($a, $b) {
                     return number_format((float) ($a - $b), 2, '.', '');
                 }, $totalEA, $productionEA);*/
@@ -762,7 +762,7 @@ class ZoneController extends ApplicationController
                 'IntervalPUE' => $IntervalPUE,
                 'PieActiveEnergy'      => $EA_flow,
                 'PieReactiveEnergy'   => $ER_flow,
-                'PUE'   => [$totalAP, $productionAP, $instantpue],
+                'PUE'   => [$productionAP, $totalAP, $instantpue],
                 'MixedEnergy'     => [$totalEA, $productionEA, $intervalpue],
                 'MixedClimate'    => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
                 'MixedPSCosfi'   => [$s, $p, $fp],
@@ -1184,16 +1184,6 @@ class ZoneController extends ApplicationController
                 }
                 // dump($dataProductionEnergy);
                 //die();
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalAP, $productionAP);
-
-                $intervalpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalEA, $productionEA);
-                // dump($intervalpue);
-
                 foreach ($dataProductionActivePower as $d) {
                     $dateP[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
@@ -1218,6 +1208,17 @@ class ZoneController extends ApplicationController
                     //$dateE[] = $d['dt'];
                     $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
                 }
+
+                $instantpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalAP, $productionAP);
+
+                $intervalpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalEA, $productionEA);
+                // dump($intervalpue);
+
+
                 /*$diffEnergy =  array_map(function ($a, $b) {
                     return number_format((float) ($a - $b), 2, '.', '');
                 }, $totalEA, $productionEA);*/

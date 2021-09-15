@@ -298,7 +298,7 @@ class HomePageController extends ApplicationController
                                             ")
                     ->setParameters(array(
                         //'selDate'      => $dat,
-                        'nowDate'  => date('Y-m') . '%',
+                        'nowDate'  => date('Y-m-d') . '%',
                         //'endDate'    => $endDate->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
@@ -315,16 +315,11 @@ class HomePageController extends ApplicationController
                                             ")
                     ->setParameters(array(
                         //'selDate'      => $dat,
-                        'nowDate'  => date('Y-m') . '%',
+                        'nowDate'  => date('Y-m-d') . '%',
                         //'endDate'    => $endDate->format('Y-m-d H:i:s'),
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalAP, $productionAP);
 
                 foreach ($dataProductionActivePower as $d) {
                     $datePue[] = $d['dt'];
@@ -338,6 +333,10 @@ class HomePageController extends ApplicationController
                     //$dateE[] = $d['dt'];
                     $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
+
+                $instantpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalAP, $productionAP);
             }
 
             $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $paramJSON['genId']]) ?? new NoDatetimeData();
