@@ -267,7 +267,7 @@ class HomePageController extends ApplicationController
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
                                                     WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = = :lastDate
+                                                    AND d.dateTime = :lastDate
                                                     AND sm.levelZone = 2                                                                                                                                               
                                                     ")
                     ->setParameters(array(
