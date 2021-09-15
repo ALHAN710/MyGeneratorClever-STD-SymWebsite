@@ -278,7 +278,9 @@ class HomePageController extends ApplicationController
                 // dump($InstantTotalActivePower);
                 $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
                 $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
-                $InstantPUE = 0;
+                $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
+                $InstantIT_AP = number_format((float) $InstantIT_AP, 2, '.', '');
+                //$InstantPUE = 0;
                 if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
                     $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
                     $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
@@ -319,6 +321,11 @@ class HomePageController extends ApplicationController
                     ))
                     ->getResult();
 
+
+                $instantpue =  array_map(function ($a, $b) {
+                    return $b > 0 ? round($a / $b, 2) : 0;
+                }, $totalAP, $productionAP);
+
                 foreach ($dataProductionActivePower as $d) {
                     $datePue[] = $d['dt'];
                     //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
@@ -331,10 +338,6 @@ class HomePageController extends ApplicationController
                     //$dateE[] = $d['dt'];
                     $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 6) : 0;
-                }, $totalAP, $productionAP);
             }
 
             $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $paramJSON['genId']]) ?? new NoDatetimeData();
