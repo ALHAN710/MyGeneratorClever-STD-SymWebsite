@@ -1939,7 +1939,7 @@
                 },
                 x: {
                     formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY")
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
                     }
                 }
             },
@@ -2253,7 +2253,7 @@
                     }
                 },
                 title: {
-                    text: moment().format('DD MMMM').toString(),
+                    text: moment().format('DD MMMM YYYY').toString(),
                     style: {
                         fontSize: '14px',
                         fontWeight: 'bold',
@@ -2330,7 +2330,7 @@
                 },
                 x: {
                     formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY")
+                        return moment(new Date(val)).format("DD MMM YYYY HH") + "h"
                     }
                 }
             },
@@ -2540,8 +2540,10 @@
         {# console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
         console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00') #}
         var $data_ = JSON.stringify({
-            "startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
-            "endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
+            //"startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
+            //"endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
+            "startDate": '2021-09-15 00:00:00',
+            "endDate": '2021-09-15 23:59:59',
             "zoneId": {{zone.id}},
         });
         setTimeout(
@@ -2565,7 +2567,7 @@
                                 timeout: 120000, // 64241
                                 success: function (result) {
                                     // $('.fa-sync').removeClass('fa-spin');
-                                    console.log(result);
+                                    //console.log(result);
                                     
                                     swal({
                                         type: 'success', 
@@ -2578,10 +2580,6 @@
                                     if( Object.keys(result).length > 0 ){
                                         var dateLabel = Object.values(result['date']);
                                         console.log(result);
-                                        console.log(Object.values(result['PieActiveEnergy']));
-                                        $('#p_overview').text(String(result['P']))
-                                        $('#s_overview').text(String(result['S']))
-                                        $('#fp_overview').text(String(result['FP']))
                                         {# {% for smartMod in zone.smartMods %}
                                             {% if smartMod.modType ==  'Load Meter' %}
                                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
@@ -2602,13 +2600,17 @@
                                         //$("#intPUE").text(result['IntervalPUE']);
                                         //console.log(Object.values(result['climateDate']));
                                         var dataLabel = Object.values(result['date']);
-                                        displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
                                         displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         {% else %}
+                                        console.log(Object.values(result['PieActiveEnergy']));
+                                        $('#p_overview').text(String(result['P']))
+                                        $('#s_overview').text(String(result['S']))
+                                        $('#fp_overview').text(String(result['FP']))
+                                        
                                         displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                                        {% endif %}
-
+                                        
                                         var dataArray = [{% for smartMod in zone.smartMods %}
                                             {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                                             {% endfor %}
@@ -2625,6 +2627,8 @@
                                             {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
                                             {% endfor %}
                                         ], dataArray);
+                                        {% endif %}
+
                                     }
                                 },
                                 error: function (result) {
@@ -2664,10 +2668,6 @@
                     if( Object.keys(result).length > 0 ){
                         var dateLabel = Object.values(result['date']);
                         {# console.log(result); #}
-                        console.log(Object.values(result['PieActiveEnergy']));
-                        $('#p_overview').text(String(result['P']))
-                        $('#s_overview').text(String(result['S']))
-                        $('#fp_overview').text(String(result['FP']))
                         {# {% for smartMod in zone.smartMods %}
                             {% if smartMod.modType ==  'Load Meter' %}
                             $('#p_{{smartMod.id}}_overview').text(Object.values(result['P'])[{{loop.index0}}])
@@ -2687,13 +2687,16 @@
                         $("#datacenter_power").text(result['InstantTotal_AP']);
                         //$("#intPUE").text(result['IntervalPUE']);
                         //console.log(Object.values(result['climateDate']));
-                        displayNewData(Mixed_Pue_Power_Linechart_overview, dateLabel, Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                        displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
                         displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         {% else %}
+                        console.log(Object.values(result['PieActiveEnergy']));
+                        $('#p_overview').text(String(result['P']))
+                        $('#s_overview').text(String(result['S']))
+                        $('#fp_overview').text(String(result['FP']))
+                        
                         displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                        {% endif %}
-
                         var dataArray = [{% for smartMod in zone.smartMods %}
                             {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                             {% endfor %}
@@ -2710,6 +2713,8 @@
                             {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
                             {% endfor %}
                         ], dataArray);
+                        {% endif %}
+
                     }
                 },
                 error: function (result) {
@@ -2773,7 +2778,7 @@
                                     timeout: 120000, // 64241
                                     success: function (result) {
                                         // $('.fa-sync').removeClass('fa-spin');
-                                        console.log(result);
+                                        //console.log(result);
                                         
                                         swal({
                                             type: 'success', 
@@ -2789,12 +2794,22 @@
                                             var dateLabel = Object.values(result['date']);
                                             console.log(result);
                                             console.log(Object.values(result['PieActiveEnergy']));
+                                            var nb = 0;
                                             {% for smartMod in zone.smartMods %}
                                                 {% if smartMod.modType ==  'Load Meter' %}
+                                                console.log(nb);
+                                                $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[nb])
+                                                $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[nb])
+                                                nb++;
+                                                {% endif %}
+                                            {% endfor %}
+                                            /*{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}
+                                                console.log({{loop.index0}});
                                                 $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{loop.index0}}])
                                                 $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{loop.index0}}])
                                                 {% endif %}
-                                            {% endfor %}
+                                            {% endfor %}*/
                                             /*Object.values(result['Smax']).forEach(function (item, index) {
                                                 var id = '#smax_' + index;
                                                 console.log(item);
@@ -2817,28 +2832,50 @@
                                             
                                             
                                             {% if zone.type == 'PUE Calculation' %}     
-                                            $("#instPUE").text(result['InstantPUE']);
+                                            //$("#instPUE").text(result['InstantPUE']);
                                             //$("#intPUE").text(result['IntervalPUE']);
                                             //console.log(Object.values(result['climateDate']));
-                                            displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                            displayNewData(Mixed_Pue_Power_Linechart, Object.values(result['dateP']), Object.values(result['PUE']), [startDate, endDate], 3, 'day');
                                             displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
                                             displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
                                             {% endif %}
 
-                                            var dataArray = [{% for smartMod in zone.smartMods %}
+                                            /*var dataArray = [{% for smartMod in zone.smartMods %}
                                                 {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                                                 {% endfor %}
-                                            ];
-                                            updateDonutChart(ActiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                            ];*/
+                                            var dataArray = Object.values(result['PieActiveEnergy']);
+                                            console.log("====== Array ======")
+                                            console.log(dataArray);
+                                            updateDonutChart(ActiveEnergy_Piechart, [
+                                                {% set nb = 0 %}
+                                                {% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}
+                                                String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
+                                                {% if loop.last == false %}
+                                                ,
+                                                {% endif %}
+                                                {% set nb = nb + 1 %}
+                                                {% endif %}
                                                 {% endfor %}
                                             ], dataArray);
-                                            dataArray = [{% for smartMod in zone.smartMods %}
+
+                                            /*dataArray = [{% for smartMod in zone.smartMods %}
                                                 {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                                                 {% endfor %}
-                                            ];
-                                            updateDonutChart(ReactiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                            ];*/
+                                            dataArray = Object.values(result['PieReactiveEnergy']);
+                                            console.log(dataArray);
+                                            updateDonutChart(ReactiveEnergy_Piechart, [
+                                                {% set nb = 0 %}
+                                                {% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}
+                                                String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
+                                                {% if loop.last == false %}
+                                                ,
+                                                {% endif %}
+                                                {% set nb = nb + 1 %}
+                                                {% endif %}
                                                 {% endfor %}
                                             ], dataArray);
                                         }
@@ -3255,7 +3292,7 @@
                 },
                 x: {
                     formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY")
+                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
                     }
                 }
             },
@@ -3933,7 +3970,7 @@
                             timeout: 120000, // 64241
                             success: function (result) {
                                 // $('.fa-sync').removeClass('fa-spin');
-                                console.log(result);
+                                //console.log(result);
                                 
                                 swal({
                                     type: 'success', 
@@ -3947,10 +3984,12 @@
                                     var dateLabel = Object.values(result['date']);
                                     console.log(result);
                                     console.log(Object.values(result['PieActiveEnergy']));
+                                    {% set nb = 0 %}
                                     {% for smartMod in zone.smartMods %}
                                         {% if smartMod.modType ==  'Load Meter' %}
-                                        $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{loop.index0}}])
-                                        $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{loop.index0}}])
+                                        $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{nb}}])
+                                        $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{nb}}])
+                                        {% set nb = nb + 1 %}
                                         {% endif %}
                                     {% endfor %}
                                     /*Object.values(result['Smax']).forEach(function (item, index) {
@@ -3975,28 +4014,50 @@
                                     
                                     
                                     {% if zone.type == 'PUE Calculation' %}     
-                                    $("#instPUE").text(result['InstantPUE']);
+                                    //$("#instPUE").text(result['InstantPUE']);
                                     //$("#intPUE").text(result['IntervalPUE']);
                                     //console.log(Object.values(result['climateDate']));
-                                    displayNewData(Mixed_Pue_Power_Linechart, dateLabel, Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                    displayNewData(Mixed_Pue_Power_Linechart, Object.values(result['dateP']), Object.values(result['PUE']), [startDate, endDate], 3, 'day');
                                     displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
                                     displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
                                     {% endif %}
 
-                                    var dataArray = [{% for smartMod in zone.smartMods %}
+                                    /*var dataArray = [{% for smartMod in zone.smartMods %}
                                         {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                                         {% endfor %}
-                                    ];
-                                    updateDonutChart(ActiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                    ];*/
+                                    var dataArray = Object.values(result['PieActiveEnergy']);
+                                    console.log("====== Array ======")
+                                    console.log(dataArray);
+                                    updateDonutChart(ActiveEnergy_Piechart, [
+                                        {% set nb = 0 %}
+                                        {% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}
+                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
+                                        {% if loop.last == false %}
+                                        ,
+                                        {% endif %}
+                                        {% set nb = nb + 1 %}
+                                        {% endif %}
                                         {% endfor %}
                                     ], dataArray);
-                                    dataArray = [{% for smartMod in zone.smartMods %}
+                                    
+                                    /*dataArray = [{% for smartMod in zone.smartMods %}
                                         {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
                                         {% endfor %}
-                                    ];
-                                    updateDonutChart(ReactiveEnergy_Piechart, [{% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                    ];*/
+                                    dataArray = Object.values(result['PieReactiveEnergy']);
+                                    console.log(dataArray);
+                                    updateDonutChart(ReactiveEnergy_Piechart, [
+                                        {% set nb = 0 %}
+                                        {% for smartMod in zone.smartMods %}
+                                        {% if smartMod.modType ==  'Load Meter' %}
+                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
+                                        {% if loop.last == false %}
+                                        ,
+                                        {% endif %}
+                                        {% set nb = nb + 1 %}
+                                        {% endif %}
                                         {% endfor %}
                                     ], dataArray);
                                 }
