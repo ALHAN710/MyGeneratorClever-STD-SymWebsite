@@ -2540,10 +2540,8 @@
         {# console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
         console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00') #}
         var $data_ = JSON.stringify({
-            //"startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
-            //"endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
-            "startDate": '2021-09-15 00:00:00',
-            "endDate": '2021-09-15 23:59:59',
+            "startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
+            "endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
             "zoneId": {{zone.id}},
         });
         setTimeout(
