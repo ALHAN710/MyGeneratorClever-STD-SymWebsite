@@ -235,7 +235,7 @@ class ZoneController extends ApplicationController
     /**
      * Permet de mettre à jour les graphes en cours liés aux données des modules load Meter d'une zone
      *
-     * @Route("/update/zone/overview/graphs/", name="update_zone_overview_graphs")
+     * @Route("/update/overview/graphs/", name="update_zone_overview_graphs")
      * 
      * @param EntityManagerInterface $manager
      * @return Response
@@ -319,7 +319,7 @@ class ZoneController extends ApplicationController
                 }
             }
             //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
-            $commonData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR
+            $commonEnergyData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -339,7 +339,7 @@ class ZoneController extends ApplicationController
             // dump($commonData);
 
             //die();
-            foreach ($commonData as $d) {
+            foreach ($commonEnergyData as $d) {
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
                 $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
                 $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
@@ -347,8 +347,8 @@ class ZoneController extends ApplicationController
                 // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
                 // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
             }
-            $commonData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS P, 
-                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) AS S
+            $commonPowerData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
+                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -367,7 +367,7 @@ class ZoneController extends ApplicationController
             //dump($commonData);
 
             //die();
-            foreach ($commonData as $d) {
+            foreach ($commonPowerData as $d) {
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
                 // $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
                 // $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
