@@ -275,7 +275,7 @@
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
                                         <h3 class="text-white"><span id="p_overview">0</span> W</h3>
-                                        <p class="text-white font-weight-bold mb-0">Active Power</p>
+                                        <p class="text-white font-weight-bold mb-0">Current Power</p>
                                     </div><!-- end col-->
                                 </div><!-- end row-->                                                                                     
                             </div><!--end card-body--> 
@@ -290,8 +290,8 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="s_overview">0</span> VA</h3>
-                                        <p class="text-white font-weight-bold mb-0">Apparent Power</p>
+                                        <h3 class="text-white"><span id="ea_overview">0</span> kWh</h3>
+                                        <p class="text-white font-weight-bold mb-0">This month consumption</p>
                                     </div><!-- end col-->
                                 </div><!-- end row-->                                                                                     
                             </div><!--end card-body--> 
@@ -306,8 +306,8 @@
                                         </div>
                                     </div><!-- end col-->
                                     <div class="col-sm-8 text-center">
-                                        <h3 class="text-white"><span id="fp_overview">0</span></h3>
-                                        <p class="font-weight-bold text-white mb-0">Power Factor</p>
+                                        <h3 class="text-white"><span id="emission_overview">0</span> kgCO<sub>2</sub></h3>
+                                        <p class="font-weight-bold text-white mb-0">Current Month's Carbon Footprint</p>
                                     </div><!-- end col-->
                                 </div><!-- end row-->                                                                                     
                             </div><!--end card-body--> 
@@ -391,8 +391,8 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="text-center"><span id="p_overview">0.00</span></td>
-                                                        <td class="text-center"><span id="s_overview">0.00</span></td>
-                                                        <td class="text-center"><span id="fp_overview">0.00</span></td>                                                        
+                                                        <td class="text-center"><span id="ea_overview">0.00</span></td>
+                                                        <td class="text-center"><span id="emission_overview">0.00</span></td>                                                        
                                                                                             
                                                     </tr>
                                                     { {% for smartMod in zone.smartMods %}
@@ -2604,8 +2604,8 @@
                                         {% else %}
                                         console.log(Object.values(result['PieActiveEnergy']));
                                         $('#p_overview').text(String(result['P']))
-                                        $('#s_overview').text(String(result['S']))
-                                        $('#fp_overview').text(String(result['FP']))
+                                        $('#ea_overview').text(String(result['EA']))
+                                        $('#emission_overview').text(String(result['kgCO2']))
                                         
                                         displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         
@@ -2697,8 +2697,8 @@
                         {% else %}
                         console.log(Object.values(result['PieActiveEnergy']));
                         $('#p_overview').text(String(result['P']))
-                        $('#s_overview').text(String(result['S']))
-                        $('#fp_overview').text(String(result['FP']))
+                        $('#ea_overview').text(String(result['EA']))
+                        $('#emission_overview').text(String(result['kgCO2']))
                         
                         displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         var dataArray = [{% for smartMod in zone.smartMods %}

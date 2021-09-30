@@ -255,6 +255,8 @@ class ZoneController extends ApplicationController
         $S = 0.00;
         $P = 0.00;
         $FP_flow = 0.00;
+        $EA_month = 0.0;
+        $kgCO2_month = 0.0;
         $p = [];
         $s = [];
         $fp = [];
@@ -343,6 +345,36 @@ class ZoneController extends ApplicationController
                 //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
                 $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
                 $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
+                // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
+                // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+            }
+
+            $commonCurrentMonthEnergyQuery = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.ea)*0.207 AS kgCO2
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 2
+                                            GROUP BY ID
+                                            ORDER BY ID ASC                                                                                                                                                
+                                            ")
+                ->setParameters(array(
+                    //'selDate'      => $dat,
+                    'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                    'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                    'zoneId'     => $zone->getId()
+                ))
+                ->getResult();
+
+            // dump($commonData);
+
+            //die();
+
+            foreach ($commonCurrentMonthEnergyQuery as $d) {
+                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                $EA_month   = floatval(number_format((float) $d['kWh'], 1, '.', ''));
+                $kgCO2_month = floatval(number_format((float) $d['kgCO2'], 1, '.', ''));
                 // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
                 // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
                 // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
@@ -679,27 +711,28 @@ class ZoneController extends ApplicationController
             }
 
             return $this->json([
-                'code'    => 200,
-                'date'    => $dateE,
-                'dateP'    => $dateP,
-                'Date1'    => $lastRecord[0]['dt'] ?? '',
-                'datePSCosfi'    => $datePSCosfi,
-                'climateDate'   => $dateClimate,
-                'xscale'    => $xScale,
-                'InstantPUE' => $InstantPUE,
-                'InstantTotal_AP'   => $InstantTotal_AP,
-                'InstantIT_AP'  => $InstantIT_AP,
-                'IntervalPUE' => $IntervalPUE,
-                'PieActiveEnergy'      => $EA_flow,
+                'code'                => 200,
+                'date'                => $dateE,
+                'dateP'               => $dateP,
+                'Date1'               => $lastRecord[0]['dt'] ?? '',
+                'datePSCosfi'         => $datePSCosfi,
+                'climateDate'         => $dateClimate,
+                'xscale'              => $xScale,
+                'InstantPUE'          => $InstantPUE,
+                'InstantTotal_AP'     => $InstantTotal_AP,
+                'InstantIT_AP'        => $InstantIT_AP,
+                'IntervalPUE'         => $IntervalPUE,
+                'PieActiveEnergy'     => $EA_flow,
                 'PieReactiveEnergy'   => $ER_flow,
-                'PUE'   => [$productionAP, $totalAP, $instantpue],
-                'MixedEnergy'     => [$totalEA, $productionEA, $intervalpue],
-                'MixedClimate'    => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
-                'MixedPSCosfi'   => [$s, $p, $fp],
-                'S'    => end($s), //$S,
-                'P'    => end($p), //$P,
-                'FP'   => end($fp), //$FP_flow,
-
+                'PUE'                 => [$productionAP, $totalAP, $instantpue],
+                'MixedEnergy'         => [$totalEA, $productionEA, $intervalpue],
+                'MixedClimate'        => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
+                'MixedPSCosfi'        => [$s, $p, $fp],
+                //'S'                   => end($s), //$S,
+                'P'                   => end($p), //$P,
+                //'FP'                  => end($fp), //$FP_flow,
+                'EA'                  => $EA_month,
+                'kgCO2'               => $kgCO2_month
 
             ], 200);
         }
