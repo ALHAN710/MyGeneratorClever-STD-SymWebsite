@@ -696,9 +696,9 @@ class ZoneController extends ApplicationController
                 'MixedEnergy'     => [$totalEA, $productionEA, $intervalpue],
                 'MixedClimate'    => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
                 'MixedPSCosfi'   => [$s, $p, $fp],
-                'S'    => $S,
-                'P'    => $P,
-                'FP'   => $FP_flow,
+                'S'    => end($s), //$S,
+                'P'    => end($p), //$P,
+                'FP'   => end($fp), //$FP_flow,
 
 
             ], 200);

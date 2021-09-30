@@ -2652,6 +2652,12 @@
         , 500);
 
         setInterval(function () {
+            $data_ = JSON.stringify({
+                "startDate": moment().format("YYYY-MM-DD") + ' 00:00:00',
+                "endDate": moment().format("YYYY-MM-DD") + ' 23:59:59',
+                "zoneId": {{zone.id}},
+            });
+            
             $.ajax({
                 type: "POST", // method type
                 contentType: "application/json; charset=utf-8",
