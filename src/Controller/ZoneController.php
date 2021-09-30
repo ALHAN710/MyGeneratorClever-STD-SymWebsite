@@ -347,7 +347,7 @@ class ZoneController extends ApplicationController
                 // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
                 // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
             }
-            $commonPowerData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
+            /*$commonPowerData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
                                             SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
@@ -374,7 +374,7 @@ class ZoneController extends ApplicationController
                 $P = number_format((float) $d['P'], 2, '.', '');
                 $S = number_format((float) $d['S'], 2, '.', '');
                 $FP_flow = number_format((float) $d['PF'], 2, '.', '');
-            }
+            }*/
             $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
                                        FROM App\Entity\SmartMod sm
                                        JOIN sm.loadDataEnergies d 
@@ -649,8 +649,8 @@ class ZoneController extends ApplicationController
                 }, $totalEA, $productionEA);*/
                 // dump($diffEnergy);
             } else {
-                $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS P, 
-                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) AS S
+                $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
+                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
