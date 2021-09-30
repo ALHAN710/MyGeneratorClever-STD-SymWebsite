@@ -354,15 +354,15 @@ class ZoneController extends ApplicationController
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND d.dateTime LIKE :currentMonth
                                             AND sm.levelZone = 2
                                             GROUP BY ID
                                             ORDER BY ID ASC                                                                                                                                                
                                             ")
                 ->setParameters(array(
                     //'selDate'      => $dat,
-                    'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                    'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                    'currentMonth'  => date('Y-m') . '%',
+                    //'endDate'    => $endDate->format('Y-m-d H:i:s'),
                     'zoneId'     => $zone->getId()
                 ))
                 ->getResult();
