@@ -350,20 +350,18 @@ class ZoneController extends ApplicationController
                 // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
             }
 
-            $commonCurrentMonthEnergyQuery = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.ea)*0.207 AS kgCO2
+            $commonCurrentMonthEnergyQuery = $manager->createQuery("SELECT SUM(d.ea) AS kWh, SUM(d.ea)*0.207 AS kgCO2
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
                                             AND d.dateTime LIKE :currentMonth
-                                            AND sm.levelZone = 2
-                                            GROUP BY ID
-                                            ORDER BY ID ASC                                                                                                                                                
+                                            AND sm.levelZone = 2                                                                                                                                          
                                             ")
                 ->setParameters(array(
                     //'selDate'      => $dat,
-                    'currentMonth'  => date('Y-m') . '%',
+                    'currentMonth' => date('Y-m') . '%',
                     //'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                    'zoneId'     => $zone->getId()
+                    'zoneId'       => $zone->getId()
                 ))
                 ->getResult();
 
@@ -729,7 +727,7 @@ class ZoneController extends ApplicationController
                 'MixedClimate'        => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
                 'MixedPSCosfi'        => [$s, $p, $fp],
                 //'S'                   => end($s), //$S,
-                'P'                   => end($p), //$P,
+                'P'                   => end($p) ? end($p) : 0, //$P,
                 //'FP'                  => end($fp), //$FP_flow,
                 'EA'                  => $EA_month,
                 'kgCO2'               => $kgCO2_month
