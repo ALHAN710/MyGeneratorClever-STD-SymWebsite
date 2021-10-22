@@ -1043,7 +1043,7 @@
                                     
                                     <tr>
                                         <th>Puissance souscrite {{zone.name}} (VA)</th>
-                                        <td class="text-center" id="">{{zone.powerSubscribed * 1000}}</td>
+                                        <td class="text-center" id="">{{zone.powerSubscribed}}</td>
                                        
                                     </tr>
                                     <tr>
@@ -1632,8 +1632,8 @@
                                     var amount = 0.0;
                                     var diffP = 0.0;
                                     console.log("Prime Fixe = " + prime);
-                                    if( Smax > {{zone.powerSubscribed * 1000}}){
-                                        diffP = Smax - {{zone.powerSubscribed * 1000}};
+                                    if( Smax > {{zone.powerSubscribed}}){
+                                        diffP = Smax - {{zone.powerSubscribed}};
                                         amount = (diffP/1000.0)*prime;
                                         //$('#amount').text(amount.toFixed(2))
                                     }
