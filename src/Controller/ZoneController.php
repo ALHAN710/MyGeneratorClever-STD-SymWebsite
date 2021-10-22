@@ -1467,9 +1467,13 @@ class ZoneController extends ApplicationController
                     ))
                     ->getResult();
                 // dump($PowerMax[0]);
+                $date = '';
                 $Smax = 0;
                 if (count($PowerMax)) {
-                    if (count($PowerMax[0])) $Smax = number_format((float) $PowerMax[0]['Smoy'], 2, '.', '');
+                    if (count($PowerMax[0])) {
+                        $Smax = number_format((float) $PowerMax[0]['Smoy'], 2, '.', '');
+                        $date = $PowerMax[0]['jour'];
+                    }
                 }
                 /*$Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, SUM(d.kWh) AS kWh, SUM(d.kVarh) AS kVarh
                                                 FROM App\Entity\DataMod d, App\Entity\SmartMod sm WHERE d.dateTime LIKE :selDate
@@ -1536,6 +1540,7 @@ class ZoneController extends ApplicationController
                     //'amountEA'  => $amountEA,
                     //'NHU_Grid'  => $NHU_Grid,
                     //'NHU_FUEL'  => $NHU_FUEL,
+                    'date' => $date,
                     'Smax' => $Smax,
                     'NHU_Psous'  => $NHU_Psous,
                     'NHD_Psous'  => $NHD_Psous
