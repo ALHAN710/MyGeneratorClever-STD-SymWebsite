@@ -748,8 +748,8 @@ class GensetController extends ApplicationController
                 } else {
                     $oldData = clone $smartMod->getNoDatetimeData();
                 }
-                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
-                $date = new DateTime('now');
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
+                //$date = new DateTime('now');
 
                 /*$dataMod->setL12G($paramJSON['L12G'])
                     ->setL13G($paramJSON['L13G'])
@@ -974,7 +974,8 @@ class GensetController extends ApplicationController
 
             return $this->json([
                 'code' => 200,
-                'received' => $paramJSON,
+                //'received' => $paramJSON,
+                'date'  => $oldData->getDateTime()
                 // 'status'   => $response->getStatusCode(),
                 // 'content' => $response->getContent(),
                 //'contentType' => $response->getHeaders()['content-type'][0],
@@ -1119,7 +1120,10 @@ class GensetController extends ApplicationController
                 }
 
                 if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
-                else if ($alarmCode->getType() === 'FUEL') $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                else if ($alarmCode->getType() === 'FUEL') {
+                    $data = clone $smartMod->getNoDatetimeData();
+                    $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                }
 
                 foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
