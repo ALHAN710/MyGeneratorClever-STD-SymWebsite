@@ -1122,7 +1122,8 @@ class GensetController extends ApplicationController
                 if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 else if ($alarmCode->getType() === 'FUEL') {
                     $data = clone $smartMod->getNoDatetimeData();
-                    $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                    if ($alarmCode->getCode() === 'GENR') $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                    else $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
                 foreach ($site->getContacts() as $contact) {
