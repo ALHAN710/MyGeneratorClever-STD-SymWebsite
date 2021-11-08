@@ -121,6 +121,11 @@ class SmartMod
      */
     private $power;
 
+    /**
+     * @ORM\OneToMany(targetEntity=AirConditionerData::class, mappedBy="smartMod")
+     */
+    private $airConditionerData;
+
     public function __construct()
     {
         $this->datetimeData = new ArrayCollection();
@@ -128,6 +133,7 @@ class SmartMod
         $this->loadDataEnergies = new ArrayCollection();
         $this->alarmReportings = new ArrayCollection();
         $this->climateData = new ArrayCollection();
+        $this->airConditionerData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -450,6 +456,36 @@ class SmartMod
     public function setPower(?float $power): self
     {
         $this->power = $power;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AirConditionerData[]
+     */
+    public function getAirConditionerData(): Collection
+    {
+        return $this->airConditionerData;
+    }
+
+    public function addAirConditionerData(AirConditionerData $airConditionerData): self
+    {
+        if (!$this->airConditionerData->contains($airConditionerData)) {
+            $this->airConditionerData[] = $airConditionerData;
+            $airConditionerData->setSmartMod($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAirConditionerData(AirConditionerData $airConditionerData): self
+    {
+        if ($this->airConditionerData->removeElement($airConditionerData)) {
+            // set the owning side to null (unless already changed)
+            if ($airConditionerData->getSmartMod() === $this) {
+                $airConditionerData->setSmartMod(null);
+            }
+        }
 
         return $this;
     }

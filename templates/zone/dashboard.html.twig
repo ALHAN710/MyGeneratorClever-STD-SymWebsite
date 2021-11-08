@@ -41,7 +41,7 @@
         {% endif %}                                                
         {# <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#alarm" role="tab">Alarm</a>
-        </li>                               #}
+        </li> #}
         
     </ul>
 
@@ -251,7 +251,7 @@
                         </div><!--end card-->                                      
                     </div>
                 </div> #}
-            {% else %}
+            {% elseif zone.type == 'No PUE Calculation' %}
                 <div class="row">
                     <div class="col-12 col-sm-9">
                         <div class="card">
@@ -434,7 +434,119 @@
                         </div><!--end row-->
                     </div>
                 </div> #}
+            {% elseif zone.type == 'Air Conditioner' %}
+                {% if zone.smartMods|length > 0 %}
+                <div class="row">
+                    {% for smartMod in zone.smartMods %}
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-3">{{smartMod.name}}</h4>
+                                <div class="table-responsive">
+                                    <table class="table mb-0">                                        
+                                        <tbody>
+                                            <tr>
+                                                <td class="border-top-0">
+                                                    <!-- <i class="data-icon mdi mdi-thermometer-lines bg-soft-pink rounded-circle mr-1"></i> -->
+                                                    <span class="text-info">Unit State</span>
+                                                </td>
+                                                <td class="border-top-0">
+                                                    <span class="badge badge-boxed font-14" id="uovsl_0_{{loop.index}}">-</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <i class="data-icon mdi mdi-thermometer-lines bg-soft-pink rounded-circle mr-1"></i> -->
+                                                    <span class="text-info">Unit State</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14" id="dpstrv_0_{{loop.index}}_1013">-</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <i class="data-icon mdi mdi-thermometer-lines bg-soft-pink rounded-circle mr-1"></i> -->
+                                                    <span class="text-info">Return Air Temperature</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14 badge-soft-warning"><span id="dpstrv_0_{{loop.index}}_1192">-</span> °C</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <i class="mdi mdi-opacity bg-soft-success rounded-circle mr-1"></i> -->
+                                                    <span class="text-info">Return Air Humidity</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14 badge-soft-warning"><span id="dpstrv_0_{{loop.index}}_1194">-</span> %rH</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <img src="/images/widgets/project3.jpg" alt="" class="thumb-sm rounded-circle mr-1"> -->
+                                                    <span class="text-info">Compressor 1</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14" id="dpstrv_0_{{loop.index}}_4403">-</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <img src="/images/widgets/project3.jpg" alt="" class="thumb-sm rounded-circle mr-1"> -->
+                                                    <span class="text-info">Compressor 2</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14" id="dpstrv_0_{{loop.index}}_4503">-</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <!-- <img src="/images/widgets/project3.jpg" alt="" class="thumb-sm rounded-circle mr-1"> -->
+                                                    <span class="text-info">Fan speed 1</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-boxed font-14 badge-soft-warning"><span id="dpstrv_0_{{loop.index}}_6932">-</span> %</span>
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table> <!--end row-->
+                                </div><!--end table-responsive-->                          
+                            </div><!--end card-body-->                                                                                                        
+                        </div><!--end card-->
+                    </div><!--end col-->
+                    {% endfor %}
+                </div><!--end row-->
+                <div class="row ml-2">
+                    <small>Last update <span id="update">{{lastDate}}</span></small>
+                </div>
                 
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Unit 1-1</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_unit_1-1_overview" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Unit 1-2</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_unit_1-2_overview" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+                {% endif %}
+                    
             {% endif %}
 
             {# {% if type == 'zone sans' %}
@@ -699,72 +811,96 @@
                         </div><!--end card-->                                      
                     </div>
                 </div> #}
-            {% endif %}
+            {% elseif zone.type == 'No PUE Calculation' %}
+                <div class="row">
 
-
-            <div class="row">
-
-                <div class="col-12 col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title mt-0 mb-4">Active Energy Flow</h4>
-                            <div class="">
-                                <div id="apex_pie_active_energy_flow" class="apex-charts"></div>
-                            </div>                                        
-                        </div><!--end card-body-->
-                    </div><!--end card-->
-                </div><!--end col-->
-                
-                <div class="col-12 col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title mt-0 mb-4">Reactive Energy Flow</h4>
-                            <div class="">
-                                <div id="apex_pie_reactive_energy_flow" class="apex-charts"></div>
-                            </div>                                        
-                        </div><!--end card-body-->
-                    </div><!--end card-->
-                </div>
-
-            </div>
-            
-            <div class="row">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title mt-0 mb-4"></h4>
-                            <div class="table-responsive shopping-cart">
-                                {# {{dump(smartModsProduction)}} #}
-                                <table class="table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th class="text-center">Smax (kVA)</th>                                                        
-                                            <th class="text-center">CosPhi </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for smartMod in zone.smartMods %}
-                                            {% if smartMod.modType ==  'Load Meter' %}
-                                            <tr>
-                                                <td>
-                                                    <p class="d-inline-block align-middle mb-0 product-name">{{smartMod.name}}</p> 
-                                                </td>
-                                                <td class="text-center"><span id="smax_{{smartMod.id}}">0</span></td>
-                                                <td class="text-center"><span id="fp_{{smartMod.id}}">0</span></td>                                                        
-                                                                                    
-                                            </tr>
-                                        {% endif %}
-                                        {% endfor %}
-                                        
-                                    </tbody>
-                                </table>
-                            </div><!--end re-table-->                                        
-                        </div><!--end card-body-->
-                    </div><!--end card-->
+                    <div class="col-12 col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Active Energy Flow</h4>
+                                <div class="">
+                                    <div id="apex_pie_active_energy_flow" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
                     
+                    <div class="col-12 col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Reactive Energy Flow</h4>
+                                <div class="">
+                                    <div id="apex_pie_reactive_energy_flow" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div>
+
                 </div>
-            </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4"></h4>
+                                <div class="table-responsive shopping-cart">
+                                    {# {{dump(smartModsProduction)}} #}
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="text-center">Smax (kVA)</th>                                                        
+                                                <th class="text-center">CosPhi </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}
+                                                <tr>
+                                                    <td>
+                                                        <p class="d-inline-block align-middle mb-0 product-name">{{smartMod.name}}</p> 
+                                                    </td>
+                                                    <td class="text-center"><span id="smax_{{smartMod.id}}">0</span></td>
+                                                    <td class="text-center"><span id="fp_{{smartMod.id}}">0</span></td>                                                        
+                                                                                        
+                                                </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div><!--end re-table-->                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                        
+                    </div>
+                </div>
+            {% elseif zone.type == 'Air Conditioner' %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Unit 1-1</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_unit_1-1" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-0 mb-4">Unit 1-2</h4>
+                                <div class="chart-demo">
+                                    <div id="apex_mixed_unit_1-2" class="apex-charts"></div>
+                                </div>                                        
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+            {% endif %}
 
             {# {% if type == 'zone sans' %}
                 
@@ -939,6 +1075,7 @@
             
         </div>
 
+        {% if zone.type == 'No PUE Calculation' %}
         <div class="tab-pane p-3" id="energybilling" role="tabpanel">
             
             <div class="card">
@@ -1234,8 +1371,9 @@
                 </div><!--end card-body-->
             </div>  
         </div>
+        {% endif %}
 
-        <div class="tab-pane p-3" id="alarm" role="tabpanel">
+        {# <div class="tab-pane p-3" id="alarm" role="tabpanel">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -1279,7 +1417,7 @@
                     </div>
                 </div> <!-- end col -->
             </div> <!-- end row -->
-        </div>                                                
+        </div>    #}                                            
                     
     </div>     
 {% endblock %}
@@ -1291,22 +1429,24 @@
     {# <script src="/pages/jquery.justgage.init.js"></script> #}
     {#{{ encore_entry_script_tags('app') }}#}
 
-    <!-- Required datatable js -->
-    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
-    <!-- Buttons examples -->
-    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
-    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="/plugins/datatables/jszip.min.js"></script>
-    <script src="/plugins/datatables/pdfmake.min.js"></script>
-    <script src="/plugins/datatables/vfs_fonts.js"></script>
-    <script src="/plugins/datatables/buttons.html5.min.js"></script>
-    <script src="/plugins/datatables/buttons.print.min.js"></script>
-    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
-    <!-- Responsive examples -->
-    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
-    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
-    {# <script src="/pages/jquery.datatable.init.js"></script> #}
+    {% if zone.type == 'No PUE Calculation' %}
+        <!-- Required datatable js -->
+        <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+        <!-- Buttons examples -->
+        <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+        <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+        <script src="/plugins/datatables/jszip.min.js"></script>
+        <script src="/plugins/datatables/pdfmake.min.js"></script>
+        <script src="/plugins/datatables/vfs_fonts.js"></script>
+        <script src="/plugins/datatables/buttons.html5.min.js"></script>
+        <script src="/plugins/datatables/buttons.print.min.js"></script>
+        <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+        <!-- Responsive examples -->
+        <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+        <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+        {# <script src="/pages/jquery.datatable.init.js"></script> #}
+    {% endif %}
 
     <script src="/plugins/moment/moment.js"></script>
     <script src="/plugins/daterangepicker/daterangepicker.js"></script>
@@ -1319,26 +1459,36 @@
     <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
     <script src="/pages/jquery.apexcharts.init.js"></script>
 
+    {# {% if zone.type == 'Air Conditioner' %}
+        <script src="/plugins/morris/morris.min.js"></script>
+        <script src="/plugins/raphael/raphael.min.js"></script>
+        <script src="/plugins/moment/moment.js"></script>
+        <script src="/pages/jquery.projects_dashboard.init.js"></script>
+    {% endif %} #}
+
     <!-- Sweet-Alert  -->
     <script src="/plugins/sweet-alert2/sweetalert2.min.js"></script>
 
-    {# <!-- Required datatable js -->
-    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
-    <!-- Buttons examples -->
-    <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
-    <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="/plugins/datatables/jszip.min.js"></script>
-    <script src="/plugins/datatables/pdfmake.min.js"></script>
-    <script src="/plugins/datatables/vfs_fonts.js"></script>
-    <script src="/plugins/datatables/buttons.html5.min.js"></script>
-    <script src="/plugins/datatables/buttons.print.min.js"></script>
-    <script src="/plugins/datatables/buttons.colVis.min.js"></script>
-    <!-- Responsive examples -->
-    <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
-    <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
-    <script src="/pages/jquery.datatable.init.js"></script> #}
+    {# 
+        <!-- Required datatable js -->
+        <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+        <!-- Buttons examples -->
+        <script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+        <script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+        <script src="/plugins/datatables/jszip.min.js"></script>
+        <script src="/plugins/datatables/pdfmake.min.js"></script>
+        <script src="/plugins/datatables/vfs_fonts.js"></script>
+        <script src="/plugins/datatables/buttons.html5.min.js"></script>
+        <script src="/plugins/datatables/buttons.print.min.js"></script>
+        <script src="/plugins/datatables/buttons.colVis.min.js"></script>
+        <!-- Responsive examples -->
+        <script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+        <script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+        <script src="/pages/jquery.datatable.init.js"></script> 
+    #}
     
+    {% if zone.type == 'No PUE Calculation' %}
     <script>
         var drp_ = $('#daterangebilling').data('daterangepicker');
         endDate = drp_.endDate.format('YYYY-MM-DD');
@@ -1677,863 +1827,1236 @@
             }]);
         }
     </script>
+    {% endif %}
     
     {# <script src="/pages/jquery.crypto-dashboard.init.js"></script> #}
     {# Overview panel script #}
     <script>
-        var options = {
-            chart: {
-                height: 320,
-                type: 'pie',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
-            legend: {
-                show: true,
-                position: 'bottom',
-                horizontalAlign: 'center',
-                verticalAlign: 'middle',
-                floating: false,
-                fontSize: '14px',
-                offsetX: 0,
-                offsetY: -10
-            },
-            tooltip: {
-                theme: "dark",
-                style: {
-                    color: '#fff',
-                }
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    chart: {
-                        height: 240
-                    },
-                    legend: {
-                        show: false
-                    },
-                }
-            }]
-        }
-        var ActiveEnergy_Piechart_overview = new ApexCharts(
-            document.querySelector("#apex_pie_active_energy_flow_overview"),
-            options
-        );
-        ActiveEnergy_Piechart_overview.render();
-        
-        var options = {
-            chart: {
-                height: 320,
-                type: 'pie',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
-            legend: {
-                show: true,
-                position: 'bottom',
-                horizontalAlign: 'center',
-                verticalAlign: 'middle',
-                floating: false,
-                fontSize: '14px',
-                offsetX: 0,
-                offsetY: -10
-            },
-            tooltip: {
-                theme: "dark",
-                style: {
-                    color: '#fff',
+        {% if zone.type == 'No PUE Calculation' %}
+            var options = {
+                chart: {
+                    height: 320,
+                    type: 'pie',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
                 },
-                
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    chart: {
-                        height: 240
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    verticalAlign: 'middle',
+                    floating: false,
+                    fontSize: '14px',
+                    offsetX: 0,
+                    offsetY: -10
+                },
+                tooltip: {
+                    theme: "dark",
+                    style: {
+                        color: '#fff',
+                    }
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 240
+                        },
+                        legend: {
+                            show: false
+                        },
+                    }
+                }]
+            }
+            var ActiveEnergy_Piechart_overview = new ApexCharts(
+                document.querySelector("#apex_pie_active_energy_flow_overview"),
+                options
+            );
+            ActiveEnergy_Piechart_overview.render();
+            
+            var options = {
+                chart: {
+                    height: 320,
+                    type: 'pie',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    verticalAlign: 'middle',
+                    floating: false,
+                    fontSize: '14px',
+                    offsetX: 0,
+                    offsetY: -10
+                },
+                tooltip: {
+                    theme: "dark",
+                    style: {
+                        color: '#fff',
                     },
-                    legend: {
-                        show: false
-                    },
-                }
-            }]
-        }
-        var ReactiveEnergy_Piechart_overview = new ApexCharts(
-            document.querySelector("#apex_pie_reactive_energy_flow_overview"),
-            options
-        );
-        ReactiveEnergy_Piechart_overview.render();
+                    
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 240
+                        },
+                        legend: {
+                            show: false
+                        },
+                    }
+                }]
+            }
+            var ReactiveEnergy_Piechart_overview = new ApexCharts(
+                document.querySelector("#apex_pie_reactive_energy_flow_overview"),
+                options
+            );
+            ReactiveEnergy_Piechart_overview.render();
+        {% endif %}
                 
         {% if zone.type == 'PUE Calculation' %}
-        //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet ',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'IT Power',
-                type: 'line',
-                data: []
-                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-            }, {
-                name: 'DataCenter Power',
-                type: 'line',
-                data: []
-                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-            }, {
-                name: 'PUE',
-                type: 'line',
-                data: []
-                //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
-            }],
-            fill: {
-                opacity: [1, 1, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["#fbb624", "#77d0ba", "#e02040"], //
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM YYYY').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "IT Power (kW)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "DataCenter Power (kW)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'IT Power',
+                    type: 'line',
+                    data: []
+                    //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+                }, {
+                    name: 'DataCenter Power',
+                    type: 'line',
+                    data: []
+                    //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+                }, {
+                    name: 'PUE',
+                    type: 'line',
+                    data: []
+                    //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["#fbb624", "#77d0ba", "#e02040"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "PUE"
+                        text: moment().format('DD MMMM YYYY').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2)
-                        } 
-                        return y;
-                    }
-                },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "IT Power (kW)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "DataCenter Power (kW)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "PUE"
+                        }
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                        }
                     }
-                }
-            }]
-        }
-        
-        var Mixed_Pue_Power_Linechart_overview = new ApexCharts(
-            document.querySelector("#apex_mixed_pue_power_overview"),
-            options
-        );
-        Mixed_Pue_Power_Linechart_overview.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Pue_Power_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_pue_power_overview"),
+                options
+            );
+            Mixed_Pue_Power_Linechart_overview.render();
 
-        //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet ',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'Temperature Indoor',
-                type: 'line',
-                data: []
-                //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
-            }, {
-                name: 'Temperatue Outdoor',
-                type: 'line',
-                data: []
-                //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
-            }, {
-                name: 'Humidity Indoor',
-                type: 'line',
-                data: []
-                //data: [84, 90, 94, 97, 95, 93, 80, 82]
-            }, {
-                name: 'Humidity Outdoor',
-                type: 'line',
-                data: []
-                //data: [90, 84, 97, 94, 93, 95, 84, 87]
-            }],
-            fill: {
-                opacity: [1, 1, 1, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    {# axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: 'rgb(0, 143, 251)'
-                    },
-                    labels: {
-                        style: {
-                            color: 'rgb(0, 143, 251)',
-                        }
-                    }, #}
-                    title: {
-                        text: "Temperature (°C)"
-                    },
-                },
-                {
-                    show: false,
-                    {# axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "Temperature Outdoor (°C)"
-                    }, #}
-                },
-                {
-                    opposite: true,
-                    {# axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    }, #}
-                    title: {
-                        text: "Humidity (%)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    show: false,
-                    {# axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Temperature Indoor',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Temperatue Outdoor',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Humidity Indoor',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }, {
+                    name: 'Humidity Outdoor',
+                    type: 'line',
+                    data: []
+                    //data: [90, 84, 97, 94, 93, 95, 84, 87]
+                }],
+                fill: {
+                    opacity: [1, 1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "Humidity Outdoor (%)"
-                    } #}
-                },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2)
-                        } 
-                        return y;
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        {# axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        }, #}
+                        title: {
+                            text: "Temperature (°C)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        show: false,
+                        {# axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Temperature Outdoor (°C)"
+                        }, #}
+                    },
+                    {
+                        opposite: true,
+                        {# axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        }, #}
+                        title: {
+                            text: "Humidity (%)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        show: false,
+                        {# axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "Humidity Outdoor (%)"
+                        } #}
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
                     }
-                }
-            }]
-        }
-        
-        var Mixed_Climate_Linechart_overview = new ApexCharts(
-            document.querySelector("#apex_mixed_climate_overview"),
-            options
-        );
-        Mixed_Climate_Linechart_overview.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Climate_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_climate_overview"),
+                options
+            );
+            Mixed_Climate_Linechart_overview.render();
 
-        //Mixed Energy - Interval PUE charts
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet ',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'Active Energy of {{zone.name}}',
-                type: 'column',
-                data: []
-                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-            }, {
-                name: 'Active Energy of Production equipments',
-                type: 'column',
-                data: []
-                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-            }, {
-                name: 'Interval PUE',
-                type: 'area',
-                data: []
-                //data: [20, 29, 37, 36, 44, 45, 50, 58]
-            }],
-            fill: {
-                opacity: [1, 1, 0.25],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["#fbb624", "#77d0ba", "#e02040"],
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed Energy - Interval PUE charts
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM YYYY').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "Active Energy of {{zone.name}} (kWh)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "Active Energy of Production Equipments (kWh)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Active Energy of {{zone.name}}',
+                    type: 'column',
+                    data: []
+                    //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+                }, {
+                    name: 'Active Energy of Production equipments',
+                    type: 'column',
+                    data: []
+                    //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+                }, {
+                    name: 'Interval PUE',
+                    type: 'area',
+                    data: []
+                    //data: [20, 29, 37, 36, 44, 45, 50, 58]
+                }],
+                fill: {
+                    opacity: [1, 1, 0.25],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["#fbb624", "#77d0ba", "#e02040"],
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "Interval PUE"
+                        text: moment().format('DD MMMM YYYY').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2) + ""
-                        } 
-                        return y;
-                    }
-                },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH") + "h"
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Active Energy of {{zone.name}} (kWh)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "Active Energy of Production Equipments (kWh)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "Interval PUE"
+                        }
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2) + ""
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH") + "h"
+                        }
                     }
-                }
-            }]
-        }
-        var Mixed_Pue_Energy_Linechart_overview = new ApexCharts(
-            document.querySelector("#apex_mixed_pue_energy_overview"),
-            options
-        );
-        Mixed_Pue_Energy_Linechart_overview.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            var Mixed_Pue_Energy_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_pue_energy_overview"),
+                options
+            );
+            Mixed_Pue_Energy_Linechart_overview.render();
         {% else %}
             //Mixed Apparent Power - Active Power - Cosphi charts
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                width: [2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet ',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: '50%'
-                }
-            },
-            colors: ["#1ecab8", "#fbb624", "#f93b7a"],
-            series: [{
-                name: 'Apparent Power',
-                type: 'line',
-                //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
-                data: []
-            }, {
-                name: 'Active Power',
-                type: 'line',
-                //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
-                data: []
-            }, {
-                name: 'CosPhi',
-                type: 'line',
-                //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
-                data: []
-            }],
-            fill: {
-                opacity: [1, 1, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            //labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
-            labels: [],
-            markers: {
-                size: 0
-            },
-            legend: {
-                offsetY: -10,
-                position: 'bottom',
-            },
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM YYYY').toString(),
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
                     style: {
+                        color: undefined,
                         fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#1ecab8'
-                    },
+                        fontFamily: undefined
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '50%'
+                    }
+                },
+                colors: ["#1ecab8", "#fbb624", "#f93b7a"],
+                series: [{
+                    name: 'Apparent Power',
+                    type: 'line',
+                    //data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+                    data: []
+                }, {
+                    name: 'Active Power',
+                    type: 'line',
+                    //data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+                    data: []
+                }, {
+                    name: 'CosPhi',
+                    type: 'line',
+                    //data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
+                    data: []
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                //labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+                labels: [],
+                markers: {
+                    size: 0
+                },
+                legend: {
+                    offsetY: -10,
+                    position: 'bottom',
+                },
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
                     labels: {
-                        style: {
-                            color: '#1ecab8',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "VA"
-                    },
-                },
-
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
+                        text: moment().format('DD MMMM YYYY').toString(),
                         style: {
-                            color: '#fbb624',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "Watts",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#1ecab8'
+                        },
+                        labels: {
+                            style: {
+                                color: '#1ecab8',
+                            }
+                        },
+                        title: {
+                            text: "VA"
+                        },
                     },
-                    axisBorder: {
-                        show: true,
-                        color: '#f93b7a'
+
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "Watts",
+                        },
                     },
-                    labels: {
-                        style: {
-                            color: '#f93b7a',
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#f93b7a'
+                        },
+                        labels: {
+                            style: {
+                                color: '#f93b7a',
+                            }
+                        },
+                        title: {
+                            text: ""
                         }
                     },
-                    title: {
-                        text: ""
-                    }
-                },
 
-            ],    
-            tooltip: {
-                shared: true,
-                intersect: false,
-                theme: "dark",
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2) + "";
+                ],    
+                tooltip: {
+                    shared: true,
+                    intersect: false,
+                    theme: "dark",
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2) + "";
+                            }
+                            return y;
+
                         }
-                        return y;
-
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm")
+                        }
                     }
                 },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH:mm")
-                    }
+                grid: {
+                    borderColor: '#f1f3fa'
                 }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
             }
-        }
-        
-        var Mixed_PSCosfi_Linechart_overview = new ApexCharts(
-            document.querySelector("#apex_mixed_PSCosfi_overview"),
-            options
-        );
+            
+            var Mixed_PSCosfi_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_PSCosfi_overview"),
+                options
+            );
 
-        Mixed_PSCosfi_Linechart_overview.render();
+            Mixed_PSCosfi_Linechart_overview.render();
+        {% endif %}
+
+        {% if zone.type == 'Air Conditioner' %}
+            //Mixed Unit 1-1 Return Air Temperature - Return Air Humidity - Fan Speed 1
+            var options11 = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Return Air Temperature',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Return Air Humidity',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Fan Speed 1',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                    labels: {
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
+                        }
+                    },
+                    title: {
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
+                    }
+                },
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        }, 
+                        title: {
+                            text: "Return Air Temperature (°C)"
+                        },
+                    },
+                    {
+                        show: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Return Air Humidity (%rH)"
+                        }, 
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        }, 
+                        title: {
+                            text: "Fan Speed (%)",
+                        },
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Unit_1_1_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_unit_1-1_overview"),
+                options11
+            );
+            Mixed_Unit_1_1_Linechart_overview.render();
+
+            //Mixed Unit 1-2 Return Air Temperature - Return Air Humidity - Fan Speed 1
+            var options12 = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Return Air Temperature',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Return Air Humidity',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Fan Speed 1',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                    labels: {
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
+                        }
+                    },
+                    title: {
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
+                    }
+                },
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        }, 
+                        title: {
+                            text: "Return Air Temperature (°C)"
+                        },
+                    },
+                    {
+                        show: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Return Air Humidity (%rH)"
+                        }, 
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        }, 
+                        title: {
+                            text: "Fan Speed (%)",
+                        },
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Unit_1_2_Linechart_overview = new ApexCharts(
+                document.querySelector("#apex_mixed_unit_1-2_overview"),
+                options12
+            );
+            Mixed_Unit_1_2_Linechart_overview.render();
         {% endif %}
         
         var url_ = "{{ path('update_zone_overview_graphs') }}";
@@ -2576,7 +3099,7 @@
                                         resolve()
                                     }, 2000);
                                     if( Object.keys(result).length > 0 ){
-                                        var dateLabel = Object.values(result['date']);
+                                        
                                         console.log(result);
                                         {# {% for smartMod in zone.smartMods %}
                                             {% if smartMod.modType ==  'Load Meter' %}
@@ -2591,40 +3114,46 @@
                                         
                                         if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
-                                        {% if zone.type == 'PUE Calculation' %}     
-                                        $("#instPUE").text(result['InstantPUE']);
-                                        $("#it_power").text(result['InstantIT_AP']);
-                                        $("#datacenter_power").text(result['InstantTotal_AP']);
-                                        //$("#intPUE").text(result['IntervalPUE']);
-                                        //console.log(Object.values(result['climateDate']));
-                                        var dataLabel = Object.values(result['date']);
-                                        displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                                        displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
-                                        displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                                        {% else %}
-                                        console.log(Object.values(result['PieActiveEnergy']));
-                                        $('#p_overview').text(String(result['P']))
-                                        $('#ea_overview').text(String(result['EA']))
-                                        $('#emission_overview').text(String(result['kgCO2']))
-                                        
-                                        displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                                        
-                                        var dataArray = [{% for smartMod in zone.smartMods %}
-                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                            {% endfor %}
-                                        ];
-                                        updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
-                                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
-                                            {% endfor %}
-                                        ], dataArray);
-                                        dataArray = [{% for smartMod in zone.smartMods %}
-                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                            {% endfor %}
-                                        ];
-                                        updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
-                                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
-                                            {% endfor %}
-                                        ], dataArray);
+                                        {% if zone.type == 'PUE Calculation' %}    
+                                            var dateLabel = Object.values(result['date']);
+                         
+                                            $("#instPUE").text(result['InstantPUE']);
+                                            $("#it_power").text(result['InstantIT_AP']);
+                                            $("#datacenter_power").text(result['InstantTotal_AP']);
+                                            //$("#intPUE").text(result['IntervalPUE']);
+                                            //console.log(Object.values(result['climateDate']));
+                                            var dataLabel = Object.values(result['date']);
+                                            displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                            displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
+                                            displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        {% elseif zone.type == 'No PUE Calculation' %}
+                                            console.log(Object.values( result['PieActiveEnergy']) );
+                                            $('#p_overview').text(String(result['P']))
+                                            $('#ea_overview').text(String(result['EA']))
+                                            $('#emission_overview').text(String(result['kgCO2']))
+                                            
+                                            displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                            
+                                            var dataArray = [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ];
+                                            updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ], dataArray);
+                                            dataArray = [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ];
+                                            updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                                {% endfor %}
+                                            ], dataArray);
+                                        {% elseif zone.type == 'Air Conditioner' %}
+                                            console.log('Air Conditioner')
+                                            displayNewData(Mixed_Unit_1_1_Linechart_overview, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                            displayNewData(Mixed_Unit_1_2_Linechart_overview, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         {% endif %}
 
                                     }
@@ -2670,7 +3199,6 @@
                     console.log(result);
                     
                     if( Object.keys(result).length > 0 ){
-                        var dateLabel = Object.values(result['date']);
                         {# console.log(result); #}
                         {# {% for smartMod in zone.smartMods %}
                             {% if smartMod.modType ==  'Load Meter' %}
@@ -2686,37 +3214,42 @@
                         if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
                     
                         {% if zone.type == 'PUE Calculation' %}     
-                        $("#instPUE").text(result['InstantPUE']);
-                        $("#it_power").text(result['InstantIT_AP']);
-                        $("#datacenter_power").text(result['InstantTotal_AP']);
-                        //$("#intPUE").text(result['IntervalPUE']);
-                        //console.log(Object.values(result['climateDate']));
-                        displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                        displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
-                        displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                        {% else %}
-                        console.log(Object.values(result['PieActiveEnergy']));
-                        $('#p_overview').text(String(result['P']))
-                        $('#ea_overview').text(String(result['EA']))
-                        $('#emission_overview').text(String(result['kgCO2']))
+                            var dateLabel = Object.values(result['date']);
                         
-                        displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                        var dataArray = [{% for smartMod in zone.smartMods %}
-                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                            {% endfor %}
-                        ];
-                        updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
-                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
-                            {% endfor %}
-                        ], dataArray);
-                        dataArray = [{% for smartMod in zone.smartMods %}
-                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                            {% endfor %}
-                        ];
-                        updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
-                            {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
-                            {% endfor %}
-                        ], dataArray);
+                            $("#instPUE").text(result['InstantPUE']);
+                            $("#it_power").text(result['InstantIT_AP']);
+                            $("#datacenter_power").text(result['InstantTotal_AP']);
+                            //$("#intPUE").text(result['IntervalPUE']);
+                            //console.log(Object.values(result['climateDate']));
+                            displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                            displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
+                            displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                        {% elseif zone.type == 'No PUE Calculation' %}
+                            console.log(Object.values(result['PieActiveEnergy']));
+                            $('#p_overview').text(String(result['P']))
+                            $('#ea_overview').text(String(result['EA']))
+                            $('#emission_overview').text(String(result['kgCO2']))
+                            
+                            displayNewData(Mixed_PSCosfi_Linechart_overview, Object.values(result['datePSCosfi']), Object.values(result['MixedPSCosfi']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                            var dataArray = [{% for smartMod in zone.smartMods %}
+                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                {% endfor %}
+                            ];
+                            updateDonutChart(ActiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]) + " kWh"){% if loop.last == false %},{% endif %}{% endif %}
+                                {% endfor %}
+                            ], dataArray);
+                            dataArray = [{% for smartMod in zone.smartMods %}
+                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                {% endfor %}
+                            ];
+                            updateDonutChart(ReactiveEnergy_Piechart_overview, [{% for smartMod in zone.smartMods %}
+                                {% if smartMod.modType ==  'Load Meter' %}String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]) + " kVAR"){% if loop.last == false %},{% endif %}{% endif %}
+                                {% endfor %}
+                            ], dataArray);
+                        {% elseif zone.type == 'Air Conditioner' %}
+                            displayNewData(Mixed_Unit_1_1_Linechart_overview, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                            displayNewData(Mixed_Unit_1_2_Linechart_overview, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         {% endif %}
 
                     }
@@ -2739,6 +3272,7 @@
             if( $(event.target).text() === 'Historicals'){
                 if(firstTabHistorical){
                   firstTabHistorical = false; 
+                  //$('#dpstrv_0_1_1194').text(100)
                   var url_ = "{{ path('update_zone_graphs') }}";
                   var drp_ = $('#daterange').data('daterangepicker');
                   console.log('drp = ' + drp_.startDate.format('YYYY-MM-DD'));
@@ -2906,6 +3440,7 @@
                 //alert("Active tab " + x);
             }
 
+            {% if zone.type == 'No PUE Calculation' %}
             if( $(event.target).text() === 'Billing'){
                 if(firstTabEnergyBilling){
                   //alert("Active tab " + x);
@@ -3031,686 +3566,1058 @@
                 }
                 
             }
+            {% endif %}
             
         });
     </script>
 
     {# Historical panel script #}
     <script>
-        
-        var options = {
-            chart: {
-                height: 320,
-                type: 'pie',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
-            legend: {
-                show: true,
-                position: 'bottom',
-                horizontalAlign: 'center',
-                verticalAlign: 'middle',
-                floating: false,
-                fontSize: '14px',
-                offsetX: 0,
-                offsetY: -10
-            },
-            tooltip: {
-                theme: "dark",
-                style: {
-                    color: '#fff',
-                }
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    chart: {
-                        height: 240
-                    },
-                    legend: {
-                        show: false
-                    },
-                }
-            }]
-        }
-        var ActiveEnergy_Piechart = new ApexCharts(
-            document.querySelector("#apex_pie_active_energy_flow"),
-            options
-        );
-        ActiveEnergy_Piechart.render();
-        
-        var options = {
-            chart: {
-                height: 320,
-                type: 'pie',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
-            //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
-            legend: {
-                show: true,
-                position: 'bottom',
-                horizontalAlign: 'center',
-                verticalAlign: 'middle',
-                floating: false,
-                fontSize: '14px',
-                offsetX: 0,
-                offsetY: -10
-            },
-            tooltip: {
-                theme: "dark",
-                style: {
-                    color: '#fff',
+        {% if zone.type == 'PUE Calculation' %}
+            var options = {
+                chart: {
+                    height: 320,
+                    type: 'pie',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
                 },
-                
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    chart: {
-                        height: 240
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    verticalAlign: 'middle',
+                    floating: false,
+                    fontSize: '14px',
+                    offsetX: 0,
+                    offsetY: -10
+                },
+                tooltip: {
+                    theme: "dark",
+                    style: {
+                        color: '#fff',
+                    }
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 240
+                        },
+                        legend: {
+                            show: false
+                        },
+                    }
+                }]
+            }
+            var ActiveEnergy_Piechart = new ApexCharts(
+                document.querySelector("#apex_pie_active_energy_flow"),
+                options
+            );
+            ActiveEnergy_Piechart.render();
+            
+            var options = {
+                chart: {
+                    height: 320,
+                    type: 'pie',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                series: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}{{ random(0, 0) }}{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                labels: [{% for smartMod in zone.smartMods %}{% if smartMod.modType ==  'Load Meter' %}"{{smartMod.name}}"{% if loop.last == false %},{% endif %}{% endif %}{% endfor %}],
+                //colors: ["#a3cae0", "#232f5b","#f06a6c", "#f1e299", "#08aeb0"],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    verticalAlign: 'middle',
+                    floating: false,
+                    fontSize: '14px',
+                    offsetX: 0,
+                    offsetY: -10
+                },
+                tooltip: {
+                    theme: "dark",
+                    style: {
+                        color: '#fff',
                     },
-                    legend: {
-                        show: false
-                    },
-                }
-            }]
-        }
-        var ReactiveEnergy_Piechart = new ApexCharts(
-            document.querySelector("#apex_pie_reactive_energy_flow"),
-            options
-        );
-        ReactiveEnergy_Piechart.render();
+                    
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 240
+                        },
+                        legend: {
+                            show: false
+                        },
+                    }
+                }]
+            }
+            var ReactiveEnergy_Piechart = new ApexCharts(
+                document.querySelector("#apex_pie_reactive_energy_flow"),
+                options
+            );
+            ReactiveEnergy_Piechart.render();
+        {% endif %}
                 
         {% if zone.type == 'PUE Calculation' %}
-        //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet ',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'IT Power',
-                type: 'line',
-                data: []
-                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-            }, {
-                name: 'DataCenter Power',
-                type: 'line',
-                data: []
-                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-            }, {
-                name: 'PUE',
-                type: 'line',
-                data: []
-                //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
-            }],
-            fill: {
-                opacity: [1, 1, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["#fbb624", "#77d0ba", "#e02040"], //
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed IT Active Power Zone - Active Power Equipments - PUE charts
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "IT Power (kW)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "DataCenter Power (kW)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'IT Power',
+                    type: 'line',
+                    data: []
+                    //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+                }, {
+                    name: 'DataCenter Power',
+                    type: 'line',
+                    data: []
+                    //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+                }, {
+                    name: 'PUE',
+                    type: 'line',
+                    data: []
+                    //data: [1.20, 1.829, 1.37, 1.36, 1.44, 1.45, 1.50, 1.58]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["#fbb624", "#77d0ba", "#e02040"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "PUE"
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2)
-                        } 
-                        return y;
-                    }
-                },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "IT Power (kW)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "DataCenter Power (kW)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "PUE"
+                        }
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
                     }
-                }
-            }]
-        }
-        
-        var Mixed_Pue_Power_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed_pue_power"),
-            options
-        );
-        Mixed_Pue_Power_Linechart.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Pue_Power_Linechart = new ApexCharts(
+                document.querySelector("#apex_mixed_pue_power"),
+                options
+            );
+            Mixed_Pue_Power_Linechart.render();
 
-        //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet available',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'Temperature Indoor',
-                type: 'line',
-                data: []
-                //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
-            }, {
-                name: 'Temperatue Outdoor',
-                type: 'line',
-                data: []
-                //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
-            }, {
-                name: 'Humidity Indoor',
-                type: 'line',
-                data: []
-                //data: [84, 90, 94, 97, 95, 93, 80, 82]
-            }, {
-                name: 'Humidity Outdoor',
-                type: 'line',
-                data: []
-                //data: [90, 84, 97, 94, 93, 95, 84, 87]
-            }],
-            fill: {
-                opacity: [1, 1, 1, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed Temperature Indoor-Outdoor - Humidity Indoor-Outdoor
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: 'rgb(0, 143, 251)'
-                    },
-                    labels: {
-                        style: {
-                            color: 'rgb(0, 143, 251)',
-                        }
-                    },
-                    title: {
-                        text: "Temperature Indoor (°C)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "Temperature Outdoor (°C)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "Humidity Indoor (%)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet available',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Temperature Indoor',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Temperatue Outdoor',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Humidity Indoor',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }, {
+                    name: 'Humidity Outdoor',
+                    type: 'line',
+                    data: []
+                    //data: [90, 84, 97, 94, 93, 95, 84, 87]
+                }],
+                fill: {
+                    opacity: [1, 1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba", "#e02040"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "Humidity Outdoor (%)"
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2)
-                        } 
-                        return y;
-                    }
-                },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        },
+                        title: {
+                            text: "Temperature Indoor (°C)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Temperature Outdoor (°C)"
+                        },
+                    },
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "Humidity Indoor (%)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "Humidity Outdoor (%)"
+                        }
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
                     }
-                }
-            }]
-        }
-        
-        var Mixed_Climate_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed_climate"),
-            options
-        );
-        Mixed_Climate_Linechart.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Climate_Linechart = new ApexCharts(
+                document.querySelector("#apex_mixed_climate"),
+                options
+            );
+            Mixed_Climate_Linechart.render();
 
-        //Mixed Energy charts
-        var options = {
-            chart: {
-                height: 380,
-                type: 'line',
-                stacked: false,
-                toolbar: {
-                    show: true
-                }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        position: 'top', // top, center, bottom
-                    },
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: [2, 2, 2],
-                curve: 'smooth'
-            },
-            noData: {
-                text: 'Data not yet available',
-                align: 'center',
-                verticalAlign: 'middle',
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '14px',
-                    fontFamily: undefined
-                }
-            },
-            series: [{
-                name: 'Active Energy of {{zone.name}}',
-                type: 'column',
-                data: []
-                //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-            }, {
-                name: 'Active Energy of Production equipments',
-                type: 'column',
-                data: []
-                //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-            }, {
-                name: 'Interval PUE',
-                type: 'area',
-                data: []
-                //data: [20, 29, 37, 36, 44, 45, 50, 58]
-            }],
-            fill: {
-                opacity: [1, 1, 0.25],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
-            },
-            colors: ["#fbb624", "#77d0ba", "#e02040"],
-            xaxis: {
-                type: 'datetime',
-                categories: [],
-                //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
+            //Mixed Energy charts
+            var options = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
                     }
                 },
-                title: {
-                    text: moment().format('DD MMMM').toString(),
-                    style: {
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        fontFamily: undefined,
-                        color: '#444'
-                    },
-                }
-            },
-            yaxis: [
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#fbb624'
-                    },
-                    labels: {
-                        style: {
-                            color: '#fbb624',
-                        }
-                    },
-                    title: {
-                        text: "Active Energy of {{zone.name}} (kWh)"
-                    },
-                },
-                {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#77d0ba'
-                    },
-                    labels: {
-                        style: {
-                            color: '#77d0ba',
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
                         },
-                        offsetX: 10
-                    },
-                    title: {
-                        text: "Active Energy of Production Equipments (kWh)",
-                    },
+                    }
                 },
-                {
-                    opposite: true,
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: '#e02040'
-                    },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet available',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Active Energy of {{zone.name}}',
+                    type: 'column',
+                    data: []
+                    //data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+                }, {
+                    name: 'Active Energy of Production equipments',
+                    type: 'column',
+                    data: []
+                    //data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+                }, {
+                    name: 'Interval PUE',
+                    type: 'area',
+                    data: []
+                    //data: [20, 29, 37, 36, 44, 45, 50, 58]
+                }],
+                fill: {
+                    opacity: [1, 1, 0.25],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["#fbb624", "#77d0ba", "#e02040"],
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                     labels: {
-                        style: {
-                            color: '#e02040',
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
                         }
                     },
                     title: {
-                        text: "Interval PUE"
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
                     }
                 },
-            ],
-            tooltip: {
-                theme: "dark",
-                followCursor: true,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(2) + ""
-                        } 
-                        return y;
-                    }
-                },
-                x: {
-                    formatter: function (val, timestamp) {
-                        return moment(new Date(val)).format("DD MMM YYYY")
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#f1f3fa'
-            },
-            legend: {
-                offsetY: -10,
-            },
-            responsive: [{
-                breakpoint: 600,
-                options: {
-                    yaxis: {
-                        show: false
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Active Energy of {{zone.name}} (kWh)"
+                        },
                     },
-                    legend: {
-                        show: false
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        },
+                        title: {
+                            text: "Active Energy of Production Equipments (kWh)",
+                        },
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#e02040'
+                        },
+                        labels: {
+                            style: {
+                                color: '#e02040',
+                            }
+                        },
+                        title: {
+                            text: "Interval PUE"
+                        }
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2) + ""
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY")
+                        }
                     }
-                }
-            }]
-        }
-        var Mixed_Pue_Energy_Linechart = new ApexCharts(
-            document.querySelector("#apex_mixed_pue_energy"),
-            options
-        );
-        Mixed_Pue_Energy_Linechart.render();
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            var Mixed_Pue_Energy_Linechart = new ApexCharts(
+                document.querySelector("#apex_mixed_pue_energy"),
+                options
+            );
+            Mixed_Pue_Energy_Linechart.render();
+        {% endif %}
+
+        {% if zone.type == 'Air Conditioner' %}
+            //Mixed Unit 1-1 Return Air Temperature - Return Air Humidity - Fan Speed 1 Historicals Charts
+            var options11 = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Return Air Temperature',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Return Air Humidity',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Fan Speed 1',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                    labels: {
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
+                        }
+                    },
+                    title: {
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
+                    }
+                },
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        }, 
+                        title: {
+                            text: "Return Air Temperature (°C)"
+                        },
+                    },
+                    {
+                        show: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Return Air Humidity (%rH)"
+                        }, 
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        }, 
+                        title: {
+                            text: "Fan Speed (%)",
+                        },
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Unit_1_1_Linechart = new ApexCharts(
+                document.querySelector("#apex_mixed_unit_1-1"),
+                options11
+            );
+            Mixed_Unit_1_1_Linechart.render();
+
+            //Mixed Unit 1-2 Return Air Temperature - Return Air Humidity - Fan Speed 1 Historicals Charts
+            var options12 = {
+                chart: {
+                    height: 380,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2, 2],
+                    curve: 'smooth'
+                },
+                noData: {
+                    text: 'Data not yet ',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: undefined,
+                        fontSize: '14px',
+                        fontFamily: undefined
+                    }
+                },
+                series: [{
+                    name: 'Return Air Temperature',
+                    type: 'line',
+                    data: []
+                    //data: [25, 24.8, 25.2, 25.8, 25.4, 25.6, 25.1, 25.7]
+                }, {
+                    name: 'Return Air Humidity',
+                    type: 'line',
+                    data: []
+                    //data: [28, 30.1, 29.3, 29.5, 28.7, 29.7, 30.5, 31]
+                }, {
+                    name: 'Fan Speed 1',
+                    type: 'line',
+                    data: []
+                    //data: [84, 90, 94, 97, 95, 93, 80, 82]
+                }],
+                fill: {
+                    opacity: [1, 1, 1],
+                    gradient: {
+                        inverseColors: false,
+                        shade: 'light',
+                        type: "vertical",
+                        opacityFrom: 0.85,
+                        opacityTo: 0.55,
+                        stops: [0, 100, 100, 100]
+                    }
+                },
+                colors: ["rgb(0, 143, 251)","#fbb624", "#77d0ba"], //
+                xaxis: {
+                    type: 'datetime',
+                    categories: [],
+                    //categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+                    labels: {
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
+                        }
+                    },
+                    title: {
+                        text: moment().format('DD MMMM').toString(),
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            fontFamily: undefined,
+                            color: '#444'
+                        },
+                    }
+                },
+                yaxis: [
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: 'rgb(0, 143, 251)'
+                        },
+                        labels: {
+                            style: {
+                                color: 'rgb(0, 143, 251)',
+                            }
+                        }, 
+                        title: {
+                            text: "Return Air Temperature (°C)"
+                        },
+                    },
+                    {
+                        show: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#fbb624'
+                        },
+                        labels: {
+                            style: {
+                                color: '#fbb624',
+                            }
+                        },
+                        title: {
+                            text: "Return Air Humidity (%rH)"
+                        }, 
+                    },
+                    {
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#77d0ba'
+                        },
+                        labels: {
+                            style: {
+                                color: '#77d0ba',
+                            },
+                            offsetX: 10
+                        }, 
+                        title: {
+                            text: "Fan Speed (%)",
+                        },
+                    },
+                ],
+                tooltip: {
+                    theme: "dark",
+                    followCursor: true,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return parseFloat(y).toFixed(2)
+                            } 
+                            return y;
+                        }
+                    },
+                    x: {
+                        formatter: function (val, timestamp) {
+                            return moment(new Date(val)).format("DD MMM YYYY HH:mm:ss")
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f3fa'
+                },
+                legend: {
+                    offsetY: -10,
+                },
+                responsive: [{
+                    breakpoint: 600,
+                    options: {
+                        yaxis: {
+                            show: false
+                        },
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
+            
+            var Mixed_Unit_1_2_Linechart = new ApexCharts(
+                document.querySelector("#apex_mixed_unit_1-2"),
+                options12
+            );
+            Mixed_Unit_1_2_Linechart.render();
         {% endif %}
         
         var _url = "{{ path('update_zone_graphs') }}";
@@ -3825,7 +4732,8 @@
             //console.log(chart.options.scales.xAxes[0].scaleLabel.labelString);
             //preloaderChart(id, false);
             //chart.render();
-        }    
+        }   
+
         function displayPieNewData(chart, label, data, dateopt, multiple, xscale){
             //chart.data.labels = [];
             chart.updateOptions({
@@ -3934,17 +4842,20 @@
             //console.log(chart.options.scales.xAxes[0].scaleLabel.labelString);
             //preloaderChart(id, false);
             //chart.render();
-        }            
+        }  
+
         function updateDonutChart(chart, label, data) {
             chart.updateOptions({labels: label});
             chart.updateSeries(newDataSeries(chart, data));
         }
+        
         function newDataSeries(chart, data) {
             var i = 0;
             return chart.w.globals.series.map(function () {
                 return data[i++];
             });
         }
+
         function updateDashboard(date){
             
             $data = JSON.stringify({
@@ -3985,85 +4896,91 @@
                                     resolve()
                                 }, 2000);
                                 if( Object.keys(result).length > 0 ){
-                                    var dateLabel = Object.values(result['date']);
+                                    
                                     console.log(result);
-                                    console.log(Object.values(result['PieActiveEnergy']));
-                                    {% set nb = 0 %}
-                                    {% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}
-                                        $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{nb}}])
-                                        $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{nb}}])
-                                        {% set nb = nb + 1 %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    /*Object.values(result['Smax']).forEach(function (item, index) {
-                                        var id = '#smax_' + index;
-                                        console.log(item);
-                                        $(id).text(item)
-                                    });
-                                    Object.values(result['Smax']).forEach(function (item, index) {
-                                        var id  = '#fp_' + index;
-                                        console.log(id);
-                                        $(id).text(item)
-                                    });*/
-                                    /*$.each(Object.values(result['Smax']) , function( key, value ) {
-                                        $('#smax_' + key).text(value)
-                                    });
-                                    $.each( Object.values(result['FP']), function( key, value ) {
-                                        $('#fp_' + key).text(value)
-                                    }); */           
+                                       
                                      
                                     //displayPieNewData(ActiveEnergy_Piechart, dateLabel, Object.values(result['PieActiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                     //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                     
-                                    
                                     {% if zone.type == 'PUE Calculation' %}     
-                                    //$("#instPUE").text(result['InstantPUE']);
-                                    //$("#intPUE").text(result['IntervalPUE']);
-                                    //console.log(Object.values(result['climateDate']));
-                                    displayNewData(Mixed_Pue_Power_Linechart, Object.values(result['dateP']), Object.values(result['PUE']), [startDate, endDate], 3, 'day');
-                                    displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
-                                    displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
-                                    {% endif %}
+                                        var dateLabel = Object.values(result['date']);
+                                        //$("#instPUE").text(result['InstantPUE']);
+                                        //$("#intPUE").text(result['IntervalPUE']);
+                                        //console.log(Object.values(result['climateDate']));
+                                        displayNewData(Mixed_Pue_Power_Linechart, Object.values(result['dateP']), Object.values(result['PUE']), [startDate, endDate], 3, 'day');
+                                        displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
+                                        displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
+                                    {% elseif zone.type == 'No PUE Calculation' %}    
+                                        console.log(Object.values(result['PieActiveEnergy']));
+                                        {% set nb = 0 %}
+                                        {% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}
+                                            $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[{{nb}}])
+                                            $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[{{nb}}])
+                                            {% set nb = nb + 1 %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        /*Object.values(result['Smax']).forEach(function (item, index) {
+                                            var id = '#smax_' + index;
+                                            console.log(item);
+                                            $(id).text(item)
+                                        });
+                                        Object.values(result['Smax']).forEach(function (item, index) {
+                                            var id  = '#fp_' + index;
+                                            console.log(id);
+                                            $(id).text(item)
+                                        });*/
+                                        /*$.each(Object.values(result['Smax']) , function( key, value ) {
+                                            $('#smax_' + key).text(value)
+                                        });
+                                        $.each( Object.values(result['FP']), function( key, value ) {
+                                            $('#fp_' + key).text(value)
+                                        }); */        
 
-                                    /*var dataArray = [{% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                        {% endfor %}
-                                    ];*/
-                                    var dataArray = Object.values(result['PieActiveEnergy']);
-                                    console.log("====== Array ======")
-                                    console.log(dataArray);
-                                    updateDonutChart(ActiveEnergy_Piechart, [
-                                        {% set nb = 0 %}
-                                        {% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}
-                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
-                                        {% if loop.last == false %}
-                                        ,
-                                        {% endif %}
-                                        {% set nb = nb + 1 %}
-                                        {% endif %}
-                                        {% endfor %}
-                                    ], dataArray);
-                                    
-                                    /*dataArray = [{% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                        {% endfor %}
-                                    ];*/
-                                    dataArray = Object.values(result['PieReactiveEnergy']);
-                                    console.log(dataArray);
-                                    updateDonutChart(ReactiveEnergy_Piechart, [
-                                        {% set nb = 0 %}
-                                        {% for smartMod in zone.smartMods %}
-                                        {% if smartMod.modType ==  'Load Meter' %}
-                                        String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
-                                        {% if loop.last == false %}
-                                        ,
-                                        {% endif %}
-                                        {% set nb = nb + 1 %}
-                                        {% endif %}
-                                        {% endfor %}
-                                    ], dataArray);
+                                        /*var dataArray = [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ];*/
+                                        var dataArray = Object.values(result['PieActiveEnergy']);
+                                        console.log("====== Array ======")
+                                        console.log(dataArray);
+                                        updateDonutChart(ActiveEnergy_Piechart, [
+                                            {% set nb = 0 %}
+                                            {% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}
+                                            String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
+                                            {% if loop.last == false %}
+                                            ,
+                                            {% endif %}
+                                            {% set nb = nb + 1 %}
+                                            {% endif %}
+                                            {% endfor %}
+                                        ], dataArray);
+                                        
+                                        /*dataArray = [{% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                            {% endfor %}
+                                        ];*/
+                                        dataArray = Object.values(result['PieReactiveEnergy']);
+                                        console.log(dataArray);
+                                        updateDonutChart(ReactiveEnergy_Piechart, [
+                                            {% set nb = 0 %}
+                                            {% for smartMod in zone.smartMods %}
+                                            {% if smartMod.modType ==  'Load Meter' %}
+                                            String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
+                                            {% if loop.last == false %}
+                                            ,
+                                            {% endif %}
+                                            {% set nb = nb + 1 %}
+                                            {% endif %}
+                                            {% endfor %}
+                                        ], dataArray);
+                                    {% elseif zone.type == 'Air Conditioner' %}
+                                        console.log('Air Conditioner')
+                                        displayNewData(Mixed_Unit_1_1_Linechart, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        displayNewData(Mixed_Unit_1_2_Linechart, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                    {% endif %}
                                 }
                             },
                             error: function (result) {
@@ -4082,11 +4999,13 @@
                 allowOutsideClick: false
             }]);
         }
+
     </script>
 
-    {# Climate params script #}
-    {% if zone.type == 'PUE Calculation' %}
+    {% if zone.type == 'PUE Calculation' or zone.type == 'Air Conditioner'  %}
     <script src="/js/mqttws31.js" type="text/javascript"></script>
+
+    {# Climate params script #}
     <script>
         var mess = {
             From: "user",
@@ -4096,11 +5015,10 @@
         };
 
         var isConnected = false;
-        var wsbroker = "192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
+        var wsbroker = "127.0.0.1"//"192.168.10.40";//location.hostname;  //mqtt websocket enabled broker
         var wsport = 15675; // port for above 1883
 
-        var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
-            "admin_{{app.user.id}}");
+        var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws", "user_{{app.user.id}}_" + parseInt(Math.random() * 100, 10) + parseInt(Math.random() * 100, 10));
 
         client.onConnectionLost = function (responseObject) {
             isConnected = false;
@@ -4120,7 +5038,8 @@
             }
 
             if(parse){
-                {# console.log("Received: " + message.payloadString); #}
+                console.log("Received: " + message.payloadString);
+                {% if zone.type == 'PUE Calculation' %}
                 if (result.hasOwnProperty("Intemp")) {
                     $('#temp_indoor').text(String(result.Intemp))
                     $('#temp_outdoor').text(String(result.Outtemp))
@@ -4129,6 +5048,31 @@
                     $('#update').text(String( moment( new Date(result.date) ).format("DD MMM YYYY HH:mm:ss")) )
                     
                 }
+                {% elseif zone.type == 'Air Conditioner' %}
+                if (result.hasOwnProperty("dpstrv_0_1_1013")) {
+                    $.each(result, function (key, value) {
+                        console.log(String(value))
+                        id = '#' + key
+                        if(String(value) === 'off' || String(value) === 'Défaut' || String(value) === 'offline'){
+                            if($(id).hasClass('badge-soft-success')){
+                                $(id).toggleClass('badge-soft-success').toggleClass('badge-soft-pink')
+                            }else if($(id).hasClass('badge-soft-pink') == false){
+                                $(id).toggleClass('badge-soft-pink')
+                            }
+                        }
+
+                        if(String(value) === 'online' || String(value) === 'on'){
+                            if($(id).hasClass('badge-soft-pink')){
+                                $(id).toggleClass('badge-soft-success').toggleClass('badge-soft-pink')
+                            }else if($(id).hasClass('badge-soft-success') == false){
+                                $(id).toggleClass('badge-soft-success')
+                            }
+                        }
+
+                        $(id).text(String(value))
+                    })
+                }
+                {% endif %}
             }
         };
 
@@ -4151,7 +5095,11 @@
                         isConnected = true;
                         console.log("CONNECTION SUCCESS");
                         //client.subscribe("/#", {qos: 1});
-                        client.subscribe("/from/raspb/#", {qos: 1});
+                        {% if zone.type == 'PUE Calculation' %}
+                            client.subscribe("/from/raspb/#", {qos: 2});
+                        {% elseif zone.type == 'Air Conditioner'  %}
+                            client.subscribe("/from/stulz/#", {qos: 2});
+                        {% endif %}
                     },
                     onFailure: function (message) {
                         console.log("CONNECTION FAILURE - " + message.errorMessage);
@@ -4166,7 +5114,7 @@
     {% endif %}
    
    {# Alarm panel script #}
-   <script>
+   {# <script>
         var alarmTable = $('#datatable-buttons-alarm').DataTable({
             //sDom: 'lrtip',
             searching: true, 
@@ -4221,7 +5169,6 @@
                 "startDate": startDate + ' 00:00:00',
                 "endDate": endDate + ' 23:59:59',
                 //"type": "zone",
-                {# "id":{{smartMod.id ?? 0}}, #}
                 "zoneId": {{zone.id}},
             });
             // Danger
@@ -4259,8 +5206,8 @@
                                     //var dateLabel = Object.values(result['date']);
                                     //console.log(Object.values(result['CourbeCroisé']));
                                     //console.log(result);
-                                    {# console.log(Object.values(result['SymI']));
-                                    console.log(Object.values(result['SymV'])); #}
+                                    /*console.log(Object.values(result['SymI']));
+                                    console.log(Object.values(result['SymV'])); */
                                                               
                                     
                                 }
@@ -4281,5 +5228,5 @@
                 allowOutsideClick: false
             }]);
         }
-   </script>
+   </script> #}
 {% endblock %}

@@ -37,12 +37,13 @@ class SmartModType extends ApplicationType
                     [
                         'required' => false,
                         'choices' => [
-                            ''  => '',
-                            'FUEL'  => 'FUEL',
-                            'GRID'  => 'GRID',
-                            'DC'  => 'DC',
-                            'Load Meter'   => 'Load Meter',
-                            'Climate'   => 'Climate',
+                            ''                => '',
+                            'FUEL'            => 'FUEL',
+                            'GRID'            => 'GRID',
+                            'DC'              => 'DC',
+                            'Load Meter'      => 'Load Meter',
+                            'Climate'         => 'Climate',
+                            'Air Conditioner' => 'Air Conditioner',
                             //'2'   => 2,
 
                         ],

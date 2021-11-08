@@ -328,12 +328,14 @@
                                                     {% endif %}
                                                 {% endfor %}            #}
                                                 <li><a href="{{ path('home_zone', {'zone':zone.id}) }}">Dashboard</a></li>
+                                                {% if zone.type != 'STULZ' %}
                                                 {% for modZone in zone.smartMods %}
                                                     {% if modZone.levelZone == 2 %}
                                                         <li><a href="{{ path('load_meter', {'smartMod': modZone.id,'zone':zone.id}) }}">{{modZone.name}}</a>
                                                         </li>
                                                     {% endif %}
                                                 {% endfor %}           
+                                                {% endif %}
                                             </ul>            
                                         </li><!--end nav-item--> 
                                         {% endif %}

@@ -91,6 +91,12 @@ class ZoneController extends ApplicationController
                 $outHum = $LastOutdoorData[0]['hum'];
             }
         }
+        if ($zone->getType() === 'Air Conditioner') {
+            return $this->render('zone/dashboard.html.twig', [
+                'zone'      => $zone,
+                'lastDate'  => $lastDate,
+            ]);
+        }
         return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
             //'smartModsProduction' => $smartModsProduction,
@@ -297,223 +303,44 @@ class ZoneController extends ApplicationController
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
         // dump($startDate->format('Y-m-d H:i:s'));
         // dump($endDate->format('Y-m-d H:i:s'));
-        //$dat = "2020-02"; //'%' . $dat . '%'
-        //$dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        // //dump($dat);
-        //die();
-        //$dat = $dat . '%';
 
-        $dateparam = $request->get('selectedDate'); // Ex : %2020-03-20%
-        //$dat = "2020-02"; //'%' . $dat . '%'
-        $dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        // //dump($dat);
-        //die();
-        $dat = $dat . '%';
 
         if ($zone) {
-            foreach ($zone->getSmartMods() as $smartMod) {
-                if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
-                    $EA_flow[$smartMod->getId()]   = 0.00;
-                    $ER_flow[$smartMod->getId()] = 0.00;
-                    // $P['' . $smartMod->getId()] = "0.00";
-                    // $S['' . $smartMod->getId()] = "0.00";
-                    // $FP_flow['' . $smartMod->getId()] = "0.00";
-                }
-            }
-            //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
-            $commonEnergyData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR
-                                            FROM App\Entity\SmartMod sm
-                                            JOIN sm.loadDataEnergies d 
-                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                            AND d.dateTime BETWEEN :startDate AND :endDate
-                                            AND sm.levelZone = 2
-                                            GROUP BY ID
-                                            ORDER BY ID ASC                                                                                                                                                
-                                            ")
-                ->setParameters(array(
-                    //'selDate'      => $dat,
-                    'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                    'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                    'zoneId'     => $zone->getId()
-                ))
-                ->getResult();
+            if ($zone->getType() === 'Air Conditioner') {
+                //AC Unit 1-1 Climate data variables
+                $returnAirTemperature11 = [];
+                $returnAirHumidity11    = [];
+                $fanSpeed11             = [];
+                $acDateClimate11        = [];
 
-            // dump($commonData);
+                //AC Unit 1-2 Climate data variables
+                $returnAirTemperature12 = [];
+                $returnAirHumidity12    = [];
+                $fanSpeed12             = [];
+                $acDateClimate12        = [];
 
-            //die();
-            foreach ($commonEnergyData as $d) {
-                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
-                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
-                // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
-                // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
-                // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
-            }
-
-            $commonCurrentMonthEnergyQuery = $manager->createQuery("SELECT SUM(d.ea) AS kWh, SUM(d.ea)*0.207 AS kgCO2
-                                            FROM App\Entity\SmartMod sm
-                                            JOIN sm.loadDataEnergies d 
-                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                            AND d.dateTime LIKE :currentMonth
-                                            AND sm.levelZone = 2                                                                                                                                          
-                                            ")
-                ->setParameters(array(
-                    //'selDate'      => $dat,
-                    'currentMonth' => date('Y-m') . '%',
-                    //'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                    'zoneId'       => $zone->getId()
-                ))
-                ->getResult();
-
-            // dump($commonData);
-
-            //die();
-
-            foreach ($commonCurrentMonthEnergyQuery as $d) {
-                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                $EA_month   = floatval(number_format((float) $d['kWh'], 1, '.', ''));
-                $kgCO2_month = floatval(number_format((float) $d['kgCO2'], 1, '.', ''));
-                // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
-                // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
-                // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
-            }
-            /*$commonPowerData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
-                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
-                                            FROM App\Entity\SmartMod sm
-                                            JOIN sm.loadDataEnergies d 
-                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                            AND d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 WHERE d1.dateTime LIKE :nowDate)
-                                            AND sm.levelZone = 2
-                                            GROUP BY dt
-                                            ORDER BY dt ASC                                                                                                                                                
-                                            ")
-                ->setParameters(array(
-                    //'selDate'      => $dat,
-                    'nowDate'      => date("Y-m-d") . "%",
-                    'zoneId'     => $zone->getId()
-                ))
-                ->getResult();
-
-            //dump($commonData);
-
-            //die();
-            foreach ($commonPowerData as $d) {
-                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                // $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
-                // $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
-                $P = number_format((float) $d['P'], 2, '.', '');
-                $S = number_format((float) $d['S'], 2, '.', '');
-                $FP_flow = number_format((float) $d['PF'], 2, '.', '');
-            }*/
-            $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
                                        FROM App\Entity\SmartMod sm
-                                       JOIN sm.loadDataEnergies d 
+                                       JOIN sm.airConditionerData d 
                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                       AND d.dateTime LIKE :nowDate            
+                                       AND d.dateTime LIKE :nowDate  
+                                       AND sm.modType  = 'Air Conditioner'
+                                       AND sm.moduleId = 'unit11'          
                                     ")
-                ->setParameters(array(
-                    'nowDate'      => date("Y-m-d") . "%",
-                    'zoneId'     => $zone->getId()
-                ))
-                ->getResult();
-            //dump($lastRecord);
-            if ($zone->getType() === 'PUE Calculation') {
-                $lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
-                                                    FROM App\Entity\LoadDataEnergy d
-                                                    JOIN d.smartMod sm 
-                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND sm.levelZone = 2                                                                                                                                               
-                                                    ")
                     ->setParameters(array(
-                        //'selDate'      => $dat,
+                        'nowDate'      => date("Y-m-d") . "%",
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                //dump($lastDatetimeForPUE[0]['dt']);
-                $date = new DateTime($lastDatetimeForPUE[0]['dt'] ?? 'now');
-                $date->sub(new DateInterval('PT2M'));
-                //dump($date);
-                $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
-                                                            FROM App\Entity\LoadDataEnergy d
-                                                            JOIN d.smartMod sm 
-                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                            AND d.dateTime = :lastDate
-                                                            AND sm.levelZone = 2
-                                                            AND sm.subType = 'Production'                                                                                                                                                
-                                                            ")
-                    ->setParameters(array(
-                        'lastDate'      => $date->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($InstantProductionEnergy);
+                //dump($lastRecord);
 
-                $InstantTotalActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
-                                                    FROM App\Entity\LoadDataEnergy d
-                                                    JOIN d.smartMod sm 
-                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = :lastDate
-                                                    AND sm.levelZone = 2                                                                                                                                               
-                                                    ")
-                    ->setParameters(array(
-                        'lastDate'      => $date->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($InstantTotalActivePower);
-                $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
-                $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
-                $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
-                $InstantIT_AP = number_format((float) $InstantIT_AP, 2, '.', '');
-                $InstantPUE = 0;
-                if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
-                    $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
-                    $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
-                }
-                // dump('InstantPUE = ' . $InstantPUE);
-                /*
-                $IntervalTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
-                                                        FROM App\Entity\LoadDataEnergy d
+                $ac11DataQuery = $manager->createQuery("SELECT d.dateTime AS dt, d.returnAirTemp AS temp, d.returnAirHum AS hum, d.fanSpeed1 AS fan
+                                                        FROM App\Entity\AirConditionerData d
                                                         JOIN d.smartMod sm 
                                                         WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
                                                         AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.levelZone = 2
-                                                                                                                                                                                                      
-                                                        ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($IntervalTotalEnergy);
-
-                $IntervalProductionEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
-                                                        FROM App\Entity\LoadDataEnergy d
-                                                        JOIN d.smartMod sm 
-                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                        AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.levelZone = 2 
-                                                        AND sm.subType = 'Production'                                                                                                                                               
-                                                        ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($IntervalProductionEnergy);
-                */
-
-                $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
-                                                        FROM App\Entity\ClimateData d
-                                                        JOIN d.smartMod sm 
-                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                        AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.modType = 'Climate' 
-                                                        AND sm.subType = 'Indoor'  
+                                                        AND sm.modType  = 'Air Conditioner'
+                                                        AND sm.moduleId = 'unit11'
                                                         GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                             
                                                         ")
@@ -524,16 +351,177 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                //dump($indoorClimateData);
-                foreach ($indoorClimateData as $d) {
-                    $dateClimate[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                    $inTemperature[]   = $d['temp'];
-                    $inHumidity[]   = $d['hum'];
+                //dump($ac11DataQuery);
+                foreach ($ac11DataQuery as $d) {
+                    $acDateClimate11[]        = $d['dt'];
+                    $returnAirTemperature11[] = $d['temp'];
+                    $returnAirHumidity11[]    = $d['hum'];
+                    $fanSpeed11[]             = $d['fan'];
+                }
+                $ac12DataQuery = $manager->createQuery("SELECT d.dateTime AS dt, d.returnAirTemp AS temp, d.returnAirHum AS hum, d.fanSpeed1 AS fan
+                                                        FROM App\Entity\AirConditionerData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType  = 'Air Conditioner'
+                                                        AND sm.moduleId = 'unit12'
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                             
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                dump($ac12DataQuery);
+                foreach ($ac12DataQuery as $d) {
+                    $acDateClimate12[]        = $d['dt'];
+                    $returnAirTemperature12[] = $d['temp'];
+                    $returnAirHumidity12[]    = $d['hum'];
+                    $fanSpeed12[]             = $d['fan'];
                 }
 
-                $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                return $this->json([
+                    'code'             => 200,
+                    'Date1'            => $lastRecord[0]['dt'] ?? '',
+                    'ACDate11'         => $acDateClimate11,
+                    'ACDate12'         => $acDateClimate12,
+                    'MixedAC11'        => [$returnAirTemperature11, $returnAirHumidity11, $fanSpeed11],
+                    'MixedAC12'        => [$returnAirTemperature12, $returnAirHumidity12, $fanSpeed12],
+
+                ], 200);
+            } else {
+                $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                                       FROM App\Entity\SmartMod sm
+                                       JOIN sm.loadDataEnergies d 
+                                       WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                       AND d.dateTime LIKE :nowDate            
+                                    ")
+                    ->setParameters(array(
+                        'nowDate'      => date("Y-m-d") . "%",
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                //dump($lastRecord);
+                if ($zone->getType() === 'PUE Calculation') {
+                    $lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND sm.levelZone = 2                                                                                                                                               
+                                                    ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($lastDatetimeForPUE[0]['dt']);
+                    $date = new DateTime($lastDatetimeForPUE[0]['dt'] ?? 'now');
+                    $date->sub(new DateInterval('PT2M'));
+                    //dump($date);
+                    $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
+                                                            FROM App\Entity\LoadDataEnergy d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                            AND d.dateTime = :lastDate
+                                                            AND sm.levelZone = 2
+                                                            AND sm.subType = 'Production'                                                                                                                                                
+                                                            ")
+                        ->setParameters(array(
+                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($InstantProductionEnergy);
+
+                    $InstantTotalActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND d.dateTime = :lastDate
+                                                    AND sm.levelZone = 2                                                                                                                                               
+                                                    ")
+                        ->setParameters(array(
+                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($InstantTotalActivePower);
+                    $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
+                    $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
+                    $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
+                    $InstantIT_AP = number_format((float) $InstantIT_AP, 2, '.', '');
+                    $InstantPUE = 0;
+                    if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
+                        $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
+                        $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
+                    }
+                    // dump('InstantPUE = ' . $InstantPUE);
+                    /*
+                    $IntervalTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
+                                                            FROM App\Entity\LoadDataEnergy d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                                            AND sm.levelZone = 2
+                                                                                                                                                                                                        
+                                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($IntervalTotalEnergy);
+
+                    $IntervalProductionEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
+                                                            FROM App\Entity\LoadDataEnergy d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                                            AND sm.levelZone = 2 
+                                                            AND sm.subType = 'Production'                                                                                                                                               
+                                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($IntervalProductionEnergy);
+                    */
+
+                    $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Indoor'  
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                             
+                                                        ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($indoorClimateData);
+                    foreach ($indoorClimateData as $d) {
+                        $dateClimate[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                        $inTemperature[]   = $d['temp'];
+                        $inHumidity[]   = $d['hum'];
+                    }
+
+                    $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
                                                         FROM App\Entity\ClimateData d
                                                         JOIN d.smartMod sm 
                                                         WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -543,29 +531,29 @@ class ZoneController extends ApplicationController
                                                         GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                            
                                                         ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                //dump($outdoorClimateData);
-                foreach ($outdoorClimateData as $d) {
-                    //$dateClimate[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                    $outTemperature[]   = $d['temp'];
-                    $outHumidity[]   = $d['hum'];
-                }
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($outdoorClimateData);
+                    foreach ($outdoorClimateData as $d) {
+                        //$dateClimate[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                        $outTemperature[]   = $d['temp'];
+                        $outHumidity[]   = $d['hum'];
+                    }
 
-                /*$IntervalPUE = 0;
-                if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
-                    $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
-                    $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
-                }*/
-                // dump('IntervalPUE = ' . $IntervalPUE);
-                $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    /*$IntervalPUE = 0;
+                    if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
+                        $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
+                        $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
+                    }*/
+                    // dump('IntervalPUE = ' . $IntervalPUE);
+                    $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -575,15 +563,15 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d') . '%',
-                        //'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d') . '%',
+                            //'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
 
-                $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -592,16 +580,16 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d') . '%',
-                        //'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d') . '%',
+                            //'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
 
 
-                $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
+                    $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -611,16 +599,16 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        //'startDate'  => $startDate->format('Y-m-d') . '%',
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                //dump($dataProductionEnergy);
-                $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            //'startDate'  => $startDate->format('Y-m-d') . '%',
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($dataProductionEnergy);
+                    $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -629,57 +617,153 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            //'startDate'  => $startDate->format('Y-m-d') . '%',
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+
+                    //dump($dataTotalEnergy);
+                    //die();
+                    foreach ($dataProductionActivePower as $d) {
+                        $dateP[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
+                    }
+                    foreach ($dataTotalActivePower as $d) {
+                        //$dateE[] = $d['dt'];
+                        $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
+                    }
+
+                    foreach ($dataProductionEnergy as $d) {
+                        $dateE[] = $d['dt'] . ":00:00";
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    }
+                    // dump($dataTotalEnergy);
+                    //die();
+                    foreach ($dataTotalEnergy as $d) {
+                        //$dateE[] = $d['dt'];
+                        $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    }
+                    // dump($dataTotalActivePower);
+                    //die();
+
+                    $instantpue =  array_map(function ($a, $b) {
+                        return $b > 0 ? round($a / $b, 2) : 0;
+                    }, $totalAP, $productionAP);
+
+                    $intervalpue =  array_map(function ($a, $b) {
+                        return $b > 0 ? round($a / $b, 2) : 0;
+                    }, $totalEA, $productionEA);
+                    // dump($intervalpue);
+
+
+                    /*$diffEnergy =  array_map(function ($a, $b) {
+                        return number_format((float) ($a - $b), 2, '.', '');
+                    }, $totalEA, $productionEA);*/
+                    // dump($diffEnergy);
+                } else if ($zone->getType() === 'No PUE Calculation') {
+                    foreach ($zone->getSmartMods() as $smartMod) {
+                        if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
+                            $EA_flow[$smartMod->getId()]   = 0.00;
+                            $ER_flow[$smartMod->getId()] = 0.00;
+                            // $P['' . $smartMod->getId()] = "0.00";
+                            // $S['' . $smartMod->getId()] = "0.00";
+                            // $FP_flow['' . $smartMod->getId()] = "0.00";
+                        }
+                    }
+                    //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
+                    $commonEnergyData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 2
+                                            GROUP BY ID
+                                            ORDER BY ID ASC                                                                                                                                                
+                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+
+                    // dump($commonData);
+
+                    //die();
+                    foreach ($commonEnergyData as $d) {
+                        //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                        $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
+                        $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                        // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
+                        // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
+                        // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+                    }
+
+                    $commonCurrentMonthEnergyQuery = $manager->createQuery("SELECT SUM(d.ea) AS kWh, SUM(d.ea)*0.207 AS kgCO2
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime LIKE :currentMonth
+                                            AND sm.levelZone = 2                                                                                                                                          
+                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'currentMonth' => date('Y-m') . '%',
+                            //'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'       => $zone->getId()
+                        ))
+                        ->getResult();
+
+                    // dump($commonData);
+
+                    //die();
+
+                    foreach ($commonCurrentMonthEnergyQuery as $d) {
+                        //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                        $EA_month   = floatval(number_format((float) $d['kWh'], 1, '.', ''));
+                        $kgCO2_month = floatval(number_format((float) $d['kgCO2'], 1, '.', ''));
+                        // $P['' . $d['ID']] = number_format((float) $d['P'], 2, '.', '');
+                        // $S['' . $d['ID']] = number_format((float) $d['S'], 2, '.', '');
+                        // $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+                    }
+                    /*$commonPowerData = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
+                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime =  (SELECT max(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 WHERE d1.dateTime LIKE :nowDate)
+                                            AND sm.levelZone = 2
+                                            GROUP BY dt
+                                            ORDER BY dt ASC                                                                                                                                                
+                                            ")
                     ->setParameters(array(
                         //'selDate'      => $dat,
-                        //'startDate'  => $startDate->format('Y-m-d') . '%',
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                        'nowDate'      => date("Y-m-d") . "%",
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
 
-                //dump($dataTotalEnergy);
-                //die();
-                foreach ($dataProductionActivePower as $d) {
-                    $dateP[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
-                }
-                foreach ($dataTotalActivePower as $d) {
-                    //$dateE[] = $d['dt'];
-                    $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
-                }
+                    //dump($commonData);
 
-                foreach ($dataProductionEnergy as $d) {
-                    $dateE[] = $d['dt'] . ":00:00";
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                }
-                // dump($dataTotalEnergy);
-                //die();
-                foreach ($dataTotalEnergy as $d) {
-                    //$dateE[] = $d['dt'];
-                    $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                }
-                // dump($dataTotalActivePower);
-                //die();
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalAP, $productionAP);
-
-                $intervalpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalEA, $productionEA);
-                // dump($intervalpue);
+                    //die();
+                    foreach ($commonPowerData as $d) {
+                        //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                        // $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
+                        // $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                        $P = number_format((float) $d['P'], 2, '.', '');
+                        $S = number_format((float) $d['S'], 2, '.', '');
+                        $FP_flow = number_format((float) $d['PF'], 2, '.', '');
+                    }*/
 
 
-                /*$diffEnergy =  array_map(function ($a, $b) {
-                    return number_format((float) ($a - $b), 2, '.', '');
-                }, $totalEA, $productionEA);*/
-                // dump($diffEnergy);
-            } else {
-                $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
+                    $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
                                             SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
                                             FROM App\Entity\SmartMod sm
                                             JOIN sm.loadDataEnergies d 
@@ -689,50 +773,51 @@ class ZoneController extends ApplicationController
                                             GROUP BY dt
                                             ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
 
-                // dump($data);
+                    // dump($data);
 
-                //die();
-                foreach ($data as $d) {
-                    $datePSCosfi[] = $d['dt']->format('Y-m-d H:i:s');
-                    $p[] = number_format((float) $d['P'], 2, '.', '');
-                    $s[] = number_format((float) $d['S'], 2, '.', '');
-                    $fp[] = number_format((float) $d['PF'], 2, '.', '');
+                    //die();
+                    foreach ($data as $d) {
+                        $datePSCosfi[] = $d['dt']->format('Y-m-d H:i:s');
+                        $p[] = number_format((float) $d['P'], 2, '.', '');
+                        $s[] = number_format((float) $d['S'], 2, '.', '');
+                        $fp[] = number_format((float) $d['PF'], 2, '.', '');
+                    }
                 }
+
+                return $this->json([
+                    'code'                => 200,
+                    'date'                => $dateE,
+                    'dateP'               => $dateP,
+                    'Date1'               => $lastRecord[0]['dt'] ?? '',
+                    'datePSCosfi'         => $datePSCosfi,
+                    'climateDate'         => $dateClimate,
+                    'xscale'              => $xScale,
+                    'InstantPUE'          => $InstantPUE,
+                    'InstantTotal_AP'     => $InstantTotal_AP,
+                    'InstantIT_AP'        => $InstantIT_AP,
+                    'IntervalPUE'         => $IntervalPUE,
+                    'PieActiveEnergy'     => $EA_flow,
+                    'PieReactiveEnergy'   => $ER_flow,
+                    'PUE'                 => [$productionAP, $totalAP, $instantpue],
+                    'MixedEnergy'         => [$totalEA, $productionEA, $intervalpue],
+                    'MixedClimate'        => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
+                    'MixedPSCosfi'        => [$s, $p, $fp],
+                    //'S'                   => end($s), //$S,
+                    'P'                   => end($p) ? end($p) : 0, //$P,
+                    //'FP'                  => end($fp), //$FP_flow,
+                    'EA'                  => $EA_month,
+                    'kgCO2'               => $kgCO2_month
+
+                ], 200);
             }
-
-            return $this->json([
-                'code'                => 200,
-                'date'                => $dateE,
-                'dateP'               => $dateP,
-                'Date1'               => $lastRecord[0]['dt'] ?? '',
-                'datePSCosfi'         => $datePSCosfi,
-                'climateDate'         => $dateClimate,
-                'xscale'              => $xScale,
-                'InstantPUE'          => $InstantPUE,
-                'InstantTotal_AP'     => $InstantTotal_AP,
-                'InstantIT_AP'        => $InstantIT_AP,
-                'IntervalPUE'         => $IntervalPUE,
-                'PieActiveEnergy'     => $EA_flow,
-                'PieReactiveEnergy'   => $ER_flow,
-                'PUE'                 => [$productionAP, $totalAP, $instantpue],
-                'MixedEnergy'         => [$totalEA, $productionEA, $intervalpue],
-                'MixedClimate'        => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
-                'MixedPSCosfi'        => [$s, $p, $fp],
-                //'S'                   => end($s), //$S,
-                'P'                   => end($p) ? end($p) : 0, //$P,
-                //'FP'                  => end($fp), //$FP_flow,
-                'EA'                  => $EA_month,
-                'kgCO2'               => $kgCO2_month
-
-            ], 200);
         }
 
 
@@ -799,157 +884,28 @@ class ZoneController extends ApplicationController
         $endDate = new DateTime($paramJSON['endDate']); // Ex : %2020-03-20%
         // dump($startDate->format('Y-m-d H:i:s'));
         // dump($endDate->format('Y-m-d H:i:s'));
-        //$dat = "2020-02"; //'%' . $dat . '%'
-        //$dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        // //dump($dat);
-        //die();
-        //$dat = $dat . '%';
-
-        $dateparam = $request->get('selectedDate'); // Ex : %2020-03-20%
-        //$dat = "2020-02"; //'%' . $dat . '%'
-        $dat = substr($dateparam, 0, 8); // Ex : %2020-03
-        // //dump($dat);
-        //die();
-        $dat = $dat . '%';
 
         if ($zone) {
-            foreach ($zone->getSmartMods() as $smartMod) {
-                if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
-                    $EA_flow[$smartMod->getId()]   = 0.00;
-                    $ER_flow[$smartMod->getId()] = 0.00;
-                    $Smax['' . $smartMod->getId()] = "0.00";
-                    $FP_flow['' . $smartMod->getId()] = "0.00";
-                }
-            }
-            //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
-            $commonData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR, 
-                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, MAX(d.smoy) AS Smax
-                                            FROM App\Entity\SmartMod sm
-                                            JOIN sm.loadDataEnergies d 
-                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                            AND d.dateTime BETWEEN :startDate AND :endDate
-                                            AND sm.levelZone = 2
-                                            GROUP BY ID
-                                            ORDER BY ID ASC                                                                                                                                                
-                                            ")
-                ->setParameters(array(
-                    //'selDate'      => $dat,
-                    'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                    'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                    'zoneId'     => $zone->getId()
-                ))
-                ->getResult();
+            if ($zone->getType() === 'Air Conditioner') {
+                //AC Unit 1-1 Climate data variables
+                $returnAirTemperature11 = [];
+                $returnAirHumidity11    = [];
+                $fanSpeed11             = [];
+                $acDateClimate11        = [];
 
-            // dump($commonData);
+                //AC Unit 1-2 Climate data variables
+                $returnAirTemperature12 = [];
+                $returnAirHumidity12    = [];
+                $fanSpeed12             = [];
+                $acDateClimate12        = [];
 
-            //die();
-            foreach ($commonData as $d) {
-                //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
-                $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
-                $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
-                $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 2, '.', '');
-                $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
-            }
-
-            if ($zone->getType() === 'PUE Calculation') {
-                /*$lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
-                                                    FROM App\Entity\LoadDataEnergy d
-                                                    JOIN d.smartMod sm 
-                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND sm.levelZone = 2                                                                                                                                               
-                                                    ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                //dump($lastDatetimeForPUE[0]['dt']);
-                $date = new DateTime($lastDatetimeForPUE[0]['dt']);
-                $date->sub(new DateInterval('PT2M'));
-                //dump($date);
-                $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
-                                                            FROM App\Entity\LoadDataEnergy d
-                                                            JOIN d.smartMod sm 
-                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                            AND d.dateTime = :lastDate
-                                                            AND sm.levelZone = 2
-                                                            AND sm.subType = 'Production'                                                                                                                                                
-                                                            ")
-                    ->setParameters(array(
-                        'lastDate'      => $date->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($InstantProductionEnergy);
-
-                $InstantTotalActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
-                                                    FROM App\Entity\LoadDataEnergy d
-                                                    JOIN d.smartMod sm 
-                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = :lastDate
-                                                    AND sm.levelZone = 2                                                                                                                                               
-                                                    ")
-                    ->setParameters(array(
-                        'lastDate'      => $date->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($InstantTotalActivePower);
-
-                $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
-                $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
-                $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
-                $InstantIT_AP = number_format((float) $InstantIT_AP, 2, '.', '');
-                $InstantPUE = 0;
-                if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
-                    $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
-                    $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
-                }*/
-
-                // dump('InstantPUE = ' . $InstantPUE);
-                /*
-                $IntervalTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
-                                                        FROM App\Entity\LoadDataEnergy d
+                $ac11DataQuery = $manager->createQuery("SELECT d.dateTime AS dt, d.returnAirTemp AS temp, d.returnAirHum AS hum, d.fanSpeed1 AS fan
+                                                        FROM App\Entity\AirConditionerData d
                                                         JOIN d.smartMod sm 
                                                         WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
                                                         AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.levelZone = 2
-                                                                                                                                                                                                      
-                                                        ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($IntervalTotalEnergy);
-
-                $IntervalProductionEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
-                                                        FROM App\Entity\LoadDataEnergy d
-                                                        JOIN d.smartMod sm 
-                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                        AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.levelZone = 2 
-                                                        AND sm.subType = 'Production'                                                                                                                                               
-                                                        ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                // dump($IntervalProductionEnergy);
-                */
-
-                $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
-                                                        FROM App\Entity\ClimateData d
-                                                        JOIN d.smartMod sm 
-                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                        AND d.dateTime BETWEEN :startDate AND :endDate
-                                                        AND sm.modType = 'Climate' 
-                                                        AND sm.subType = 'Indoor'  
+                                                        AND sm.modType  = 'Air Conditioner'
+                                                        AND sm.moduleId = 'unit11'
                                                         GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                             
                                                         ")
@@ -960,16 +916,166 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                //dump($indoorClimateData);
-                foreach ($indoorClimateData as $d) {
-                    $dateClimate[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                    $inTemperature[]   = $d['temp'];
-                    $inHumidity[]   = $d['hum'];
+                //dump($ac11DataQuery);
+                foreach ($ac11DataQuery as $d) {
+                    $acDateClimate11[]        = $d['dt'];
+                    $returnAirTemperature11[] = $d['temp'];
+                    $returnAirHumidity11[]    = $d['hum'];
+                    $fanSpeed11[]             = $d['fan'];
+                }
+                $ac12DataQuery = $manager->createQuery("SELECT d.dateTime AS dt, d.returnAirTemp AS temp, d.returnAirHum AS hum, d.fanSpeed1 AS fan
+                                                        FROM App\Entity\AirConditionerData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType  = 'Air Conditioner'
+                                                        AND sm.moduleId = 'unit12'
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                             
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+                dump($ac12DataQuery);
+                foreach ($ac12DataQuery as $d) {
+                    $acDateClimate12[]        = $d['dt'];
+                    $returnAirTemperature12[] = $d['temp'];
+                    $returnAirHumidity12[]    = $d['hum'];
+                    $fanSpeed12[]             = $d['fan'];
                 }
 
-                $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                return $this->json([
+                    'code'             => 200,
+                    'ACDate11'         => $acDateClimate11,
+                    'ACDate12'         => $acDateClimate12,
+                    'MixedAC11'        => [$returnAirTemperature11, $returnAirHumidity11, $fanSpeed11],
+                    'MixedAC12'        => [$returnAirTemperature12, $returnAirHumidity12, $fanSpeed12],
+
+                ], 200);
+            } else {
+                if ($zone->getType() === 'PUE Calculation') {
+                    /*$lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND sm.levelZone = 2                                                                                                                                               
+                                                    ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($lastDatetimeForPUE[0]['dt']);
+                    $date = new DateTime($lastDatetimeForPUE[0]['dt']);
+                    $date->sub(new DateInterval('PT2M'));
+                    //dump($date);
+                    $InstantProductionActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
+                                                                FROM App\Entity\LoadDataEnergy d
+                                                                JOIN d.smartMod sm 
+                                                                WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                                AND d.dateTime = :lastDate
+                                                                AND sm.levelZone = 2
+                                                                AND sm.subType = 'Production'                                                                                                                                                
+                                                                ")
+                        ->setParameters(array(
+                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($InstantProductionEnergy);
+
+                    $InstantTotalActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
+                                                        FROM App\Entity\LoadDataEnergy d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime = :lastDate
+                                                        AND sm.levelZone = 2                                                                                                                                               
+                                                        ")
+                        ->setParameters(array(
+                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($InstantTotalActivePower);
+
+                    $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
+                    $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
+                    $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
+                    $InstantIT_AP = number_format((float) $InstantIT_AP, 2, '.', '');
+                    $InstantPUE = 0;
+                    if (count($InstantTotalActivePower) && count($InstantProductionActivePower)) {
+                        $InstantPUE = $InstantProductionActivePower[0]['kW'] > 0 ? ($InstantTotalActivePower[0]['kW'] * 1.0) / $InstantProductionActivePower[0]['kW'] : 0;
+                        $InstantPUE = number_format((float) $InstantPUE, 2, '.', '');
+                    }*/
+
+                    // dump('InstantPUE = ' . $InstantPUE);
+                    /*
+                    $IntervalTotalEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
+                                                            FROM App\Entity\LoadDataEnergy d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                                            AND sm.levelZone = 2
+                                                                                                                                                                                                        
+                                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($IntervalTotalEnergy);
+
+                    $IntervalProductionEnergy = $manager->createQuery("SELECT SUM(d.ea) AS kWh
+                                                            FROM App\Entity\LoadDataEnergy d
+                                                            JOIN d.smartMod sm 
+                                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                                            AND sm.levelZone = 2 
+                                                            AND sm.subType = 'Production'                                                                                                                                               
+                                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    // dump($IntervalProductionEnergy);
+                    */
+
+                    $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime BETWEEN :startDate AND :endDate
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Indoor'  
+                                                        GROUP BY dt
+                                                        ORDER BY dt ASC                                                                                                                                             
+                                                        ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($indoorClimateData);
+                    foreach ($indoorClimateData as $d) {
+                        $dateClimate[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                        $inTemperature[]   = $d['temp'];
+                        $inHumidity[]   = $d['hum'];
+                    }
+
+                    $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
                                                         FROM App\Entity\ClimateData d
                                                         JOIN d.smartMod sm 
                                                         WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -979,29 +1085,29 @@ class ZoneController extends ApplicationController
                                                         GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                            
                                                         ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
-                //dump($outdoorClimateData);
-                foreach ($outdoorClimateData as $d) {
-                    //$dateClimate[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                    $outTemperature[]   = $d['temp'];
-                    $outHumidity[]   = $d['hum'];
-                }
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+                    //dump($outdoorClimateData);
+                    foreach ($outdoorClimateData as $d) {
+                        //$dateClimate[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        //$productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                        $outTemperature[]   = $d['temp'];
+                        $outHumidity[]   = $d['hum'];
+                    }
 
-                /*$IntervalPUE = 0;
-                if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
-                    $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
-                    $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
-                }*/
-                // dump('IntervalPUE = ' . $IntervalPUE);
-                $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    /*$IntervalPUE = 0;
+                    if (count($IntervalProductionEnergy) && count($IntervalTotalEnergy)) {
+                        $IntervalPUE = $IntervalProductionEnergy[0]['kWh'] > 0 ? ($IntervalTotalEnergy[0]['kWh'] * 1.0) / $IntervalProductionEnergy[0]['kWh'] : 0;
+                        $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
+                    }*/
+                    // dump('IntervalPUE = ' . $IntervalPUE);
+                    $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1011,15 +1117,15 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
 
-                $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1028,18 +1134,53 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                    ->setParameters(array(
-                        //'selDate'      => $dat,
-                        'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                        'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                        'zoneId'     => $zone->getId()
-                    ))
-                    ->getResult();
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
 
-                if ($startDate->format('Y-m-d') !== $endDate->format('Y-m-d')) {
-                    $xScale = 'month';
-                    /*
-                    $dataProductionActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.pmoy) AS kW
+                    if ($startDate->format('Y-m-d') !== $endDate->format('Y-m-d')) {
+                        $xScale = 'month';
+                        /*
+                        $dataProductionActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.pmoy) AS kW
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND d.dateTime BETWEEN :startDate AND :endDate
+                                                    AND sm.levelZone = 2 
+                                                    AND sm.subType = 'Production' 
+                                                    GROUP BY dt
+                                                    ORDER BY dt ASC                                                                                                                                                
+                                                ")
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
+
+                        $dataTotalActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.pmoy) AS kW
+                                                    FROM App\Entity\LoadDataEnergy d
+                                                    JOIN d.smartMod sm 
+                                                    WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                    AND d.dateTime BETWEEN :startDate AND :endDate
+                                                    AND sm.levelZone = 2 
+                                                    GROUP BY dt
+                                                    ORDER BY dt ASC                                                                                                                                                
+                                                ")
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
+                        */
+                        $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1049,15 +1190,15 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                        ->setParameters(array(
-                            //'selDate'      => $dat,
-                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                            'zoneId'     => $zone->getId()
-                        ))
-                        ->getResult();
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
 
-                    $dataTotalActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.pmoy) AS kW
+                        $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1066,50 +1207,15 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                        ->setParameters(array(
-                            //'selDate'      => $dat,
-                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                            'zoneId'     => $zone->getId()
-                        ))
-                        ->getResult();
-                    */
-                    $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.ea) AS kWh
-                                                FROM App\Entity\LoadDataEnergy d
-                                                JOIN d.smartMod sm 
-                                                WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                AND d.dateTime BETWEEN :startDate AND :endDate
-                                                AND sm.levelZone = 2 
-                                                AND sm.subType = 'Production' 
-                                                GROUP BY dt
-                                                ORDER BY dt ASC                                                                                                                                                
-                                            ")
-                        ->setParameters(array(
-                            //'selDate'      => $dat,
-                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                            'zoneId'     => $zone->getId()
-                        ))
-                        ->getResult();
-
-                    $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dt, SUM(d.ea) AS kWh
-                                                FROM App\Entity\LoadDataEnergy d
-                                                JOIN d.smartMod sm 
-                                                WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                AND d.dateTime BETWEEN :startDate AND :endDate
-                                                AND sm.levelZone = 2 
-                                                GROUP BY dt
-                                                ORDER BY dt ASC                                                                                                                                                
-                                            ")
-                        ->setParameters(array(
-                            //'selDate'      => $dat,
-                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                            'zoneId'     => $zone->getId()
-                        ))
-                        ->getResult();
-                } else {
-                    $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
+                    } else {
+                        $dataProductionEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1119,16 +1225,16 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
-                        ->setParameters(array(
-                            //'selDate'      => $dat,
-                            //'startDate'  => $startDate->format('Y-m-d') . '%',
-                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
-                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
-                            'zoneId'     => $zone->getId()
-                        ))
-                        ->getResult();
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                //'startDate'  => $startDate->format('Y-m-d') . '%',
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
 
-                    $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
+                        $dataTotalEnergy = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,13) AS dt, SUM(d.ea) AS kWh
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -1137,78 +1243,117 @@ class ZoneController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                //'startDate'  => $startDate->format('Y-m-d') . '%',
+                                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                                'zoneId'     => $zone->getId()
+                            ))
+                            ->getResult();
+                    }
+                    // dump($dataProductionEnergy);
+                    //die();
+                    foreach ($dataProductionActivePower as $d) {
+                        $dateP[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
+                    }
+
+                    // dump($dataTotalActivePower);
+                    //die();
+                    foreach ($dataTotalActivePower as $d) {
+                        //$dateE[] = $d['dt'];
+                        $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
+                    }
+
+                    foreach ($dataProductionEnergy as $d) {
+                        $dateE[] = $d['dt'];
+                        //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
+                        $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    }
+                    // dump($dataTotalEnergy);
+                    //die();
+                    foreach ($dataTotalEnergy as $d) {
+                        //$dateE[] = $d['dt'];
+                        $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
+                    }
+
+                    $instantpue =  array_map(function ($a, $b) {
+                        return $b > 0 ? round($a / $b, 2) : 0;
+                    }, $totalAP, $productionAP);
+
+                    $intervalpue =  array_map(function ($a, $b) {
+                        return $b > 0 ? round($a / $b, 2) : 0;
+                    }, $totalEA, $productionEA);
+                    // dump($intervalpue);
+
+
+                    /*$diffEnergy =  array_map(function ($a, $b) {
+                        return number_format((float) ($a - $b), 2, '.', '');
+                    }, $totalEA, $productionEA);*/
+                    // dump($diffEnergy);
+                } else if ($zone->getType() === 'PUE Calculation') {
+                    foreach ($zone->getSmartMods() as $smartMod) {
+                        if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
+                            $EA_flow[$smartMod->getId()]   = 0.00;
+                            $ER_flow[$smartMod->getId()] = 0.00;
+                            $Smax['' . $smartMod->getId()] = "0.00";
+                            $FP_flow['' . $smartMod->getId()] = "0.00";
+                        }
+                    }
+                    //SUM( SQRT( (d.pmoy*d.pmoy) + (SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SQRT( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) ) ) AS kVA,
+                    $commonData = $manager->createQuery("SELECT sm.id AS ID, SUM(d.ea) AS kWh, SUM(d.er) AS kVAR, 
+                                            SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, MAX(d.smoy) AS Smax
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 2
+                                            GROUP BY ID
+                                            ORDER BY ID ASC                                                                                                                                                
+                                            ")
                         ->setParameters(array(
                             //'selDate'      => $dat,
-                            //'startDate'  => $startDate->format('Y-m-d') . '%',
                             'startDate'  => $startDate->format('Y-m-d H:i:s'),
                             'endDate'    => $endDate->format('Y-m-d H:i:s'),
                             'zoneId'     => $zone->getId()
                         ))
                         ->getResult();
-                }
-                // dump($dataProductionEnergy);
-                //die();
-                foreach ($dataProductionActivePower as $d) {
-                    $dateP[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
-                }
 
-                // dump($dataTotalActivePower);
-                //die();
-                foreach ($dataTotalActivePower as $d) {
-                    //$dateE[] = $d['dt'];
-                    $totalAP[]   = number_format((float) $d['kW'], 2, '.', '');
+                    // dump($commonData);
+
+                    //die();
+                    foreach ($commonData as $d) {
+                        //$dateE[] = $d['dt']->format('Y-m-d H:i:s');
+                        $EA_flow[$d['ID']]   = floatval(number_format((float) $d['kWh'], 2, '.', ''));
+                        $ER_flow[$d['ID']] = floatval(number_format((float) $d['kVAR'], 2, '.', ''));
+                        $Smax['' . $d['ID']] = number_format((float) $d['Smax'], 2, '.', '');
+                        $FP_flow['' . $d['ID']] = number_format((float) $d['PF'], 2, '.', '');
+                    }
                 }
 
-                foreach ($dataProductionEnergy as $d) {
-                    $dateE[] = $d['dt'];
-                    //$dateE[] = DateTime::createFromFormat('Y-m-d H:i:s', $d['dt']);
-                    $productionEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                }
-                // dump($dataTotalEnergy);
-                //die();
-                foreach ($dataTotalEnergy as $d) {
-                    //$dateE[] = $d['dt'];
-                    $totalEA[]   = number_format((float) $d['kWh'], 2, '.', '');
-                }
-
-                $instantpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalAP, $productionAP);
-
-                $intervalpue =  array_map(function ($a, $b) {
-                    return $b > 0 ? round($a / $b, 2) : 0;
-                }, $totalEA, $productionEA);
-                // dump($intervalpue);
+                return $this->json([
+                    'code'    => 200,
+                    'date'    => $dateE,
+                    'dateP'    => $dateP,
+                    'climateDate'   => $dateClimate,
+                    'xscale'    => $xScale,
+                    'InstantPUE' => $InstantPUE,
+                    'InstantTotal_AP'   => $InstantTotal_AP,
+                    'InstantIT_AP'  => $InstantIT_AP,
+                    'IntervalPUE' => $IntervalPUE,
+                    'PieActiveEnergy'      => $EA_flow,
+                    'PieReactiveEnergy'   => $ER_flow,
+                    'PUE'   => [$productionAP, $totalAP, $instantpue],
+                    'MixedEnergy'     => [$totalEA, $productionEA, $intervalpue],
+                    'MixedClimate'    => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
+                    'Smax'    => $Smax,
+                    'FP'    => $FP_flow,
 
 
-                /*$diffEnergy =  array_map(function ($a, $b) {
-                    return number_format((float) ($a - $b), 2, '.', '');
-                }, $totalEA, $productionEA);*/
-                // dump($diffEnergy);
+                ], 200);
             }
-
-            return $this->json([
-                'code'    => 200,
-                'date'    => $dateE,
-                'dateP'    => $dateP,
-                'climateDate'   => $dateClimate,
-                'xscale'    => $xScale,
-                'InstantPUE' => $InstantPUE,
-                'InstantTotal_AP'   => $InstantTotal_AP,
-                'InstantIT_AP'  => $InstantIT_AP,
-                'IntervalPUE' => $IntervalPUE,
-                'PieActiveEnergy'      => $EA_flow,
-                'PieReactiveEnergy'   => $ER_flow,
-                'PUE'   => [$productionAP, $totalAP, $instantpue],
-                'MixedEnergy'     => [$totalEA, $productionEA, $intervalpue],
-                'MixedClimate'    => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
-                'Smax'    => $Smax,
-                'FP'    => $FP_flow,
-
-
-            ], 200);
         }
 
 

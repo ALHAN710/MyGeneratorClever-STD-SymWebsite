@@ -43,7 +43,7 @@ class AdminZoneType extends ApplicationType
                     'choices' => [
                         'PUE Calculation'      => 'PUE Calculation',
                         'No PUE Calculation'   => 'No PUE Calculation',
-
+                        'Air Conditioner'      => 'Air Conditioner'
                     ],
                     'label'    => 'Type'
                 ]
