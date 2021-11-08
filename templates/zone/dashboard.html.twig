@@ -3329,18 +3329,8 @@
                                         }, 2000);
 
                                         if( Object.keys(result).length > 0 ){
-                                            var dateLabel = Object.values(result['date']);
                                             console.log(result);
-                                            console.log(Object.values(result['PieActiveEnergy']));
-                                            var nb = 0;
-                                            {% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}
-                                                console.log(nb);
-                                                $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[nb])
-                                                $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[nb])
-                                                nb++;
-                                                {% endif %}
-                                            {% endfor %}
+                                            
                                             /*{% for smartMod in zone.smartMods %}
                                                 {% if smartMod.modType ==  'Load Meter' %}
                                                 console.log({{loop.index0}});
@@ -3369,53 +3359,71 @@
                                             //displayPieNewData(ReactiveEnergy_Piechart, dateLabel, Object.values(result['PieReactiveEnergy']), [startDate, endDate], {{ zone.smartMods|length }}, 'day');
                                             
                                             
-                                            {% if zone.type == 'PUE Calculation' %}     
+                                            {% if zone.type == 'PUE Calculation' %}
+                                            var dateLabel = Object.values(result['date']);
+                                                 
                                             //$("#instPUE").text(result['InstantPUE']);
                                             //$("#intPUE").text(result['IntervalPUE']);
                                             //console.log(Object.values(result['climateDate']));
                                             displayNewData(Mixed_Pue_Power_Linechart, Object.values(result['dateP']), Object.values(result['PUE']), [startDate, endDate], 3, 'day');
                                             displayNewData(Mixed_Climate_Linechart, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [startDate, endDate], 4, 'day');
                                             displayNewData(Mixed_Pue_Energy_Linechart, dateLabel, Object.values(result['MixedEnergy']), [startDate, endDate], 3, 'day');
+                                            {% elseif zone.type == 'No PUE Calculation' %}
+                                                console.log(Object.values(result['PieActiveEnergy']));
+                                                var nb = 0;
+                                                {% for smartMod in zone.smartMods %}
+                                                    {% if smartMod.modType ==  'Load Meter' %}
+                                                    console.log(nb);
+                                                    $('#smax_{{smartMod.id}}').text(Object.values(result['Smax'])[nb])
+                                                    $('#fp_{{smartMod.id}}').text(Object.values(result['FP'])[nb])
+                                                    nb++;
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                /*var dataArray = [{% for smartMod in zone.smartMods %}
+                                                    {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                    {% endfor %}
+                                                ];*/
+                                                var dataArray = Object.values(result['PieActiveEnergy']);
+                                                console.log("====== Array ======")
+                                                console.log(dataArray);
+                                                updateDonutChart(ActiveEnergy_Piechart, [
+                                                    {% set nb = 0 %}
+                                                    {% for smartMod in zone.smartMods %}
+                                                    {% if smartMod.modType ==  'Load Meter' %}
+                                                    String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
+                                                    {% if loop.last == false %}
+                                                    ,
+                                                    {% endif %}
+                                                    {% set nb = nb + 1 %}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                ], dataArray);
+
+                                                /*dataArray = [{% for smartMod in zone.smartMods %}
+                                                    {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
+                                                    {% endfor %}
+                                                ];*/
+                                                dataArray = Object.values(result['PieReactiveEnergy']);
+                                                console.log(dataArray);
+                                                updateDonutChart(ReactiveEnergy_Piechart, [
+                                                    {% set nb = 0 %}
+                                                    {% for smartMod in zone.smartMods %}
+                                                    {% if smartMod.modType ==  'Load Meter' %}
+                                                    String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
+                                                    {% if loop.last == false %}
+                                                    ,
+                                                    {% endif %}
+                                                    {% set nb = nb + 1 %}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                ], dataArray);
+                                            {% elseif zone.type == 'Air Conditioner' %}
+                                                console.log('Air Conditioner')
+                                                displayNewData(Mixed_Unit_1_1_Linechart, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                                displayNewData(Mixed_Unit_1_2_Linechart, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                             {% endif %}
 
-                                            /*var dataArray = [{% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieActiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                                {% endfor %}
-                                            ];*/
-                                            var dataArray = Object.values(result['PieActiveEnergy']);
-                                            console.log("====== Array ======")
-                                            console.log(dataArray);
-                                            updateDonutChart(ActiveEnergy_Piechart, [
-                                                {% set nb = 0 %}
-                                                {% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}
-                                                String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieActiveEnergy'])[{{nb}}]) + " kWh")
-                                                {% if loop.last == false %}
-                                                ,
-                                                {% endif %}
-                                                {% set nb = nb + 1 %}
-                                                {% endif %}
-                                                {% endfor %}
-                                            ], dataArray);
-
-                                            /*dataArray = [{% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}parseFloat(Object.values(result['PieReactiveEnergy'])[{{loop.index0}}]){% if loop.last == false %},{% endif %}{% endif %}
-                                                {% endfor %}
-                                            ];*/
-                                            dataArray = Object.values(result['PieReactiveEnergy']);
-                                            console.log(dataArray);
-                                            updateDonutChart(ReactiveEnergy_Piechart, [
-                                                {% set nb = 0 %}
-                                                {% for smartMod in zone.smartMods %}
-                                                {% if smartMod.modType ==  'Load Meter' %}
-                                                String("{{smartMod.name}} : " + parseFloat(Object.values(result['PieReactiveEnergy'])[{{nb}}]) + " kVAR")
-                                                {% if loop.last == false %}
-                                                ,
-                                                {% endif %}
-                                                {% set nb = nb + 1 %}
-                                                {% endif %}
-                                                {% endfor %}
-                                            ], dataArray);
                                         }
                                     },
                                     error: function (result) {
