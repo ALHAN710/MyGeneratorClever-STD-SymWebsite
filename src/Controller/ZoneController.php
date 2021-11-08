@@ -375,7 +375,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($ac12DataQuery);
+                // dump($ac12DataQuery);
                 foreach ($ac12DataQuery as $d) {
                     $acDateClimate12[]        = $d['dt'];
                     $returnAirTemperature12[] = $d['temp'];
@@ -940,7 +940,7 @@ class ZoneController extends ApplicationController
                         'zoneId'     => $zone->getId()
                     ))
                     ->getResult();
-                dump($ac12DataQuery);
+                // dump($ac12DataQuery);
                 foreach ($ac12DataQuery as $d) {
                     $acDateClimate12[]        = $d['dt'];
                     $returnAirTemperature12[] = $d['temp'];
