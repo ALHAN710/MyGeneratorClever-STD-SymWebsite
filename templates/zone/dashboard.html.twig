@@ -4986,8 +4986,8 @@
                                         ], dataArray);
                                     {% elseif zone.type == 'Air Conditioner' %}
                                         console.log('Air Conditioner')
-                                        displayNewData(Mixed_Unit_1_1_Linechart, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
-                                        displayNewData(Mixed_Unit_1_2_Linechart, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
+                                        displayNewData(Mixed_Unit_1_1_Linechart, Object.values(result['ACDate11']), Object.values(result['MixedAC11']), [startDate, endDate], 3, 'day');
+                                        displayNewData(Mixed_Unit_1_2_Linechart, Object.values(result['ACDate12']), Object.values(result['MixedAC12']), [startDate, endDate], 3, 'day');
                                     {% endif %}
                                 }
                             },
