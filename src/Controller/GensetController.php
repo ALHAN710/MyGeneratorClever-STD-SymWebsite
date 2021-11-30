@@ -845,7 +845,8 @@ class GensetController extends ApplicationController
 
                 if (!$isNew) {
                     $BATT = "MINB"; // 0
-                    $MAINS = "MAIAB"; // 1
+                    $MAINAB = "MAIAB"; // 1
+                    $MAINPR = "MAIPR"; // 1
                     $SPEED = "OVSPD"; // 2
                     $LOAD = "OVLOD"; // 3
                     $VOLT = "MINV"; // 4
@@ -868,13 +869,25 @@ class GensetController extends ApplicationController
                         );
                     }
                     if ($oldData->getCr()  === 1 && $paramJSON['CR']  === 0) {
-                        $mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$MAINS}\",\"date\":\"{$paramJSON['date1']}\"}";
+                        $mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                        //$mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward(
                             'App\Controller\GensetController::sendToAlarmController',
                             [
-                                'mess' => $mess,
+                                'mess'   => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]
+                        );
+                    }
+                    if ($oldData->getCr()  === 0 && $paramJSON['CR']  === 1) {
+                        $mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                        $response = $this->forward(
+                            'App\Controller\GensetController::sendToAlarmController',
+                            [
+                                'mess'   => $mess,
                                 'modId'  => $smartMod->getModuleId(),
                             ]
                         );
@@ -932,7 +945,7 @@ class GensetController extends ApplicationController
                         //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                         $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
+                            'mess'   => $mess,
                             'modId'  => $smartMod->getModuleId(),
                         ]);
                     }
@@ -1126,10 +1139,10 @@ class GensetController extends ApplicationController
                     else $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                foreach ($site->getContacts() as $contact) {
+                /*foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }
+                }*/
 
                 $adminUsers = [];
                 $Users = $manager->getRepository('App:User')->findAll();
