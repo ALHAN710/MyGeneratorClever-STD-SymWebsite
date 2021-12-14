@@ -1139,10 +1139,10 @@ class GensetController extends ApplicationController
                     else $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                /*foreach ($site->getContacts() as $contact) {
+                foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }*/
+                }
 
                 $adminUsers = [];
                 $Users = $manager->getRepository('App:User')->findAll();
