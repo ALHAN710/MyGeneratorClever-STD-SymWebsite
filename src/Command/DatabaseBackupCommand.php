@@ -95,7 +95,7 @@ class DatabaseBackupCommand extends Command
         }
 
         //dd($this->managerRegistry->getConnection());
-
+        //0 0 * * * php /var/www//html/STD-PowerMonitor-SymWebsite/bin/console app:database-backup
         $databaseConnection = $this->managerRegistry->getConnection();
 
         [
@@ -213,7 +213,7 @@ class DatabaseBackupCommand extends Command
 
             $command = [
                 //'sudo',
-                '/home/admin/sendEmail_DatabaseBackup.sh',
+                '/home/admin-std/sendEmail_DatabaseBackup.sh',
                 "{$backupFilePath}",
 
             ];
