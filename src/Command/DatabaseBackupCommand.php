@@ -213,7 +213,8 @@ class DatabaseBackupCommand extends Command
 
             $command = [
                 //'sudo',
-                '/home/admin-std/sendEmail_DatabaseBackup.sh',
+                //'/home/admin-std/sendEmail_DatabaseBackup.sh',
+                '/home/admin-std/scpSend_DatabaseBackup.sh',
                 "{$backupFilePath}",
 
             ];
@@ -260,16 +261,16 @@ class DatabaseBackupCommand extends Command
         $str = $backupFilePath;
         // $str = str_replace($this->projectDirectory, "", $backupFilePath);
         //dd($str);
-        $object  = 'KnD Factures Database Backup';
+        $object  = 'STD Technical Monitoring Database Backup Database Backup';
         $message = "Le " . date('d/m/Y H:i:s') . " GMT+000
 
 Cher Administrateur,
 
-Ci-joint le fichier de sauvegarde de la base de donnée de l'application web KnD Factures.
+Ci-joint le fichier de sauvegarde de la base de donnée de l'application web STD Technical Monitoring Database Backup.
 
 Cordialement.
 
-L'équipe KnD Factures";
+L'équipe Clever Electric Technologies";
 
         //$adminUsers = [];
         $Users = $this->manager->getRepository('App:User')->findAll();
