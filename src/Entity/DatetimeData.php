@@ -73,6 +73,11 @@ class DatetimeData
      */
     private $dateTime;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $fuelLevel;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -206,6 +211,18 @@ class DatetimeData
     public function setDateTime(\DateTimeInterface $dateTime): self
     {
         $this->dateTime = $dateTime;
+
+        return $this;
+    }
+
+    public function getFuelLevel(): ?float
+    {
+        return $this->fuelLevel;
+    }
+
+    public function setFuelLevel(?float $fuelLevel): self
+    {
+        $this->fuelLevel = $fuelLevel;
 
         return $this;
     }

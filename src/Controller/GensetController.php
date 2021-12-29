@@ -1081,6 +1081,13 @@ class GensetController extends ApplicationController
                     if (array_key_exists("TRH", $paramJSON)) {
                         $datetimeData->setTotalRunningHours($paramJSON['TRH']);
                     }
+
+                    $fuelLevel = 0.0;
+                    $noDatetimeData = $smartMod->getNoDatetimeData();
+                    if ($noDatetimeData) {
+                        $fuelLevel = $noDatetimeData->getFuelLevel() ?? 0;
+                    }
+                    $datetimeData->setFuelLevel($fuelLevel);
                 }
 
                 // //dump($datetimeData);
