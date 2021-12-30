@@ -1061,66 +1061,72 @@ class GensetController extends ApplicationController
                 //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
                 //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                 $date = new DateTime('now');
+                $minute = intval($date->format('i'));
                 // //dump($date);
                 //die();
+                // $isTrue = 'No';
 
-                if ($smartMod->getModType() == 'FUEL') {
-                    //Paramétrage des champs de la nouvelle DatetimeData aux valeurs contenues dans la requête du module
-                    $datetimeData->setDateTime($date)
-                        ->setSmartMod($smartMod);
-                    if (array_key_exists("P3ph", $paramJSON)) {
-                        //$datetimeData->setPmax3ph($paramJSON['P3ph'][0])
-                    }
-                    if (array_key_exists("P", $paramJSON)) {
-                        $datetimeData->setP($paramJSON['P']);
-                    }
-                    if (array_key_exists("Q3ph", $paramJSON)) {
-                        //$datetimeData->setQmax3ph($paramJSON['Q3ph'][0])
-                    }
-                    if (array_key_exists("Q", $paramJSON)) {
-                        $datetimeData->setQ($paramJSON['Q']);
-                    }
-                    if (array_key_exists("S", $paramJSON)) {
-                        $datetimeData->setS($paramJSON['S']);
-                    }
-                    if (array_key_exists("Cosfi", $paramJSON)) {
-                        $datetimeData->setCosfi($paramJSON['Cosfi']);
-                    }
-                    if (array_key_exists("EL", $paramJSON)) {
-                        $datetimeData->setTotalEnergy($paramJSON['EL']);
-                    }
-                    if (array_key_exists("FuelInstConsumption", $paramJSON)) {
-                        $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption'] / 256.0);
-                    }
-                    if (array_key_exists("NPS", $paramJSON)) {
-                        $datetimeData->setNbPerformedStartUps($paramJSON['NPS']);
-                    }
-                    if (array_key_exists("NMI", $paramJSON)) {
-                        $datetimeData->setNbMainsInterruption($paramJSON['NMI']);
-                    }
-                    if (array_key_exists("TRH", $paramJSON)) {
-                        $datetimeData->setTotalRunningHours($paramJSON['TRH']);
-                    }
+                if ($minute % 2 == 0) {
+                    // $isTrue = 'Yes';
+                    if ($smartMod->getModType() == 'FUEL') {
+                        //Paramétrage des champs de la nouvelle DatetimeData aux valeurs contenues dans la requête du module
+                        $datetimeData->setDateTime($date)
+                            ->setSmartMod($smartMod);
+                        if (array_key_exists("P3ph", $paramJSON)) {
+                            //$datetimeData->setPmax3ph($paramJSON['P3ph'][0])
+                        }
+                        if (array_key_exists("P", $paramJSON)) {
+                            $datetimeData->setP($paramJSON['P']);
+                        }
+                        if (array_key_exists("Q3ph", $paramJSON)) {
+                            //$datetimeData->setQmax3ph($paramJSON['Q3ph'][0])
+                        }
+                        if (array_key_exists("Q", $paramJSON)) {
+                            $datetimeData->setQ($paramJSON['Q']);
+                        }
+                        if (array_key_exists("S", $paramJSON)) {
+                            $datetimeData->setS($paramJSON['S']);
+                        }
+                        if (array_key_exists("Cosfi", $paramJSON)) {
+                            $datetimeData->setCosfi($paramJSON['Cosfi']);
+                        }
+                        if (array_key_exists("EL", $paramJSON)) {
+                            $datetimeData->setTotalEnergy($paramJSON['EL']);
+                        }
+                        if (array_key_exists("FuelInstConsumption", $paramJSON)) {
+                            $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption'] / 256.0);
+                        }
+                        if (array_key_exists("NPS", $paramJSON)) {
+                            $datetimeData->setNbPerformedStartUps($paramJSON['NPS']);
+                        }
+                        if (array_key_exists("NMI", $paramJSON)) {
+                            $datetimeData->setNbMainsInterruption($paramJSON['NMI']);
+                        }
+                        if (array_key_exists("TRH", $paramJSON)) {
+                            $datetimeData->setTotalRunningHours($paramJSON['TRH']);
+                        }
 
-                    $fuelLevel = 0.0;
-                    $noDatetimeData = $smartMod->getNoDatetimeData();
-                    if ($noDatetimeData) {
-                        $fuelLevel = $noDatetimeData->getFuelLevel() ?? 0;
+                        $fuelLevel = 0.0;
+                        $noDatetimeData = $smartMod->getNoDatetimeData();
+                        if ($noDatetimeData) {
+                            $fuelLevel = $noDatetimeData->getFuelLevel() ?? 0;
+                        }
+                        $datetimeData->setFuelLevel($fuelLevel);
                     }
-                    $datetimeData->setFuelLevel($fuelLevel);
+                    // //dump($datetimeData);
+                    //die();
+                    //Insertion de la nouvelle datetimeData dans la BDD
+                    $manager->persist($datetimeData);
+                    $manager->flush();
                 }
 
-                // //dump($datetimeData);
-                //die();
-                //Insertion de la nouvelle datetimeData dans la BDD
-                $manager->persist($datetimeData);
-                $manager->flush();
+                // MOD(MINUTE(`date_time`), 2) <> 0
             }
 
             return $this->json([
                 'code' => 200,
-                'received' => $paramJSON
-
+                'received' => $paramJSON,
+                // 'isTrue'   => $isTrue
             ], 200);
         }
         return $this->json([
