@@ -11,6 +11,7 @@ use App\Entity\Contacts;
 use Symfony\Component\Mime\Email;
 use App\Message\UserNotificationMessage;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Notifier\TexterInterface;
 use Symfony\Component\Notifier\Message\SmsMessage;
@@ -51,7 +52,8 @@ class UserNotificationHandler implements MessageHandlerInterface
                 $object = 'Alerte ' . $notifMessage->getObject();
                 $to = $contact->getEmail();
                 //if ($to) {
-                $email = (new Email())
+                // $email = (new Email())
+                $email = (new TemplatedEmail())
                     ->from('stdigital.powermon.alerts@gmail.com')
                     ->to($to)
                     //->addTo('cabrelmbakam@gmail.com')
@@ -60,8 +62,15 @@ class UserNotificationHandler implements MessageHandlerInterface
                     //->replyTo('fabien@example.com')
                     //->priority(Email::PRIORITY_HIGH)
                     ->subject($object)
-                    ->text($notifMessage->getMessage());
-                //->html('<p>See Twig integration for better HTML integration!</p>');
+                    // ->text($notifMessage->getMessage());
+                    //->html('<p>See Twig integration for better HTML integration!</p>');
+                    ->htmlTemplate('email/email_base.html.twig')
+                    ->context([
+                        // You can pass whatever data you want
+                        'message'  => $notifMessage->getMessage(),
+                        'userName' => $contact->getFirstName(),
+                        'object'   => $notifMessage->getObject()
+                    ]);
 
                 //sleep(10);
                 $this->mailer->send($email);
