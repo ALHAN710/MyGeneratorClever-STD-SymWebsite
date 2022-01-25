@@ -217,8 +217,8 @@ class ZoneController extends ApplicationController
                 // $manager->persist($zone);
                 //$manager->persist($user);
             }
-            dump($zone);
-            dd($zone->getSite());
+            //dump($zone);
+            //dd($zone->getSite());
             $manager->persist($zone);
             //die();
             $manager->flush();
