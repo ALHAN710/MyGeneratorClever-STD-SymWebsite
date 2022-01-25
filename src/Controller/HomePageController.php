@@ -157,17 +157,17 @@ class HomePageController extends ApplicationController
     {
         $user = $this->getUser();
         if ($user->getRoles()[0] === 'ROLE_CUSTOMER') {
-            $sites = $user->getSites();
-            if (count($sites) > 0) {
-                $zones = $sites[0]->getZones();
-                if (count($zones) > 0) {
-                    return $this->redirectToRoute('home_zone', ['smartMod' => $zones[0]->getId(), 'zone' => $zones[0]->getId()]);
-                    /*$smartMod = count($zones[0]->getSmartMods()) > 0 ? $zones[0]->getSmartMods()[0] : null;
+            // $sites = $user->getSites();
+            // if (count($sites) > 0) {
+            $zones = $user->getZones();
+            if (count($zones) > 0) {
+                return $this->redirectToRoute('home_zone', ['smartMod' => $zones[0]->getId(), 'zone' => $zones[0]->getId()]);
+                /*$smartMod = count($zones[0]->getSmartMods()) > 0 ? $zones[0]->getSmartMods()[0] : null;
                     if ($smartMod !== null) return $this->redirectToRoute('load_meter', ['smartMod' => $smartMod->getId(), 'zone' => $zones[0]->getId()]);
                     throw $this->createNotFoundException('No modules found');*/
-                }
-                throw $this->createNotFoundException('No zones found');
             }
+            throw $this->createNotFoundException('No zones found');
+            // }
             throw $this->createNotFoundException('No sites found');
         } else if ($user->getRoles()[0] === 'ROLE_NOC_SUPERVISOR') {
             $sites = $user->getSites();
