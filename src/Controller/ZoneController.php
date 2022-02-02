@@ -1293,7 +1293,7 @@ class ZoneController extends ApplicationController
                         return number_format((float) ($a - $b), 2, '.', '');
                     }, $totalEA, $productionEA);*/
                     // dump($diffEnergy);
-                } else if ($zone->getType() === 'PUE Calculation') {
+                } else if ($zone->getType() === 'No PUE Calculation') {
                     foreach ($zone->getSmartMods() as $smartMod) {
                         if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
                             $EA_flow[$smartMod->getId()]   = 0.00;
