@@ -149,7 +149,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();*/
-        $firstDatetimeDataDayRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+        /*+$firstDatetimeDataDayRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
                                         MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -160,7 +160,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m-d") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
         // // dump($firstDatetimeDataDayRecord);
         /*$lastDatetimeDataDayRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
                                         d.nbPerformedStartUps AS NPS
@@ -174,7 +174,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();*/
-        $lastDatetimeDataDayRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+        /*+$lastDatetimeDataDayRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
                                         MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -185,21 +185,44 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m-d") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
         // // dump($lastDatetimeDataDayRecord);
+
+        $diffDatadayRecordQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y-m-d") . "%",
+                // 'nowDate'      => "2022-02-06%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffDatadayRecordQuery);
         $npsd = 0;
         $trhd = 0;
         $tepd = 0;
-        if (count($firstDatetimeDataDayRecord) && count($lastDatetimeDataDayRecord)) {
-            $npsd = intval($lastDatetimeDataDayRecord[0]['NPS']) - intval($firstDatetimeDataDayRecord[0]['NPS']);
-            $trhd = intval($lastDatetimeDataDayRecord[0]['TRH']) - intval($firstDatetimeDataDayRecord[0]['TRH']);
-            $tepd = intval($lastDatetimeDataDayRecord[0]['TEP']) - intval($firstDatetimeDataDayRecord[0]['TEP']);
-            // // dump($npsd);
-            // // dump($trhd);
-            // // dump($tepd);
+        // if (count($firstDatetimeDataDayRecord) && count($lastDatetimeDataDayRecord)) {
+        if (count($diffDatadayRecordQuery) > 0) {
+            $npsd = intval($diffDatadayRecordQuery[0]['NPS'] ?? 0);
+            $trhd = intval($diffDatadayRecordQuery[0]['TRH'] ?? 0);
+            $tepd = intval($diffDatadayRecordQuery[0]['TEP'] ?? 0);
+            // $npsd = intval($lastDatetimeDataDayRecord[0]['NPS']) - intval($firstDatetimeDataDayRecord[0]['NPS']);
+            // $trhd = intval($lastDatetimeDataDayRecord[0]['TRH']) - intval($firstDatetimeDataDayRecord[0]['TRH']);
+            // $tepd = intval($lastDatetimeDataDayRecord[0]['TEP']) - intval($firstDatetimeDataDayRecord[0]['TEP']);
+            // dump($npsd);
+            // dump($trhd);
+            // dump($tepd);
         }
 
-        $firstDatetimeDataMonthRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+        /*$firstDatetimeDataMonthRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
                                         MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -210,7 +233,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
         // // dump($firstDatetimeDataMonthRecord);
 
         /*$lastDatetimeDataMonthRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -225,7 +248,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();*/
-        $lastDatetimeDataMonthRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+        /*$lastDatetimeDataMonthRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
                                         MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -236,19 +259,41 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y-m") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
 
         // // dump($lastDatetimeDataMonthRecord);
+
+        $diffDataMonthRecordQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y-m") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffDataMonthRecordQuery);
         $npsm = 0;
         $trhm = 0;
         $tepm = 0;
-        if (count($firstDatetimeDataMonthRecord) && count($lastDatetimeDataMonthRecord)) {
-            $npsm = intval($lastDatetimeDataMonthRecord[0]['NPS']) - intval($firstDatetimeDataMonthRecord[0]['NPS']);
-            $trhm = intval($lastDatetimeDataMonthRecord[0]['TRH']) - intval($firstDatetimeDataMonthRecord[0]['TRH']);
-            $tepm = intval($lastDatetimeDataMonthRecord[0]['TEP']) - intval($firstDatetimeDataMonthRecord[0]['TEP']);
-            // // dump($npsm);
-            // // dump($trhm);
-            // // dump($tepm);
+        if (count($diffDataMonthRecordQuery) > 0) {
+            // if (count($firstDatetimeDataMonthRecord) && count($lastDatetimeDataMonthRecord)) {
+            $npsm = intval($diffDataMonthRecordQuery[0]['NPS'] ?? 0);
+            $trhm = intval($diffDataMonthRecordQuery[0]['TRH'] ?? 0);
+            $tepm = intval($diffDataMonthRecordQuery[0]['TEP'] ?? 0);
+            // $npsm = intval($lastDatetimeDataMonthRecord[0]['NPS']) - intval($firstDatetimeDataMonthRecord[0]['NPS']);
+            // $trhm = intval($lastDatetimeDataMonthRecord[0]['TRH']) - intval($firstDatetimeDataMonthRecord[0]['TRH']);
+            // $tepm = intval($lastDatetimeDataMonthRecord[0]['TEP']) - intval($firstDatetimeDataMonthRecord[0]['TEP']);
+            // dump($npsm);
+            // dump($trhm);
+            // dump($tepm);
         }
 
         /*$firstDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -263,7 +308,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();*/
-        $firstDatetimeDataYearRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+        /*+$firstDatetimeDataYearRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalRunningHours,0)) AS TRH, MIN(NULLIF(d.totalEnergy,0)) AS TEP,
                                         MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -274,7 +319,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
 
         // //dump($firstDatetimeDataYearRecord);
         /*$lastDatetimeDataYearRecord = $manager->createQuery("SELECT d.totalRunningHours AS TRH, d.totalEnergy AS TEP,
@@ -289,7 +334,7 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();*/
-        $lastDatetimeDataYearRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
+        /*+$lastDatetimeDataYearRecord = $manager->createQuery("SELECT MAX(d.totalRunningHours) AS TRH, MAX(d.totalEnergy) AS TEP,
                                         MAX(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -300,24 +345,45 @@ class GensetController extends ApplicationController
                 'nowDate'      => date("Y") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
         // //dump($lastDatetimeDataYearRecord);
+
+        $diffDataYearRecordQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => date("Y") . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffDataYearRecordQuery);
 
         $npsy = 0;
         $trhy = 0;
         $tepy = 0;
-        if (count($firstDatetimeDataYearRecord) && count($lastDatetimeDataYearRecord)) {
-            $npsy = intval($lastDatetimeDataYearRecord[0]['NPS']) - intval($firstDatetimeDataYearRecord[0]['NPS']);
-            $trhy = intval($lastDatetimeDataYearRecord[0]['TRH']) - intval($firstDatetimeDataYearRecord[0]['TRH']);
-            $tepy = intval($lastDatetimeDataYearRecord[0]['TEP']) - intval($firstDatetimeDataYearRecord[0]['TEP']);
-            // // dump($npsy);
-            // // dump($trhy);
-            // // dump($tepy);
+        if (count($diffDataYearRecordQuery) > 0) {
+            $npsy = intval($diffDataYearRecordQuery[0]['NPS'] ?? 0);
+            $trhy = intval($diffDataYearRecordQuery[0]['TRH'] ?? 0);
+            $tepy = intval($diffDataYearRecordQuery[0]['TEP'] ?? 0);
+            // $npsy = intval($lastDatetimeDataYearRecord[0]['NPS']) - intval($firstDatetimeDataYearRecord[0]['NPS']);
+            // $trhy = intval($lastDatetimeDataYearRecord[0]['TRH']) - intval($firstDatetimeDataYearRecord[0]['TRH']);
+            // $tepy = intval($lastDatetimeDataYearRecord[0]['TEP']) - intval($firstDatetimeDataYearRecord[0]['TEP']);
+            // dump($npsy);
+            // dump($trhy);
+            // dump($tepy);
         }
         // //dump($lastRecord);
 
         $poe = [];
-        $FCD = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
+        /*+$FCD = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
                                     FROM App\Entity\DatetimeData d
                                     JOIN d.smartMod sm 
                                     WHERE d.dateTime LIKE :nowDate
@@ -332,8 +398,16 @@ class GensetController extends ApplicationController
         // //dump($FCD);
         if ($tepd > 0) $poe[] = ($FCD[0]['FC'] * 1.0) / $tepd;
         else $poe[] = 0;
+        */
+        $startDate = new DateTime(date('Y-m-d') . ' 00:00:00');
+        $endDate = new DateTime(date('Y-m-d') . ' 23:59:59');
+        $FCD = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($FCD);
+        $gensetCapacity = 60;
+        if ($tepd > 0) $poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepd;
+        else $poe[] = 0;
 
-        $FCM = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
+        /*$FCM = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
                                     FROM App\Entity\DatetimeData d
                                     JOIN d.smartMod sm 
                                     WHERE d.dateTime LIKE :nowDate
@@ -347,6 +421,16 @@ class GensetController extends ApplicationController
             ->getResult();
         // // dump($FCM);
         if ($tepm > 0) $poe[] = ($FCM[0]['FC'] * 1.0) / $tepm;
+        else $poe[] = 0;
+        */
+        $startDate = new DateTime(date('Y-m-01') . ' 00:00:00');
+        // dump($startDate);
+        $endDate = new DateTime(date('Y-m-t') . ' 23:59:59');
+        // dump($endDate);
+        $FCM = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($FCM);
+
+        if ($tepm > 0) $poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepm;
         else $poe[] = 0;
 
         $FCY = $manager->createQuery("SELECT AVG(NULLIF(d.fuelInstConsumption, 0)) AS FC
@@ -363,6 +447,16 @@ class GensetController extends ApplicationController
             ->getResult();
         // // dump($FCY);
         if ($tepy > 0) $poe[] = ($FCY[0]['FC'] * 1.0) / $tepy;
+        else $poe[] = 0;
+
+        $startDate = new DateTime(date('Y-01-01') . ' 00:00:00');
+        // dump($startDate);
+        $endDate = new DateTime(date('Y-12-31') . ' 23:59:59');
+        // dump($endDate);
+        $FCY = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($FCY);
+
+        if ($tepy > 0) $poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepy;
         else $poe[] = 0;
 
         $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $id->getId()]) ?? new NoDatetimeData();
@@ -470,6 +564,26 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
+
+        $diffprecDayTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $yesterday->format('Y-m-d') . "%",
+                // 'nowDate'      => "2022-02-06%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffprecDayTEPQuery);
+
         $prevMonthFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -492,6 +606,25 @@ class GensetController extends ApplicationController
                 'smartModId'   => $id->getId()
             ))
             ->getResult();
+
+        $diffprecMonthTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastMonth->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffprecMonthTEPQuery);
+
         $prevYearFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
@@ -515,28 +648,79 @@ class GensetController extends ApplicationController
             ))
             ->getResult();
 
+        $diffprecYearTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
+                                        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime LIKE :nowDate
+                                        AND sm.id = :smartModId  
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
+                                        ")
+            ->setParameters(array(
+                'nowDate'      => $lastYear->format('Y-m-d') . "%",
+                'smartModId'   => $id->getId()
+            ))
+            ->getResult();
+        // dump($diffprecYearTEPQuery);
+
         $prev_tepd = 0;
-        if (count($precDayLastTEPRecord) && count($precDayFirstTEPRecord)) {
-            $prev_tepd = intval($precDayFirstTEPRecord[0]['TEP']) - intval($precDayLastTEPRecord[0]['TEP']);
+        // if (count($precDayLastTEPRecord) && count($precDayFirstTEPRecord)) {
+        if (count($diffprecDayTEPQuery) > 0) {
+            $prev_tepd = intval($diffprecDayTEPQuery[0]['TEP'] ?? 0);
+            // $prev_tepd = intval($precDayFirstTEPRecord[0]['TEP']) - intval($precDayLastTEPRecord[0]['TEP']);
             // dump($prev_tepd);
         }
         $prev_tepm = 0;
-        if (count($prevMonthFirstTEPRecord) && count($prevMonthLastTEPRecord)) {
-            $prev_tepm = intval($prevMonthLastTEPRecord[0]['TEP']) - intval($prevMonthFirstTEPRecord[0]['TEP']);
+        // if (count($prevMonthFirstTEPRecord) && count($prevMonthLastTEPRecord)) {
+        if (count($diffprecMonthTEPQuery) > 0) {
+            $prev_tepm = intval($diffprecMonthTEPQuery[0]['TEP'] ?? 0);
+            // $prev_tepm = intval($prevMonthLastTEPRecord[0]['TEP']) - intval($prevMonthFirstTEPRecord[0]['TEP']);
             // dump($prev_tepm);
         }
         $prev_tepy = 0;
-        if (count($prevYearFirstTEPRecord) && count($prevYearLastTEPRecord)) {
-            $prev_tepy = intval($prevYearLastTEPRecord[0]['TEP']) - intval($prevYearFirstTEPRecord[0]['TEP']);
+        // if (count($prevYearFirstTEPRecord) && count($prevYearLastTEPRecord)) {
+        if (count($diffprecYearTEPQuery) > 0) {
+            $prev_tepy = intval($diffprecYearTEPQuery[0]['TEP'] ?? 0);
+            // $prev_tepy = intval($prevYearLastTEPRecord[0]['TEP']) - intval($prevYearFirstTEPRecord[0]['TEP']);
             // dump($prev_tepy);
         }
 
+        $startDate = new DateTime($yesterday->format('Y-m-d') . ' 00:00:00');
+        // dump($startDate);
+        $endDate = new DateTime($yesterday->format('Y-m-d') . ' 23:59:59');
+        // dump($endDate);
+        $prevFCD = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($prevFCD);
+
+        $startDate = new DateTime($lastMonth->format('Y-m-01') . ' 00:00:00');
+        // dump($startDate);
+        $endDate = new DateTime($lastMonth->format('Y-m-t') . ' 23:59:59');
+        // dump($endDate);
+        $prevFCM = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($prevFCM);
+
+        $startDate = new DateTime($lastYear->format('Y-01-01') . ' 00:00:00');
+        // dump($startDate);
+        $endDate = new DateTime($lastYear->format('Y-12-31') . ' 23:59:59');
+        // dump($endDate);
+        $prevFCY = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
+        // dump($prevFCY);
+
         $prev_poe = [];
-        if ($prev_tepd > 0) $prev_poe[] = ($FCD[0]['FC'] * 1.0) / $prev_tepd;
+        /*if ($prev_tepd > 0) $prev_poe[] = ($FCD[0]['FC'] * 1.0) / $prev_tepd;
         else $prev_poe[] = 0;
         if ($prev_tepm > 0) $prev_poe[] = ($FCM[0]['FC'] * 1.0) / $prev_tepm;
         else $prev_poe[] = 0;
         if ($prev_tepy > 0) $prev_poe[] = ($FCY[0]['FC'] * 1.0) / $prev_tepy;
+        else $prev_poe[] = 0;*/
+        if ($prev_tepd > 0) $prev_poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepd;
+        else $prev_poe[] = 0;
+        if ($prev_tepm > 0) $prev_poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepm;
+        else $prev_poe[] = 0;
+        if ($prev_tepy > 0) $prev_poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepy;
         else $prev_poe[] = 0;
         // dump($prev_poe);
 
@@ -550,9 +734,9 @@ class GensetController extends ApplicationController
             //'Cosfi'    => $lastRecord[0]['Cosfi'] ?? 0,
             'NMI'   => [$NMIDay[0]['NMID'] ?? 0, $NMIMonth[0]['NMIM'] ?? 0, $NMIYear[0]['NMIY'] ?? 0],
             'NPS'   => [$npsd, $npsm, $npsy],
-            'TEP'    => [$lastRecord[0]['TEP'] ?? 0, $tepd, $tepm, $tepy],
-            'TRH'    => [$lastRecord[0]['TRH'] ?? 0, $trhd, $trhm, $trhy],
-            'FC'    => [$FCD[0]['FC'] ?? 0, $FCM[0]['FC'] ?? 0, $FCY[0]['FC'] ?? 0],
+            'TEP'    => [$tepd, $tepm, $tepy],
+            'TRH'    => [$trhd, $trhm, $trhy],
+            'FC'    => [$FCD['currentConsoFuel'] * $gensetCapacity ?? 0, $FCM['currentConsoFuel'] * $gensetCapacity ?? 0, $FCY['currentConsoFuel'] * $gensetCapacity ?? 0],
             'POE'   => $poe,
             'prevPOE' => $prev_poe,
             //'Freq'    => $noDatetimeData->getFreq() ?? 0,
@@ -634,12 +818,31 @@ class GensetController extends ApplicationController
         //die();
         //$dat = $dat . '%';
 
-        $Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
+        /*$Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) AS TRH, 
                                         MAX(d.totalEnergy) - MIN(NULLIF(d.totalEnergy, 0)) AS TEP, AVG(NULLIF(d.fuelInstConsumption, 0))*( MAX(d.totalRunningHours) - MIN(NULLIF(d.totalRunningHours, 0)) ) AS FC
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime BETWEEN :startDate AND :endDate
                                         AND sm.id = :smartModId
+                                        GROUP BY jour
+                                        ORDER BY jour ASC                       
+                                        ")
+            ->setParameters(array(
+                //'selDate'      => $dat,
+                'startDate'    => $startDate->format('Y-m-d H:i:s'),
+                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                'smartModId'   => $smartMod->getId()
+            ))
+            ->getResult();*/
+        $Energy = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 10) AS jour, MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
+                                        MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP
+                                        FROM App\Entity\DatetimeData d
+                                        JOIN d.smartMod sm 
+                                        WHERE d.dateTime BETWEEN :startDate AND :endDate
+                                        AND sm.id = :smartModId
+                                        AND d.totalRunningHours <> 853                 
+                                        AND d.totalEnergy <> 33370                 
+                                        AND d.nbPerformedStartUps <> 637                 
                                         GROUP BY jour
                                         ORDER BY jour ASC                       
                                         ")
@@ -656,7 +859,7 @@ class GensetController extends ApplicationController
             $dateE[] = $d['jour'];
             $TRH[] = number_format((float) $d['TRH'], 2, '.', '');
             $TEP[] = number_format((float) $d['TEP'], 2, '.', '');
-            $FC[] = number_format((float) $d['FC'], 2, '.', '') ?? 0;
+            //$FC[] = number_format((float) $d['FC'], 2, '.', '') ?? 0;
         }
 
 
@@ -680,7 +883,7 @@ class GensetController extends ApplicationController
                 //'selDate'      => $dateparam,
                 'startDate'   => $startDate,
                 'endDate'     => $endDate,
-                'genpower'  => $smartMod->getPower(),
+                'genpower'    => $smartMod->getPower(),
                 'smartModId'  => $smartMod->getId()
             ))
             ->getResult();
@@ -694,12 +897,18 @@ class GensetController extends ApplicationController
             //$Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
         }
 
+        $FC = $this->getConsoFuelData($manager, $smartMod, $startDate, $endDate);
+
+        // dump($FC);
+
         return $this->json([
             'code'         => 200,
             //'startDate'    => $startDate,
             //'endDate'      => $endDate,
             'date'         => $date,
-            'Mix1'            => [$TRH, $TEP, $FC],
+            'Mix1'            => [$TRH, $TEP],
+            'dateFuelConso'   => $FC['dayBydayConsoData']['dateConso'],
+            'Mix2'            => $FC['dayBydayConsoData']['consoFuel'],
             //'Mix2'            => [$S, $P, $Cosfi],
             'Load_Level'    => $S,
             // 'S3ph'         => $S3ph,
@@ -1060,64 +1269,68 @@ class GensetController extends ApplicationController
             if (array_key_exists("date", $paramJSON)) {
                 //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
                 //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-                $date = new DateTime('now');
-                $minute = intval($date->format('i'));
-                // //dump($date);
-                //die();
-                // $isTrue = 'No';
+                if (array_key_exists("EL", $paramJSON) && array_key_exists("TRH", $paramJSON) && array_key_exists("NPS", $paramJSON)) {
+                    if ((intval($paramJSON["EL"]) !== 33370) && (intval($paramJSON["TRH"]) !== 853) && (intval($paramJSON["NPS"]) !== 637)) {
+                        $date = new DateTime('now');
+                        $minute = intval($date->format('i'));
+                        // //dump($date);
+                        //die();
+                        // $isTrue = 'No';
 
-                if ($minute % 2 == 0) {
-                    // $isTrue = 'Yes';
-                    if ($smartMod->getModType() == 'FUEL') {
-                        //Paramétrage des champs de la nouvelle DatetimeData aux valeurs contenues dans la requête du module
-                        $datetimeData->setDateTime($date)
-                            ->setSmartMod($smartMod);
-                        if (array_key_exists("P3ph", $paramJSON)) {
-                            //$datetimeData->setPmax3ph($paramJSON['P3ph'][0])
-                        }
-                        if (array_key_exists("P", $paramJSON)) {
-                            $datetimeData->setP($paramJSON['P']);
-                        }
-                        if (array_key_exists("Q3ph", $paramJSON)) {
-                            //$datetimeData->setQmax3ph($paramJSON['Q3ph'][0])
-                        }
-                        if (array_key_exists("Q", $paramJSON)) {
-                            $datetimeData->setQ($paramJSON['Q']);
-                        }
-                        if (array_key_exists("S", $paramJSON)) {
-                            $datetimeData->setS($paramJSON['S']);
-                        }
-                        if (array_key_exists("Cosfi", $paramJSON)) {
-                            $datetimeData->setCosfi($paramJSON['Cosfi']);
-                        }
-                        if (array_key_exists("EL", $paramJSON)) {
-                            $datetimeData->setTotalEnergy($paramJSON['EL']);
-                        }
-                        if (array_key_exists("FuelInstConsumption", $paramJSON)) {
-                            $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption'] / 256.0);
-                        }
-                        if (array_key_exists("NPS", $paramJSON)) {
-                            $datetimeData->setNbPerformedStartUps($paramJSON['NPS']);
-                        }
-                        if (array_key_exists("NMI", $paramJSON)) {
-                            $datetimeData->setNbMainsInterruption($paramJSON['NMI']);
-                        }
-                        if (array_key_exists("TRH", $paramJSON)) {
-                            $datetimeData->setTotalRunningHours($paramJSON['TRH']);
-                        }
+                        if ($minute % 2 == 0) {
+                            // $isTrue = 'Yes';
+                            if ($smartMod->getModType() == 'FUEL') {
+                                //Paramétrage des champs de la nouvelle DatetimeData aux valeurs contenues dans la requête du module
+                                $datetimeData->setDateTime($date)
+                                    ->setSmartMod($smartMod);
+                                if (array_key_exists("P3ph", $paramJSON)) {
+                                    //$datetimeData->setPmax3ph($paramJSON['P3ph'][0])
+                                }
+                                if (array_key_exists("P", $paramJSON)) {
+                                    $datetimeData->setP($paramJSON['P']);
+                                }
+                                if (array_key_exists("Q3ph", $paramJSON)) {
+                                    //$datetimeData->setQmax3ph($paramJSON['Q3ph'][0])
+                                }
+                                if (array_key_exists("Q", $paramJSON)) {
+                                    $datetimeData->setQ($paramJSON['Q']);
+                                }
+                                if (array_key_exists("S", $paramJSON)) {
+                                    $datetimeData->setS($paramJSON['S']);
+                                }
+                                if (array_key_exists("Cosfi", $paramJSON)) {
+                                    $datetimeData->setCosfi($paramJSON['Cosfi']);
+                                }
+                                if (array_key_exists("EL", $paramJSON)) {
+                                    $datetimeData->setTotalEnergy($paramJSON['EL']);
+                                }
+                                if (array_key_exists("FuelInstConsumption", $paramJSON)) {
+                                    $datetimeData->setFuelInstConsumption($paramJSON['FuelInstConsumption'] / 256.0);
+                                }
+                                if (array_key_exists("NPS", $paramJSON)) {
+                                    $datetimeData->setNbPerformedStartUps($paramJSON['NPS']);
+                                }
+                                if (array_key_exists("NMI", $paramJSON)) {
+                                    $datetimeData->setNbMainsInterruption($paramJSON['NMI']);
+                                }
+                                if (array_key_exists("TRH", $paramJSON)) {
+                                    $datetimeData->setTotalRunningHours($paramJSON['TRH']);
+                                }
 
-                        $fuelLevel = 0.0;
-                        $noDatetimeData = $smartMod->getNoDatetimeData();
-                        if ($noDatetimeData) {
-                            $fuelLevel = $noDatetimeData->getFuelLevel() ?? 0;
+                                $fuelLevel = 0.0;
+                                $noDatetimeData = $smartMod->getNoDatetimeData();
+                                if ($noDatetimeData) {
+                                    $fuelLevel = $noDatetimeData->getFuelLevel() ?? 0;
+                                }
+                                $datetimeData->setFuelLevel($fuelLevel);
+                            }
+                            // //dump($datetimeData);
+                            //die();
+                            //Insertion de la nouvelle datetimeData dans la BDD
+                            $manager->persist($datetimeData);
+                            $manager->flush();
                         }
-                        $datetimeData->setFuelLevel($fuelLevel);
                     }
-                    // //dump($datetimeData);
-                    //die();
-                    //Insertion de la nouvelle datetimeData dans la BDD
-                    $manager->persist($datetimeData);
-                    $manager->flush();
                 }
 
                 // MOD(MINUTE(`date_time`), 2) <> 0
@@ -1208,5 +1421,168 @@ Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
         return $this->json([
             'code'         => 500,
         ], 500);
+    }
+
+    public function getConsoFuelData(EntityManagerInterface $manager, $smartMod, $startDate, $endDate)
+    {
+        $lastStartDate = new DateTime($startDate->format('Y-m-d H:i:s'));
+        $lastStartDate->sub(new DateInterval('P1M'));
+
+        $lastEndDate = new DateTime($endDate->format('Y-m-d H:i:s'));
+        $lastEndDate->sub(new DateInterval('P1M'));
+
+        // ========= Détermination de la longueur de la datetime =========
+        $length = 10; //Si endDate > startDate => regoupement des données par jour de la fenêtre de date
+        if ($endDate->format('Y-m-d') == $startDate->format('Y-m-d')) $length = 13; //Si endDate == startDate => regoupement des données par heure du jour choisi
+
+        // ######## Récupération des données de courbe pour le mois en cours ########
+        $dataQuery = $manager->createQuery("SELECT d.dateTime as dat, d.fuelLevel as FL
+                                        FROM App\Entity\DatetimeData d 
+                                        JOIN d.smartMod sm
+                                        WHERE d.dateTime BETWEEN :startDate AND :endDate
+                                        AND sm.id = :smartModId
+                                        ORDER BY dat ASC
+                                        ")
+            ->setParameters(array(
+                //'selDate'      => $dateparam,
+                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                'smartModId' => $smartMod->getId()
+            ))
+            ->getResult();
+        // dump($data);
+        // $FL   = [];
+        // $TRH  = [];
+        // $date = [];
+        $data = [];
+        foreach ($dataQuery as $d) {
+            // $date[]    = $d['dat']->format('Y-m-d H:i:s');
+            // $FL[]      = $d['FL'];
+            // $TRH[]     = $d['TRH'];
+            $data[$d['dat']->format('Y-m-d H:i:s')] = [
+                'FL'    => $d['FL'],
+                //'TRH'   => $d['TRH']
+            ];
+            //$Cosfi[]   = number_format((float) $d['cosfi'], 2, '.', '');
+        }
+        //dump($data);
+        $dayRecord = $manager->createQuery("SELECT SUBSTRING(d.dateTime,1,:length_) as dat
+                                        FROM App\Entity\DatetimeData d 
+                                        JOIN d.smartMod sm
+                                        WHERE d.dateTime BETWEEN :startDate AND :endDate
+                                        AND sm.id = :smartModId
+                                        GROUP BY dat
+                                        ORDER BY dat ASC
+                                        ")
+            ->setParameters(array(
+                'length_'    => $length,
+                'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                'smartModId' => $smartMod->getId(),
+            ))
+            ->getResult();
+
+        // dump($dayRecord);
+        $day = [];
+        foreach ($dayRecord as $d) {
+            $day[]    = $d['dat'];
+        }
+
+        $dataOrderByDay = []; //Tableau des valeurs jour après jour
+        foreach ($data as $key => $value) {
+            // dump($key);
+            foreach ($day as $index => $val) {
+                //dump($val);
+                if (strpos($key, $val) !== false) { // On vérifie si le la sous-chaîne du jour est contenue dans la date
+                    $dataOrderByDay[$val]['FL'][]  = $value['FL'];
+                    //$dataOrderByDay[$val]['TRH'][] = $value['TRH'];
+                }
+            }
+        }
+
+        $currentConsoFuel = 0;
+        $currentApproFuel = 0;
+
+        $consoFuelDayByDay = [];
+        $approFuelDayByDay = [];
+
+        $dureeDayByDay = [];
+
+        foreach ($dataOrderByDay as $key => $value) {
+            $consoFuel_ = 0;
+            $approFuel_ = 0;
+
+            //Données des courbe de consommation et approvisionnement jour après jour
+            if (array_key_exists('FL', $value)) {
+                $temp = $value['FL']; //Tableau tampon
+                if (count($temp) > 0) {
+                    for ($i = 0; $i < count($temp) - 1; $i++) {
+                        $diff = abs($temp[$i + 1] - $temp[$i]);
+                        if ($temp[$i + 1] >= $temp[$i]) {
+                            $approFuel_ += $diff;
+                        } else {
+                            $consoFuel_ += $diff;
+                        }
+                    }
+                }
+            }
+
+            $currentConsoFuel += $consoFuel_;
+            $currentApproFuel += $approFuel_;
+
+            $consoFuelDayByDay[] = number_format((float) $consoFuel_, 2, '.', '');
+            $approFuelDayByDay[] = number_format((float) $approFuel_, 2, '.', '');
+        }
+
+        // ######## Récupération des données de courbe pour le mois (n - 1) ########
+        $lastData = $manager->createQuery("SELECT d.dateTime as dat, d.fuelLevel as FL
+                                        FROM App\Entity\DatetimeData d 
+                                        JOIN d.smartMod sm
+                                        WHERE d.dateTime BETWEEN :lastStartDate AND :lastEndDate
+                                        AND sm.id = :smartModId
+                                        ORDER BY dat ASC
+                                        ")
+            ->setParameters(array(
+                //'selDate'      => $dateparam,
+                'lastStartDate' => $lastStartDate->format('Y-m') . '%',
+                'lastEndDate'   => $lastEndDate->format('Y-m-d H:i:s'),
+                'smartModId'    => $smartMod->getId()
+            ))
+            ->getResult();
+        // dump($lastData);
+        $FL   = [];
+        foreach ($lastData as $d) {
+            // $date[]    = $d['dat']->format('Y-m-d H:i:s');
+            $FL[]      = $d['FL'];
+        }
+
+        $lastConsoFuel = 0;
+        $lastApproFuel = 0;
+
+        if (count($FL) > 0) {
+            for ($i = 0; $i < count($FL) - 1; $i++) {
+                $diff = abs($FL[$i + 1] - $FL[$i]);
+                if ($FL[$i + 1] >= $FL[$i]) {
+                    $lastApproFuel += $diff;
+                } else {
+                    $lastConsoFuel += $diff;
+                }
+            }
+        }
+
+        $currentConsoFuelProgress = ($lastConsoFuel !== 0) ? ($currentConsoFuel - $lastConsoFuel) / $lastConsoFuel : 'INF';
+        $currentApproFuelProgress = ($lastApproFuel !== 0) ? ($currentApproFuel - $lastApproFuel) / $lastApproFuel : 'INF';
+
+        return array(
+            'currentConsoFuel'         => $currentConsoFuel,
+            'currentConsoFuelProgress' => floatval(number_format((float) $currentConsoFuelProgress, 2, '.', '')),
+            'currentApproFuel'         => $currentApproFuel,
+            'currentApproFuelProgress' => floatval(number_format((float) $currentApproFuelProgress, 2, '.', '')),
+            'dayBydayConsoData' => [
+                'dateConso'   => $day,
+                "consoFuel"   => $consoFuelDayByDay,
+                "approFuel"   => $approFuelDayByDay
+            ]
+        );
     }
 }
