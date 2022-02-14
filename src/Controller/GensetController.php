@@ -957,8 +957,8 @@ class GensetController extends ApplicationController
                 } else {
                     $oldData = clone $smartMod->getNoDatetimeData();
                 }
-                $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
-                //$date = new DateTime('now');
+                //$date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date1']);
+                $date = new DateTime('now');
 
                 /*$dataMod->setL12G($paramJSON['L12G'])
                     ->setL13G($paramJSON['L13G'])
@@ -1388,10 +1388,10 @@ Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
                     } else $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                foreach ($site->getContacts() as $contact) {
+                /*foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }
+                }*/
 
                 //$adminUsers = [];
                 $Users = $manager->getRepository('App:User')->findAll();
@@ -1422,7 +1422,7 @@ Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
             'code'         => 500,
         ], 500);
     }
-
+    // stdigital.powermon.alerts@gmail.com
     public function getConsoFuelData(EntityManagerInterface $manager, $smartMod, $startDate, $endDate)
     {
         $lastStartDate = new DateTime($startDate->format('Y-m-d H:i:s'));
