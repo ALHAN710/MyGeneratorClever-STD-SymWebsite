@@ -403,7 +403,7 @@ class GensetController extends ApplicationController
         $endDate = new DateTime(date('Y-m-d') . ' 23:59:59');
         $FCD = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
         // dump($FCD);
-        $gensetCapacity = 60;
+        $gensetCapacity = 800;
         if ($tepd > 0) $poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepd;
         else $poe[] = 0;
 
