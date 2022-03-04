@@ -404,7 +404,7 @@ class GensetController extends ApplicationController
         $FCD = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
         // dump($FCD);
         $gensetCapacity = 800;
-        if ($tepd > 0) $poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepd;
+        if ($tepd > 0) $poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 0.01) / $tepd;
         else $poe[] = 0;
 
         /*$FCM = $manager->createQuery("SELECT AVG(NULLIF(COALESCE(d.fuelInstConsumption,0), 0)) AS FC
@@ -430,7 +430,7 @@ class GensetController extends ApplicationController
         $FCM = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
         // dump($FCM);
 
-        if ($tepm > 0) $poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepm;
+        if ($tepm > 0) $poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 0.01) / $tepm;
         else $poe[] = 0;
 
         $FCY = $manager->createQuery("SELECT AVG(NULLIF(d.fuelInstConsumption, 0)) AS FC
@@ -456,7 +456,7 @@ class GensetController extends ApplicationController
         $FCY = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
         // dump($FCY);
 
-        if ($tepy > 0) $poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepy;
+        if ($tepy > 0) $poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 0.01) / $tepy;
         else $poe[] = 0;
 
         $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $id->getId()]) ?? new NoDatetimeData();
@@ -716,11 +716,11 @@ class GensetController extends ApplicationController
         else $prev_poe[] = 0;
         if ($prev_tepy > 0) $prev_poe[] = ($FCY[0]['FC'] * 1.0) / $prev_tepy;
         else $prev_poe[] = 0;*/
-        if ($prev_tepd > 0) $prev_poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepd;
+        if ($prev_tepd > 0) $prev_poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 0.01) / $prev_tepd;
         else $prev_poe[] = 0;
-        if ($prev_tepm > 0) $prev_poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepm;
+        if ($prev_tepm > 0) $prev_poe[] = ($FCM['currentConsoFuel'] * $gensetCapacity * 0.01) / $prev_tepm;
         else $prev_poe[] = 0;
-        if ($prev_tepy > 0) $prev_poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 1.0) / $prev_tepy;
+        if ($prev_tepy > 0) $prev_poe[] = ($FCY['currentConsoFuel'] * $gensetCapacity * 0.01) / $prev_tepy;
         else $prev_poe[] = 0;
         // dump($prev_poe);
 
@@ -736,7 +736,7 @@ class GensetController extends ApplicationController
             'NPS'   => [$npsd, $npsm, $npsy],
             'TEP'    => [$tepd, $tepm, $tepy],
             'TRH'    => [$trhd, $trhm, $trhy],
-            'FC'    => [$FCD['currentConsoFuel'] * $gensetCapacity ?? 0, $FCM['currentConsoFuel'] * $gensetCapacity ?? 0, $FCY['currentConsoFuel'] * $gensetCapacity ?? 0],
+            'FC'    => [$FCD['currentConsoFuel'] * $gensetCapacity * 0.01 ?? 0, $FCM['currentConsoFuel'] * $gensetCapacity * 0.01 ?? 0, $FCY['currentConsoFuel'] * $gensetCapacity * 0.01 ?? 0],
             'POE'   => $poe,
             'prevPOE' => $prev_poe,
             //'Freq'    => $noDatetimeData->getFreq() ?? 0,
