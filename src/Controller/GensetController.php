@@ -403,7 +403,7 @@ class GensetController extends ApplicationController
         $endDate = new DateTime(date('Y-m-d') . ' 23:59:59');
         $FCD = $this->getConsoFuelData($manager, $id, $startDate, $endDate);
         // dump($FCD);
-        $gensetCapacity = 60;
+        $gensetCapacity = 800;
         if ($tepd > 0) $poe[] = ($FCD['currentConsoFuel'] * $gensetCapacity * 1.0) / $tepd;
         else $poe[] = 0;
 
@@ -541,7 +541,7 @@ class GensetController extends ApplicationController
             ->getResult();*/
 
 
-        $precDayLastTEPRecord = $manager->createQuery("SELECT MAX(d.totalEnergy) AS TEP
+        /*$precDayLastTEPRecord = $manager->createQuery("SELECT MAX(d.totalEnergy) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -563,7 +563,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => $yesterday->format('Y-m-d') . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
 
         $diffprecDayTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
                                         MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
@@ -584,7 +584,7 @@ class GensetController extends ApplicationController
             ->getResult();
         // dump($diffprecDayTEPQuery);
 
-        $prevMonthFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
+        /*$prevMonthFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -605,7 +605,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => $lastMonth->format("Y-m") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
 
         $diffprecMonthTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
                                         MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
@@ -625,7 +625,7 @@ class GensetController extends ApplicationController
             ->getResult();
         // dump($diffprecMonthTEPQuery);
 
-        $prevYearFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
+        /*$prevYearFirstTEPRecord = $manager->createQuery("SELECT MIN(NULLIF(d.totalEnergy,0)) AS TEP
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime LIKE :nowDate
@@ -646,7 +646,7 @@ class GensetController extends ApplicationController
                 'nowDate'      => $lastYear->format("Y") . "%",
                 'smartModId'   => $id->getId()
             ))
-            ->getResult();
+            ->getResult();*/
 
         $diffprecYearTEPQuery = $manager->createQuery("SELECT MAX(NULLIF(d.totalRunningHours,0)) - MIN(NULLIF(d.totalRunningHours,0)) AS TRH, 
                                         MAX(NULLIF(d.totalEnergy,0)) - MIN(NULLIF(d.totalEnergy,0)) AS TEP,
