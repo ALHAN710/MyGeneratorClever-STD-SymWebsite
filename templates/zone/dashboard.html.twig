@@ -3579,7 +3579,7 @@
                                             console.log("Prime Fixe = " + prime);
                                             if( Smax > {{zone.powerSubscribed}}){
                                                 diffP = Smax - {{zone.powerSubscribed}};
-                                                amount = diffP*prime;
+                                                amount = (diffP/1000.0)*prime;
                                                 //$('#amount').text(amount.toFixed(2))
                                             }
                                             else{
