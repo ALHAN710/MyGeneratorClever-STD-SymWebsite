@@ -97,8 +97,9 @@ class SmartModType extends ApplicationType
                             ''  => null,
                             'Production' => 'Production',
                             'Support'    => 'Support',
-                            'Indoor' => 'Indoor',
+                            'Indoor'     => 'Indoor',
                             'Outdoor'    => 'Outdoor',
+                            'FL'         => 'FL',
 
                         ],
                         'label'    => 'SubType'

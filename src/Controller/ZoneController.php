@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\SmartMod;
+use App\Service\GensetModService;
 use DateTime;
 use DateInterval;
 use App\Entity\Zone;
@@ -22,6 +24,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ZoneController extends ApplicationController
 {
+    private $gensetModService;
+
+    /**
+     * @param $gensetModService
+     */
+    public function __construct(GensetModService $gensetModService)
+    {
+        $this->gensetModService = $gensetModService;
+    }
+
     /**
      * @Route("/{zone<\d+>?}", name="home_zone")
      * @IsGranted("ROLE_USER")
@@ -49,6 +61,7 @@ class ZoneController extends ApplicationController
         $outTemp = 0.0;
         $outHum = 0.0;
         $lastDate = 'Y-m-d HH:mm:ss';
+        $monthDataTable = [];
         if ($zone->getType() === 'PUE Calculation') {
 
             foreach ($zone->getSmartMods() as $smartMod) {
@@ -97,15 +110,40 @@ class ZoneController extends ApplicationController
                 'lastDate'  => $lastDate,
             ]);
         }
+        if ($zone->getType() === 'Genset'){
+            $startDate = new DateTime(date("Y-m-01", strtotime(date('Y-m-d'))) . '00:00:00');
+            $endDate   = new DateTime(date("Y-m-t", strtotime(date('Y-m-d'))) . '23:59:59');
+            // $startDate = new DateTime(date("2022-02-01", strtotime(date('2022-02-d'))) . '00:00:00');
+            // $endDate   = new DateTime(date("2022-02-t", strtotime(date('2022-02-d'))) . '23:59:59');
+
+            // dump($startDate);
+            // dump($endDate);
+            $genset = null;
+
+            if(count($zone->getSmartMods()) > 0) $genset = $zone->getSmartMods()[0];
+
+//                    dump($genset);
+            if($genset){
+                $this->gensetModService->setGensetMod($genset)
+                    ->setStartDate($startDate)
+                    ->setEndDate($endDate);
+
+                $overViewData = $this->gensetModService->getDashboardData();
+                // dump($overViewData);
+                $monthDataTable = $this->gensetModService->getDataForMonthDataTable();
+            }
+        }
         return $this->render('zone/dashboard.html.twig', [
             'zone' => $zone,
+            'site' => $zone->getSite(),
             //'smartModsProduction' => $smartModsProduction,
-            'alarms'    => $manager->getRepository('App:Alarm')->findBy(['type' => 'Load Meter']),
-            'inTemp'    => $inTemp,
-            'inHum'    => $inHum,
-            'outTemp'    => $outTemp,
-            'outHum'    => $outHum,
-            'lastDate'  => $lastDate,
+            'alarms'          => $manager->getRepository('App:Alarm')->findBy(['type' => 'Load Meter']),
+            'inTemp'          => $inTemp,
+            'inHum'           => $inHum,
+            'outTemp'         => $outTemp,
+            'outHum'          => $outHum,
+            'lastDate'        => $lastDate,
+            'monthDataTable'  => $monthDataTable,
         ]);
     }
 
@@ -282,6 +320,13 @@ class ZoneController extends ApplicationController
         $totalEA = [];
         $productionEA = [];
 
+        //AVR data variables
+        $vr = [];
+        $vs = [];
+        $vt = [];
+        $V  = [];
+        $dateVoltage = [];
+
         //Climate data variables
         $inTemperature = [];
         $outTemperature = [];
@@ -392,7 +437,8 @@ class ZoneController extends ApplicationController
                     'MixedAC12'        => [$returnAirTemperature12, $returnAirHumidity12, $fanSpeed12],
 
                 ], 200);
-            } else {
+            }
+            else {
                 $lastRecord = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
                                        FROM App\Entity\SmartMod sm
                                        JOIN sm.loadDataEnergies d 
@@ -666,7 +712,8 @@ class ZoneController extends ApplicationController
                         return number_format((float) ($a - $b), 2, '.', '');
                     }, $totalEA, $productionEA);*/
                     // dump($diffEnergy);
-                } else if ($zone->getType() === 'No PUE Calculation') {
+                }
+                else if ($zone->getType() === 'No PUE Calculation') {
                     foreach ($zone->getSmartMods() as $smartMod) {
                         if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
                             $EA_flow[$smartMod->getId()]   = 0.00;
@@ -762,7 +809,6 @@ class ZoneController extends ApplicationController
                         $FP_flow = number_format((float) $d['PF'], 2, '.', '');
                     }*/
 
-
                     $data = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy)*1000 AS P, 
                                             SUM(d.ea)/SQRT( (SUM(d.ea)*SUM(d.ea)) + (SUM(d.er)*SUM(d.er)) ) AS PF, SQRT( (SUM(d.pmoy)*SUM(d.pmoy)) + (SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) )*SUM( (d.smoy*d.smoy) - (d.pmoy*d.pmoy) ) ) )*1000 AS S
                                             FROM App\Entity\SmartMod sm
@@ -791,6 +837,66 @@ class ZoneController extends ApplicationController
                         $fp[] = number_format((float) $d['PF'], 2, '.', '');
                     }
                 }
+                else if ($zone->getType() === 'AVR'){
+                    $data = $manager->createQuery("SELECT d.dateTime AS dt, d.vamoy AS VR, d.vbmoy AS VS, d.vcmoy AS VT
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 1
+                                            ORDER BY dt ASC                                                                                                                                                
+                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+
+                    // dump($data);
+
+                    //die();
+                    foreach ($data as $d) {
+                        $dateVoltage[] = $d['dt']->format('Y-m-d H:i:s');
+                        $vr[] = number_format((float) $d['VR'], 2, '.', '');
+                        $vs[] = number_format((float) $d['VS'], 2, '.', '');
+                        $vt[] = number_format((float) $d['VT'], 2, '.', '');
+                    }
+                }
+                else if ($zone->getType() === 'Genset'){
+                    $startDate = new DateTime(date("Y-m-01", strtotime(date('Y-m-d'))) . '00:00:00');
+                    $endDate   = new DateTime(date("Y-m-t", strtotime(date('Y-m-d'))) . '23:59:59');
+                    // $startDate = new DateTime(date("2022-02-01", strtotime(date('2022-02-d'))) . '00:00:00');
+                    // $endDate   = new DateTime(date("2022-02-t", strtotime(date('2022-02-d'))) . '23:59:59');
+
+                    // dump($startDate);
+                    // dump($endDate);
+                    $genset = null;
+
+                    if(count($zone->getSmartMods()) > 0) $genset = $zone->getSmartMods()[0];
+
+//                    dump($genset);
+                    if($genset){
+                        $this->gensetModService->setGensetMod($genset)
+                            ->setStartDate($startDate)
+                            ->setEndDate($endDate);
+
+                        $overViewData = $this->gensetModService->getDashboardData();
+                        // dump($overViewData);
+
+                        return $this->json([
+                            'code'            => 200,
+                            'overviewData'    => $overViewData,
+                        ], 200);
+                    }
+
+                    return $this->json([
+                        'code'            => 404,
+//                        'overviewData'    => $overViewData,
+                    ], 404);
+
+                }
 
                 return $this->json([
                     'code'                => 200,
@@ -811,10 +917,13 @@ class ZoneController extends ApplicationController
                     'MixedClimate'        => [$inTemperature, $outTemperature, $inHumidity, $outHumidity],
                     'MixedPSCosfi'        => [$s, $p, $fp],
                     //'S'                   => end($s), //$S,
-                    'P'                   => end($p) ? end($p) : 0, //$P,
+                    'P'                   => end($p) ? end($p) : 0.0, //$P,
                     //'FP'                  => end($fp), //$FP_flow,
                     'EA'                  => $EA_month,
-                    'kgCO2'               => $kgCO2_month
+                    'kgCO2'               => $kgCO2_month,
+                    'MixedVoltage'        => [$vr, $vs, $vt],
+                    'dateVoltage'         => $dateVoltage,
+                    'V'                   => [end($vr) ? end($vr) : 0.0, end($vs) ? end($vs) : 0.0, end($vt) ? end($vt) : 0.0],
 
                 ], 200);
             }
@@ -868,6 +977,12 @@ class ZoneController extends ApplicationController
         $totalAP = [];
         $totalEA = [];
         $productionEA = [];
+
+        //AVR data variables
+        $vr = [];
+        $vs = [];
+        $vt = [];
+        $dateVoltage = [];
 
         //Climate data variables
         $inTemperature = [];
@@ -962,7 +1077,8 @@ class ZoneController extends ApplicationController
                     'MixedAC12'        => [$returnAirTemperature12, $returnAirHumidity12, $fanSpeed12],
 
                 ], 200);
-            } else {
+            }
+            else {
                 if ($zone->getType() === 'PUE Calculation') {
                     /*$lastDatetimeForPUE = $manager->createQuery("SELECT MAX(d.dateTime) AS dt
                                                     FROM App\Entity\LoadDataEnergy d
@@ -1299,7 +1415,8 @@ class ZoneController extends ApplicationController
                         return number_format((float) ($a - $b), 2, '.', '');
                     }, $totalEA, $productionEA);*/
                     // dump($diffEnergy);
-                } else if ($zone->getType() === 'No PUE Calculation') {
+                }
+                else if ($zone->getType() === 'No PUE Calculation') {
                     foreach ($zone->getSmartMods() as $smartMod) {
                         if ($smartMod->getModType() === 'Load Meter' && $smartMod->getLevelZone() === 2) {
                             $EA_flow[$smartMod->getId()]   = 0.00;
@@ -1395,6 +1512,87 @@ class ZoneController extends ApplicationController
                         $fp[] = number_format((float) $d['PF'], 2, '.', '');
                     }
                 }
+                else if ($zone->getType() === 'AVR'){
+                    $data = $manager->createQuery("SELECT d.dateTime AS dt, d.vamoy AS VR, d.vbmoy AS VS, d.vcmoy AS VT
+                                            FROM App\Entity\SmartMod sm
+                                            JOIN sm.loadDataEnergies d 
+                                            WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                            AND d.dateTime BETWEEN :startDate AND :endDate
+                                            AND sm.levelZone = 1
+                                            ORDER BY dt ASC                                                                                                                                                
+                                            ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'startDate'  => $startDate->format('Y-m-d H:i:s'),
+                            'endDate'    => $endDate->format('Y-m-d H:i:s'),
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+
+                    // dump($data);
+
+                    //die();
+                    foreach ($data as $d) {
+                        $dateVoltage[] = $d['dt']->format('Y-m-d H:i:s');
+                        $vr[] = number_format((float) $d['VR'], 2, '.', '');
+                        $vs[] = number_format((float) $d['VS'], 2, '.', '');
+                        $vt[] = number_format((float) $d['VT'], 2, '.', '');
+                    }
+                }
+                else if ($zone->getType() === 'Genset'){
+                    $startDate = new DateTime(date("Y-m-01", strtotime(date('Y-m-d'))) . '00:00:00');
+                    $endDate   = new DateTime(date("Y-m-t", strtotime(date('Y-m-d'))) . '23:59:59');
+                    // $startDate = new DateTime(date("2022-02-01", strtotime(date('2022-02-d'))) . '00:00:00');
+                    // $endDate   = new DateTime(date("2022-02-t", strtotime(date('2022-02-d'))) . '23:59:59');
+
+                    // dump($startDate);
+                    // dump($endDate);
+                    $genset = null;
+
+                    if(count($zone->getSmartMods()) > 0) $genset = $zone->getSmartMods()[0];
+
+                    if($genset){
+                        $this->gensetModService->setGensetMod($genset)
+                            ->setStartDate($startDate)
+                            ->setEndDate($endDate);
+
+                        // ######## Récupération des données de consommation et d'approvisionnement de Fuel
+                        $fuelData = $this->gensetModService->getConsoFuelData();
+                        // dump($fuelData);
+                        $NPSstats = $this->gensetModService->getNPSstats();
+                        // dump($NPSstats);
+                        return $this->json([
+                            'code'         => 200,
+                            //'startDate'    => $startDate,
+                            //'endDate'      => $endDate,
+                            // 'date'         => $date,
+                            'Mixed_Conso'            => [
+                                'date'  => $fuelData['dayBydayConsoData']['dateConso'],
+                                'conso' => [$fuelData['dayBydayConsoData']['consoFuel'], $fuelData['dayBydayConsoData']['approFuel'], $fuelData['dayBydayConsoData']['duree']]
+                            ],
+                            'dataFL'    => [
+                                'date' => $fuelData['dataFL']['date'],
+                                'FL'   => $fuelData['dataFL']['FL'],
+                                'XAF'  => $fuelData['dataFL']['XAF']
+                            ],
+                            'statsDureeFonctionnement' => $fuelData['statsDureeFonctionnement'],
+                            'NPSchart' => $NPSstats['NPSchart'],
+                            'statsNPS' => $NPSstats['statsNPS'],
+                            //'Mix2'            => [$S, $P, $Cosfi],
+                            // 'Load_Level'    => $S,
+                            // 'S3ph'         => $S3ph,
+                            // 'dateE'           => $dateE,
+                            // 'kWh'          => $kWh,
+                            // 'kVarh'        => $kVarh,
+                        ], 200);
+                    }
+
+                    return $this->json([
+                        'code'            => 404,
+//                        'overviewData'    => $overViewData,
+                    ], 404);
+
+                }
 
                 return $this->json([
                     'code'                => 200,
@@ -1416,7 +1614,9 @@ class ZoneController extends ApplicationController
                     'Smax'                => $Smax,
                     'FP'                  => $FP_flow,
                     'EA'                  => $EA_month,
-                    'kgCO2'               => $kgCO2_month
+                    'kgCO2'               => $kgCO2_month,
+                    'dateVoltage'         => $dateVoltage,
+                    'MixedVoltage'        => [$vr, $vs, $vt],
 
                 ], 200);
             }
