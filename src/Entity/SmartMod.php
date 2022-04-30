@@ -126,6 +126,16 @@ class SmartMod
      */
     private $airConditionerData;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $fuelCapacity;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $configuration;
+
     public function __construct()
     {
         $this->datetimeData = new ArrayCollection();
@@ -486,6 +496,30 @@ class SmartMod
                 $airConditionerData->setSmartMod(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFuelCapacity(): ?float
+    {
+        return $this->fuelCapacity;
+    }
+
+    public function setFuelCapacity(?float $fuelCapacity): self
+    {
+        $this->fuelCapacity = $fuelCapacity;
+
+        return $this;
+    }
+
+    public function getConfiguration(): ?string
+    {
+        return $this->configuration;
+    }
+
+    public function setConfiguration(?string $configuration): self
+    {
+        $this->configuration = $configuration;
 
         return $this;
     }
