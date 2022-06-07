@@ -72,7 +72,7 @@ class LoadMeterController extends ApplicationController
 
             // //dump($date);
             //die();
-
+            $alert = '';
             if ($smartMod->getModType() == 'Load Meter' || $smartMod->getModType() == 'AVR') {
                 //Paramétrage des champs de la nouvelle LoadDataEnergy aux valeurs contenues dans la requête du module
                 if (array_key_exists("date", $paramJSON)) {
@@ -366,7 +366,9 @@ class LoadMeterController extends ApplicationController
                                     }
                                 }
 
-                                /*return $this->json([
+                                $alert = 'Alerte Ok';
+                                /*dd('alerte ok');
+                                return $this->json([
                                     'code' => 200,
                                     'alerte' => 'Ok'
 
@@ -383,7 +385,8 @@ class LoadMeterController extends ApplicationController
 
                 return $this->json([
                     'code' => 200,
-                    'received' => $paramJSON
+                    'received' => $paramJSON,
+                    'alert'    => $alert
 
                 ], 200);
             }
