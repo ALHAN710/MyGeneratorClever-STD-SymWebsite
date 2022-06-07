@@ -229,7 +229,7 @@ class LoadMeterController extends ApplicationController
                                     'smartModId' => $smartMod->getId()
                                 ))
                                 ->getResult();
-                            dd($oldData);
+                            //dd($oldData);
                             $alert = count($oldData);
                             if (count($oldData) > 0) {
     //                            return $this->json([
