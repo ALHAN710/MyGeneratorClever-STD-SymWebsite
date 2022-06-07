@@ -100,6 +100,7 @@ class SmartModType extends ApplicationType
                             'Indoor'     => 'Indoor',
                             'Outdoor'    => 'Outdoor',
                             'FL'         => 'FL',
+                            'AVR'        => 'AVR',
 
                         ],
                         'label'    => 'SubType'
