@@ -1005,51 +1005,204 @@ class GensetController extends ApplicationController
                     ->setDifferentialIntervention($paramJSON['DiffIntervention'])
                     //->setSmartMod($smartMod)
                 ;*/
-                $dataMod->setL12G($paramJSON['L12'])
-                    ->setDateTime($date)
-                    ->setL13G($paramJSON['L13'])
-                    ->setL23G($paramJSON['L23'])
-                    ->setL1N($paramJSON['L1'])
-                    ->setL2N($paramJSON['L2'])
-                    ->setL3N($paramJSON['L3'])
-                    ->setL12M($paramJSON['L12M'])
-                    ->setL13M($paramJSON['L13M'])
-                    ->setL23M($paramJSON['L23M'])
-                    ->setI1($paramJSON['I1'])
-                    ->setI2($paramJSON['I2'])
-                    ->setI3($paramJSON['I3'])
-                    ->setFreq($paramJSON['Fr'])
-                    ->setIDiff($paramJSON['Id'])
-                    ->setFuelLevel($paramJSON['FL'])
-                    ->setWaterLevel($paramJSON['WL'])
-                    ->setOilLevel($paramJSON['OL'])
-                    ->setAirPressure($paramJSON['AP'])
-                    ->setOilPressure($paramJSON['OP'])
-                    ->setWaterTemperature($paramJSON['WT'])
-                    ->setCoolerTemperature($paramJSON['CT'])
-                    ->setEngineSpeed($paramJSON['ESD'])
-                    ->setBattVoltage($paramJSON['BV'])
-                    ->setHoursToMaintenance($paramJSON['HTM'])
-                    ->setCg($paramJSON['CG'])
-                    ->setCr($paramJSON['CR'])
-                    ->setGensetRunning($paramJSON['GenRun'])
-                    ->setMainsPresence($paramJSON['MainsPresence'])
-                    ->setPresenceWaterInFuel($paramJSON['PWF'])
-                    ->setMaintenanceRequest($paramJSON['MRqst'])
-                    ->setLowFuel($paramJSON['LowFuel'])
-                    ->setOverspeed($paramJSON['Overspeed'])
-                    ->setMaxFreq($paramJSON['MaxFr'])
-                    ->setMinFreq($paramJSON['MinFr'])
-                    ->setMaxVolt($paramJSON['MaxVolt'])
-                    ->setMinVolt($paramJSON['MinVolt'])
-                    ->setMaxBattVolt($paramJSON['MaxBV'])
-                    ->setMinBattVolt($paramJSON['MinBV'])
-                    ->setOverload($paramJSON['Overload'])
-                    ->setShortCircuit($paramJSON['SC'])
-                    ->setMainsIncSeq($paramJSON['MIS'])
-                    ->setGensetIncSeq($paramJSON['GIS'])
-                    ->setDifferentialIntervention($paramJSON['DIT'])
-                    ->setSmartMod($smartMod);
+
+                if (array_key_exists("L12", $paramJSON)) {
+                    $dataMod->setL12G($paramJSON['L12']);
+                }
+
+                $dataMod->setDateTime($date);
+
+                if (array_key_exists("L13", $paramJSON)) {
+                    $dataMod->setL13G($paramJSON['L13']);
+                }
+
+
+                if (array_key_exists("L23", $paramJSON)) {
+                    $dataMod->setL23G($paramJSON['L23']);
+                }
+
+
+                if (array_key_exists("L1", $paramJSON)) {
+                    $dataMod->setL1N($paramJSON['L1']);
+                }
+
+
+                if (array_key_exists("L2", $paramJSON)) {
+                    $dataMod->setL2N($paramJSON['L2']);
+                }
+
+
+                if (array_key_exists("L3", $paramJSON)) {
+                    $dataMod->setL3N($paramJSON['L3']);
+                }
+
+
+                if (array_key_exists("L12M", $paramJSON)) {
+                    $dataMod->setL12M($paramJSON['L12M']);
+                }
+
+
+                if (array_key_exists("L13M", $paramJSON)) {
+                    $dataMod->setL13M($paramJSON['L13M']);
+                }
+
+
+                if (array_key_exists("L23M", $paramJSON)) {
+                    $dataMod->setL23M($paramJSON['L23M']);
+                }
+
+
+                if (array_key_exists("I1", $paramJSON)) {
+                    $dataMod->setI1($paramJSON['I1']);
+                }
+
+
+                if (array_key_exists("I2", $paramJSON)) {
+                    $dataMod->setI2($paramJSON['I2']);
+                }
+
+
+                if (array_key_exists("I3", $paramJSON)) {
+                    $dataMod->setI3($paramJSON['I3']);
+                }
+
+
+                if (array_key_exists("Fr", $paramJSON)) {
+                    $dataMod->setFreq($paramJSON['Fr']);
+                }
+
+                if (array_key_exists("Id", $paramJSON)) {
+                    $dataMod->setIDiff($paramJSON['Id']);
+                }
+
+                if (array_key_exists("FL", $paramJSON)) {
+                    $dataMod->setFuelLevel($paramJSON['FL']);
+                }
+
+                if (array_key_exists("WL", $paramJSON)) {
+                    $dataMod->setWaterLevel($paramJSON['WL']);
+                }
+
+                if (array_key_exists("OL", $paramJSON)) {
+                    $dataMod->setOilLevel($paramJSON['OL']);
+                }
+
+                if (array_key_exists("AP", $paramJSON)) {
+                    $dataMod->setAirPressure($paramJSON['AP']);
+                }
+
+                if (array_key_exists("OP", $paramJSON)) {
+                    $dataMod->setOilPressure($paramJSON['OP']);
+                }
+
+                if (array_key_exists("WT", $paramJSON)) {
+                    $dataMod->setWaterTemperature($paramJSON['WT']);
+                }
+
+                if (array_key_exists("CT", $paramJSON)) {
+                    $dataMod->setCoolerTemperature($paramJSON['CT']);
+                }
+
+                if (array_key_exists("ESD", $paramJSON)) {
+                    $dataMod->setEngineSpeed($paramJSON['ESD']);
+                }
+
+                if (array_key_exists("BV", $paramJSON)) {
+                    $dataMod->setBattVoltage($paramJSON['BV']);
+                }
+
+                if (array_key_exists("HTM", $paramJSON)) {
+                    $dataMod->setHoursToMaintenance($paramJSON['HTM']);
+                }
+
+
+                if (array_key_exists("CG", $paramJSON)) {
+                    $dataMod->setCg($paramJSON['CG']);
+                }
+
+
+                if (array_key_exists("CR", $paramJSON)) {
+                    $dataMod->setCr($paramJSON['CR']);
+                }
+
+
+                if (array_key_exists("GenRun", $paramJSON)) {
+                    $dataMod->setGensetRunning($paramJSON['GenRun']);
+                }
+
+
+                if (array_key_exists("MainsPresence", $paramJSON)) {
+                    $dataMod->setMainsPresence($paramJSON['MainsPresence']);
+                }
+
+
+                if (array_key_exists("PWF", $paramJSON)) {
+                    $dataMod->setPresenceWaterInFuel($paramJSON['PWF']);
+                }
+
+                if (array_key_exists("MRqst", $paramJSON)) {
+                    $dataMod->setMaintenanceRequest($paramJSON['MRqst']);
+                }
+
+                if (array_key_exists("LowFuel", $paramJSON)) {
+                    $dataMod->setLowFuel($paramJSON['LowFuel']);
+                }
+
+                if (array_key_exists("Overspeed", $paramJSON)) {
+                    $dataMod->setOverspeed($paramJSON['Overspeed']);
+                }
+
+                if (array_key_exists("MaxFr", $paramJSON)) {
+                    $dataMod->setMaxFreq($paramJSON['MaxFr']);
+                }
+
+                if (array_key_exists("MinFr", $paramJSON)) {
+                    $dataMod->setMinFreq($paramJSON['MinFr']);
+                }
+
+                if (array_key_exists("MaxVolt", $paramJSON)) {
+                    $dataMod->setMaxVolt($paramJSON['MaxVolt']);
+                }
+
+                if (array_key_exists("MinVolt", $paramJSON)) {
+                    $dataMod->setMinVolt($paramJSON['MinVolt']);
+                }
+
+                if (array_key_exists("MaxBV", $paramJSON)) {
+                    $dataMod->setMaxBattVolt($paramJSON['MaxBV']);
+                }
+
+                if (array_key_exists("MinBV", $paramJSON)) {
+                    $dataMod->setMinBattVolt($paramJSON['MinBV']);
+                }
+
+
+                if (array_key_exists("Overload", $paramJSON)) {
+                    $dataMod->setOverload($paramJSON['Overload']);
+                }
+
+
+                if (array_key_exists("SC", $paramJSON)) {
+                    $dataMod->setShortCircuit($paramJSON['SC']);
+                }
+
+
+                if (array_key_exists("MIS", $paramJSON)) {
+                    $dataMod->setMainsIncSeq($paramJSON['MIS']);
+                }
+
+
+                if (array_key_exists("GIS", $paramJSON)) {
+                    $dataMod->setGensetIncSeq($paramJSON['GIS']);
+                }
+
+
+                if (array_key_exists("DIT", $paramJSON)) {
+                    $dataMod->setDifferentialIntervention($paramJSON['DIT']);
+                }
+
+
+                $dataMod->setSmartMod($smartMod);;
 
 
                 if (!$isNew) {
@@ -1061,149 +1214,214 @@ class GensetController extends ApplicationController
                     $VOLT = "MINV"; // 4
                     $FREQ = "MINF"; // 5
                     $GENRUN = "GENR"; // 6
+                    $GENST = "GENST"; // 6
+                    $GOTL = "GOTL"; // 6
+                    $GNOTL = "GNOTL"; // 6
                     $FUEL = "LOFL"; // 7
                     $DIFFC = "DIFFC"; // 8
                     $WATFL = "WATFL"; // 9
                     $SFL50 = "SFL50"; // 11
                     $SFL20 = "SFL20"; // 12
 
-                    if ($oldData->getMinBattVolt()  === 0 && $paramJSON['MinBV']  === 1) {
-                        $mess = "{\"code\":\"{$BATT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$BATT}\",\"date\":\"{$paramJSON['date1']}\"}";
+                    if (array_key_exists("MinBV", $paramJSON)) {
+                        if ($oldData->getMinBattVolt() === 0 && $paramJSON['MinBV'] === 1) {
+                            $mess = "{\"code\":\"{$BATT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$BATT}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
-                                'mess' => $mess,
-                                'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
                     }
-                    if ($oldData->getCr()  === 1 && $paramJSON['CR']  === 0) {
-                        $mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                    if (array_key_exists("CR", $paramJSON)) {
+                        if ($oldData->getCr() === 1 && $paramJSON['CR'] === 0) {
+                            $mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$MAINAB}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                        if ($oldData->getCr() === 0 && $paramJSON['CR'] === 1) {
+                            $mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                    }
+
+                    if (array_key_exists("Overspeed", $paramJSON)) {
+                        if ($oldData->getOverspeed() === 0 && $paramJSON['Overspeed'] === 1) {
+                            $mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                    }
+
+                    if (array_key_exists("Overload", $paramJSON)) {
+                        if ($oldData->getOverload() === 0 && $paramJSON['Overload'] === 1) {
+                            $mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                    }
+
+                    if (array_key_exists("MinVolt", $paramJSON)) {
+                        if ($oldData->getMinVolt() === 0 && $paramJSON['MinVolt'] === 1) {
+                            $mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                    }
+
+                    if (array_key_exists("MinFr", $paramJSON)) {
+                        if ($oldData->getMinFreq() === 0 && $paramJSON['MinFr'] === 1) {
+                            $mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward(
+                                'App\Controller\GensetController::sendToAlarmController',
+                                [
+                                    'mess' => $mess,
+                                    'modId' => $smartMod->getModuleId(),
+                                ]
+                            );
+                        }
+                    }
+
+                    if (array_key_exists("CG", $paramJSON)) {
+                        if (($oldData->getCg() === 0 && $paramJSON['CG'] === 1)) {
+                            $mess = "{\"code\":\"{$GOTL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess'   => $mess,
                                 'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
-                    }
-                    if ($oldData->getCr()  === 0 && $paramJSON['CR']  === 1) {
-                        $mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+                            ]);
+                        }
+                        if (($oldData->getCg() === 1 && $paramJSON['CG'] === 0)) {
+                            $mess = "{\"code\":\"{$GNOTL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess'   => $mess,
                                 'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
+                            ]);
+                        }
                     }
-                    if ($oldData->getOverspeed() === 0 && $paramJSON['Overspeed']  === 1) {
-                        $mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$SPEED}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                    if (array_key_exists("GenRun", $paramJSON)) {
+                        if ($oldData->getGensetRunning() === 0 && $paramJSON['GenRun'] === 1) {
+                            $mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess' => $mess,
-                                'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
-                    }
-                    if ($oldData->getOverload() === 0 && $paramJSON['Overload'] === 1) {
-                        $mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$LOAD}\",\"date\":\"{$paramJSON['date1']}\"}";
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
+                        if (($oldData->getGensetRunning() === 1 && $paramJSON['GenRun'] === 0)) {
+                            $mess = "{\"code\":\"{$GENST}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$GENST}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                                'mess'   => $mess,
+                                'modId'  => $smartMod->getModuleId(),
+                            ]);
+                        }
+                    }
+
+                    if (array_key_exists("LowFuel", $paramJSON)) {
+                        if ($oldData->getLowFuel() === 0 && $paramJSON['LowFuel'] === 1) {
+                            $mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess' => $mess,
-                                'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
                     }
-                    if ($oldData->getMinVolt() === 0 && $paramJSON['MinVolt'] === 1) {
-                        $mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$VOLT}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                    if (array_key_exists("FL", $paramJSON)) {
+                        if ($oldData->getFuelLevel() > 50 && $paramJSON['FL'] <= 50) {
+                            $mess = "{\"code\":\"{$SFL50}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$SFL50}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess' => $mess,
-                                'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
-                    }
-                    if ($oldData->getMinFreq() === 0 && $paramJSON['MinFr'] === 1) {
-                        $mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$FREQ}\",\"date\":\"{$paramJSON['date1']}\"}";
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
+                        if ($oldData->getFuelLevel() > 20 && $paramJSON['FL'] <= 20) {
+                            $mess = "{\"code\":\"{$SFL20}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$SFL20}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward(
-                            'App\Controller\GensetController::sendToAlarmController',
-                            [
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
                                 'mess' => $mess,
-                                'modId'  => $smartMod->getModuleId(),
-                            ]
-                        );
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
                     }
-                    if ($oldData->getGensetRunning() === 0 && $paramJSON['GenRun'] === 1) {
-                        $mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$GENRUN}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess'   => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
+                    if (array_key_exists("DIT", $paramJSON)) {
+                        if ($oldData->getDifferentialIntervention() === 0 && $paramJSON['DIT'] === 1) {
+                            $mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                                'mess' => $mess,
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
                     }
-                    if ($oldData->getLowFuel() === 0 && $paramJSON['LowFuel'] === 1) {
-                        $mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$FUEL}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
-                    }
-                    if ($oldData->getFuelLevel() > 50 && $paramJSON['FL'] <= 50) {
-                        $mess = "{\"code\":\"{$SFL50}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$SFL50}\",\"date\":\"{$paramJSON['date1']}\"}";
+                    if (array_key_exists("PWF", $paramJSON)) {
+                        if ($oldData->getPresenceWaterInFuel() === 0 && $paramJSON['PWF'] === 1) {
+                            $mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                            //$mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
-                    }
-                    if ($oldData->getFuelLevel() > 20 && $paramJSON['FL'] <= 20) {
-                        $mess = "{\"code\":\"{$SFL20}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$SFL20}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
-                    }
-                    if ($oldData->getDifferentialIntervention() === 0 && $paramJSON['DIT'] === 1) {
-                        $mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$DIFFC}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
-                    }
-                    if ($oldData->getPresenceWaterInFuel() === 0 && $paramJSON['PWF'] === 1) {
-                        $mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                        //$mess = "{\"code\":\"{$WATFL}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                        $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
-                            'mess' => $mess,
-                            'modId'  => $smartMod->getModuleId(),
-                        ]);
+                            $response = $this->forward('App\Controller\GensetController::sendToAlarmController', [
+                                'mess' => $mess,
+                                'modId' => $smartMod->getModuleId(),
+                            ]);
+                        }
                     }
                 }
             }
@@ -1258,7 +1476,6 @@ class GensetController extends ApplicationController
 
         //Recherche du module dans la BDD
         $smartMod = $manager->getRepository('App:SmartMod')->findOneBy(['moduleId' => $modId]);
-
 
         if ($smartMod != null) { // Test si le module existe dans notre BDD
             //data:{"date": "2020-03-20 12:15:00", "sa": 1.2, "sb": 0.7, "sc": 0.85, "va": 225, "vb": 230, "vc": 231, "s3ph": 2.75, "kWh": 1.02, "kvar": 0.4}
@@ -1369,29 +1586,51 @@ class GensetController extends ApplicationController
                     ->setAlarm($alarmCode)
                     ->setCreatedAt($date);
 
+                $site = null;
+                $installationName = "";
 
-                if ($smartMod->getSite()) $site = $smartMod->getSite();
+                if ($smartMod->getSite()) {
+                    $site = $smartMod->getSite();
+                    $installationName = ' du site ' . $site->getName();
+                }
                 else {
                     foreach ($smartMod->getZones() as $zone) {
                         $site = $zone->getSite();
-                        if ($site) break;
+                        if ($site) {
+                            $installationName = $smartMod->getName() . ' du site ' . $site->getName();
+                            break;
+                        }
                     }
                 }
 
-                if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' sur <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                $message = "";
+
+                if ($alarmCode->getType() !== 'FUEL') $message = $alarmCode->getLabel() . ' détecté(e) par <<' . $smartMod->getName() . '>> du site ' . $site->getName() . ' le ' . $date->format('d/m/Y à H:i:s');
                 else if ($alarmCode->getType() === 'FUEL') {
                     $data = clone $smartMod->getNoDatetimeData();
-                    if ($alarmCode->getCode() === 'GENR') $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
-                    else if ($alarmCode->getCode() === 'SFL50' || $alarmCode->getCode() === 'SFL20') {
-                        $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène du site " . $site->getName() . " détecté le " . $date->format('d/m/Y à H:i:s') . ". 
+                    $fuelStr = $data->getFuelLevel() != null ? ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%' : '';
+                    if ($alarmCode->getCode() === 'GENR') $message = $alarmCode->getLabel() . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                    else if ($alarmCode->getCode() === 'GENST') {
+                        $message = $alarmCode->getLabel() . $installationName . " survenu le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
+                    } else if ($alarmCode->getCode() === 'SFL50' ) {
+                        $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène " . $installationName . " détecté le " . $date->format('d/m/Y à H:i:s') . ". Nous vous prions de bien vouloir effectuer une opération de ravitaillement. Niveau de Fuel Actuel : " . $data->getFuelLevel() . '%';
+                    } else if ($alarmCode->getCode() === 'SFL20') {
+                        $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène " . $installationName . " détecté le " . $date->format('d/m/Y à H:i:s') . '. Niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                    } else if ($alarmCode->getCode() === 'GOTL') {
+                        if ($smartMod->getSite()) $message = $alarmCode->getLabel() . ' ' . $site->getName() . " depuis le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
+                        else $message = 'Le Groupe électrogène ' . $smartMod->getName() . " débite depuis le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
+                    } else if ($alarmCode->getCode() === 'GNOTL') {
+                        $message = $alarmCode->getLabel() . $installationName . " survenue le " . $date->format('d/m/Y à H:i:s');
+                    } /*else if ($alarmCode->getCode() === 'SFL50' || $alarmCode->getCode() === 'SFL20') {
+                        $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène " . $installationName . " détecté le " . $date->format('d/m/Y à H:i:s') . ".
 Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
-                    } else $message = $alarmCode->getLabel() . ' du site ' . $site->getName() . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                    }*/ else $message = $alarmCode->getLabel() . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                foreach ($site->getContacts() as $contact) {
+                /*foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }
+                }*/
 
                 //$adminUsers = [];
                 $Users = $manager->getRepository('App:User')->findAll();
