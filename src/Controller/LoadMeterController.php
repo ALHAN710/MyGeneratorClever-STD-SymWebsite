@@ -220,7 +220,7 @@ class LoadMeterController extends ApplicationController
                                                 FROM App\Entity\SmartMod sm
                                                 JOIN sm.loadDataEnergies d 
                                                 WHERE sm.id = :smartModId
-                                                AND d.dateTime = (SELECT max(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 WHERE d1.dateTime LIKE :date)                                                                                                                
+                                                AND d.dateTime = (SELECT max(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 WHERE d1.dateTime LIKE :date AND d1.smartMod = :smartModId)                                                                                                                
                                                 ")
                                 ->setParameters(array(
                                     //'selDate'      => $dat,
