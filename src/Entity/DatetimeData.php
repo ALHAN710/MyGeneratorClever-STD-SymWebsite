@@ -143,12 +143,12 @@ class DatetimeData
         return $this;
     }
 
-    public function getTotalRunningHours(): ?int
+    public function getTotalRunningHours(): ?float
     {
         return $this->totalRunningHours;
     }
 
-    public function setTotalRunningHours(int $totalRunningHours): self
+    public function setTotalRunningHours(float $totalRunningHours): self
     {
         $this->totalRunningHours = $totalRunningHours;
 
