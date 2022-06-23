@@ -204,9 +204,23 @@
             </div>
         </div>
     </div><!--end col-->
-    
+
     <div class="col-sm-3 col-12">
+        {% for genset in gensets %}
         <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p class=" "><span class="">{{ genset['name'] }}</span><span id="genset-status_{{ genset['id'] }}" class="float-right badge badge-danger">STOP</span></p>
+                        <div id="fuel_level_{{ genset['id'] }}" class="gauge text-center mt-0"></div>
+                    </div><!--end card-body-->
+                <div class="float-right mt-0 ml-5"><small>Last update <span id="last_update_{{ genset['id'] }}">Y-m-d HH:mm:ss</span></small></div>
+                </div><!--end card-->
+            </div><!--end col-->
+        </div>
+        {% endfor %}
+
+        {#<div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -305,7 +319,7 @@
                     </div><!--end card-body--> 
                 </div><!--end card--> 
             </div><!--end col-->
-        </div>    
+        </div>#}
     </div>
 </div>
 
@@ -426,6 +440,11 @@
         }, 10000);
     </script>
 
+    {% if gensets | length > 0 %}
+        <script src="/plugins/justgage/justgage.js"></script>
+        <script src="/plugins/justgage/raphael-2.1.4.min.js"></script>
+    {% endif %}
+
     {# Overview panel script #}
     <script>
         
@@ -520,13 +539,34 @@
         );
 
         PUE_Linechart.render();
-            
+
+        let gensets = [];
+        {% for genset in gensets %}
+        let fuel_level_{{ genset['id'] }} = new JustGage({
+            id: "fuel_level_{{ genset['id'] }}",
+            value: 0,
+            min: 0,
+            max: 100,
+            title: "Fuel Level",
+            label: "Fuel Level",
+            pointer: true,
+            textRenderer: function (val) {
+                return val + ' %';
+            },
+            onAnimationEnd: function () {
+                console.log('f: onAnimationEnd()');
+            }
+        });
+        gensets.push({{ genset['id'] }})
+        {% endfor %}
+        //console.log(gensets)
         var url_ = "{{ path('update_site_overview_graphs') }}";
         {# console.log('startDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00')
         console.log('endDate = '+moment().format("YYYY-MM-DD") + ' 00:00:00') #}
         var $data_ = JSON.stringify({
             "genId": {{gen}},
             "zoneId": {{zone}},
+            "gensets": gensets
         });
 
         setTimeout(
@@ -564,7 +604,7 @@
                                         var dateLabel = Object.values(result['datePue']);
                                         console.log(result);
 
-                                        //Mise à jour des paramètres du générateur
+                                        /*//Mise à jour des paramètres du générateur
                                         $('#l1l2').text(String(result['Vcg'][0] + " V"))
                                         $('#l1l3').text(String(result['Vcg'][1] + " V"))
                                         $('#l2l3').text(String(result['Vcg'][2] + " V"))
@@ -625,7 +665,7 @@
                                             $('#mainsStatus').addClass('badge-danger')
                                             $('#mainsStatus').children("h6").text('Absent')
                                         }    
-                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )*/
 
                                         {% if zone > 0 %}     
                                         $("#instPUE").text(result['InstantPUE']);
@@ -635,6 +675,24 @@
                                         {# var dataLabel = Object.values(result['date']); #}
                                         displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
                                         {% endif %}
+
+                                        {% for genset in gensets %}
+                                        //Mise à jour des paramètres {{ genset['name'] }}
+                                        if(parseInt(result['gensets']['{{ genset['id'] }}']['GR'])){//Genset running = 1
+                                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-danger')
+                                            $('#genset-status_{{ genset['id'] }}').addClass('badge-success')
+                                            $('#genset-status_{{ genset['id'] }}').text('RUNNING')
+                                        }
+                                        else{
+                                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-success')
+                                            $('#genset-status_{{ genset['id'] }}').addClass('badge-danger')
+                                            $('#genset-status_{{ genset['id'] }}').text('STOP')
+                                        }
+
+                                        //#### Mise à jour de la Jauge indiquant le niveau de Fuel
+                                        fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
+                                        if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                                    {% endfor %}
                                     }
                                 },
                                 error: function (result) {
