@@ -6571,6 +6571,16 @@
                 opposite: false,
                 title: {
                     text: 'Liters'
+                },labels: {
+                    /**
+                     * Allows users to apply a custom formatter function to yaxis labels.
+                     *
+                     * @param { String } value - The generated value of the y-axis tick
+                     * @param { index } index of the tick / currently executing iteration in yaxis labels array
+                     */
+                    formatter: function(val, index) {
+                        return parseFloat(val).toFixed(2);
+                    }
                 }
             }, {
                 seriesName: 'Fuel Consumption ',
