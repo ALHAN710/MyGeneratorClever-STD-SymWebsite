@@ -921,7 +921,7 @@ class GensetController extends ApplicationController
     /**
      * Permet de mettre à jour la BDD des NoDatetimeData
      *
-     * @Route("/update/mod/{modId<[a-zA-Z0-9]+>}/nodatetime/data",name="update_nodatetimedata")
+     * @Route("/update/mod/{modId<[a-zA-Z0-9_-]+>}/nodatetime/data",name="update_nodatetimedata")
      * 
      * @param [interger] $id
      * @param EntityManagerInterface $manager
@@ -1457,7 +1457,7 @@ class GensetController extends ApplicationController
     /**
      * Permet de surcharger les données DatetimeData des modules FUEL dans la BDD
      *
-     * @Route("/datetimedata/mod/{modId<[a-zA-Z0-9]+>}/add", name="datetimeData_add") 
+     * @Route("/datetimedata/mod/{modId<[a-zA-Z0-9_-]+>}/add", name="datetimeData_add")
      * 
      * @param SmartMod $smartMod
      * @param EntityManagerInterface $manager
@@ -1548,7 +1548,8 @@ class GensetController extends ApplicationController
                             $manager->flush();
                         }
                     }
-                } else {
+                }
+                else {
                     if ($smartMod->getModType() == 'FUEL') {
                         if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                         else $date = new DateTime('now');
@@ -1592,7 +1593,7 @@ class GensetController extends ApplicationController
                         if (array_key_exists("FL", $paramJSON)) {
                             $datetimeData->setFuelLevel($paramJSON['FL']);
                         }
-
+//                        dd($datetimeData);
                     }
                     // //dump($datetimeData);
                     //die();
@@ -1678,10 +1679,10 @@ Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
                     }*/ else $message = $alarmCode->getLabel() . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                foreach ($site->getContacts() as $contact) {
+                /*foreach ($site->getContacts() as $contact) {
                     $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
                     //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }
+                }*/
 
                 //$adminUsers = [];
                 $Users = $manager->getRepository('App:User')->findAll();

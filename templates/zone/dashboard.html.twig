@@ -4083,7 +4083,7 @@
                             var seconds = y * 60 * 60;
                             var hours = Math.floor(seconds / 3600);
                             var minutes = Math.floor((seconds / 60) % 60);
-                            seconds = seconds % 60;
+                            seconds =  Math.floor(seconds % 60);
 
                             if (hours   < 10) {hours   = "0"+hours;}
                             if (minutes < 10) {minutes = "0"+minutes;}
@@ -4289,7 +4289,7 @@
                                             $('#vt_overview').text(String(result['V'][2]))
                                             displayNewData(Mixed_Voltage_Linechart_overview, Object.values(result['dateVoltage']), Object.values(result['MixedVoltage']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                                         {% elseif zone.type == 'Genset' %}
-                                            if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                                            if(parseInt(result['overviewData']['Gensetrunning'])){//Genset running = 1
                                                 $('#genset-status').removeClass('badge-danger')
                                                 $('#genset-status').addClass('badge-success')
                                                 $('#genset-status').text('RUNNING')
@@ -4321,7 +4321,7 @@
                                             //On gère la progression de l'approvisionnement en FUEL
                                             progress(prefixSelector='approv-fuel-value-progress-', progValue=result['overviewData']['currentApproFuelProgress'], posLogique=false, isTime=false);
                                             //MAJ de la courbe d'évolution de la consommation de FUEL en Litre jour après jour
-                                            displayNewData(w_consoChart, Object.values(result['overviewData']['dayBydayConsoData']['dateConso']), Object.values(result['overviewData']['dayBydayConsoData']['consoFuel']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 1, 'day');
+                                            displayNewData(w_approChart, Object.values(result['overviewData']['dayBydayConsoData']['dateConso']), Object.values(result['overviewData']['dayBydayConsoData']['approFuel']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 1, 'day');
 
                                             //#### Mise à jour des données de la card Durée de fonctionnement du mois en cours
                                             //Valeur de la durée de fonctionnement du mois en cours en HH:mm:ss
@@ -4434,7 +4434,7 @@
                             $('#vt_overview').text(String(result['V'][2]))
                             displayNewData(Mixed_Voltage_Linechart_overview, Object.values(result['dateVoltage']), Object.values(result['MixedVoltage']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                         {% elseif zone.type == 'Genset' %}
-                            if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                            if(parseInt(result['overviewData']['Gensetrunning'])){//Genset running = 1
                                 $('#genset-status').removeClass('badge-danger')
                                 $('#genset-status').addClass('badge-success')
                                 $('#genset-status').text('RUNNING')

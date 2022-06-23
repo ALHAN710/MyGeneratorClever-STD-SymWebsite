@@ -443,7 +443,8 @@ class GensetModService
                         }
                         // dump($dureeDay); 
                                             
-                        $dureeDayByDay[] = floatval(number_format((float) $dureeDay, 2, '.', ''));
+//                        $dureeDayByDay[] = floatval(number_format((float) $dureeDay, 2, '.', ''));
+                        $dureeDayByDay[] = floatval($dureeDay);
                     }
                 }
 
@@ -670,7 +671,7 @@ class GensetModService
         
         $duree = -0.0;
         if(count($dureeDayByDay) > 0) $duree = array_sum($dureeDayByDay);
-        // dump($dureeDayByDay);        
+        // dump($dureeDayByDay);
         // if($this->gensetMod->getSubType() !== 'ModBus' || !strpos($this->gensetMod->getSubType(), 'FL') !== false){
         //if($this->gensetMod->getSubType() !== 'ModBus' || $this->gensetMod->getSubType() !== 'FL'){
         /*if($duree <= 0.0){
@@ -839,8 +840,8 @@ class GensetModService
 
         $date          = [];
         $NPSDayByDay   = [];
-        
-        $NPSDayByDayRecordQuery = $this->manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dat, MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0)) AS NPS
+//        MAX(NULLIF(d.nbPerformedStartUps,0)) - MIN(NULLIF(d.nbPerformedStartUps,0))
+        $NPSDayByDayRecordQuery = $this->manager->createQuery("SELECT SUBSTRING(d.dateTime,1,10) AS dat, MAX(d.nbPerformedStartUps) - MIN(d.nbPerformedStartUps) AS NPS
                                         FROM App\Entity\DatetimeData d
                                         JOIN d.smartMod sm 
                                         WHERE d.dateTime BETWEEN :startDate AND :endDate
@@ -856,7 +857,7 @@ class GensetModService
             ))
             ->getResult();
         
-        // dump($NPSDayByDayRecordQuery);
+//         dump($NPSDayByDayRecordQuery);
 
         foreach ($NPSDayByDayRecordQuery as $d) {
             $date[]  = $d['dat'];
