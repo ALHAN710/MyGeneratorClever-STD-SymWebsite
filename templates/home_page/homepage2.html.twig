@@ -604,7 +604,7 @@
                                         var dateLabel = Object.values(result['datePue']);
                                         console.log(result);
 
-                                        /*//Mise à jour des paramètres du générateur
+                                        {# //Mise à jour des paramètres du générateur
                                         $('#l1l2').text(String(result['Vcg'][0] + " V"))
                                         $('#l1l3').text(String(result['Vcg'][1] + " V"))
                                         $('#l2l3').text(String(result['Vcg'][2] + " V"))
@@ -664,8 +664,8 @@
                                             $('#mainsStatus').removeClass('badge-success')
                                             $('#mainsStatus').addClass('badge-danger')
                                             $('#mainsStatus').children("h6").text('Absent')
-                                        }    
-                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )*/
+                                        } #}
+                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
                                         {% if zone > 0 %}     
                                         $("#instPUE").text(result['InstantPUE']);
@@ -791,8 +791,8 @@
                             $('#mainsStatus').removeClass('badge-success')
                             $('#mainsStatus').addClass('badge-danger')
                             $('#mainsStatus').children("h6").text('Absent')
-                        }    
-                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )  #}
+                        } #}
+                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
 
                         {% for genset in gensets %}
                         //Mise à jour des paramètres {{ genset['name'] }}
