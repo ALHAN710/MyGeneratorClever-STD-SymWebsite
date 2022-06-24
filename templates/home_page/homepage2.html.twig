@@ -692,7 +692,7 @@
                                         //#### Mise à jour de la Jauge indiquant le niveau de Fuel
                                         fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
                                         if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                                    {% endfor %}
+                                        {% endfor %}
                                     }
                                 },
                                 error: function (result) {
@@ -733,7 +733,7 @@
                         var dateLabel = Object.values(result['datePue']);
                         console.log(result);
 
-                        //Mise à jour des paramètres du générateur
+                        {# //Mise à jour des paramètres du générateur
                         $('#l1l2').text(String(result['Vcg'][0] + " V"))
                         $('#l1l3').text(String(result['Vcg'][1] + " V"))
                         $('#l2l3').text(String(result['Vcg'][2] + " V"))
@@ -792,7 +792,25 @@
                             $('#mainsStatus').addClass('badge-danger')
                             $('#mainsStatus').children("h6").text('Absent')
                         }    
-                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )  #}
+
+                        {% for genset in gensets %}
+                        //Mise à jour des paramètres {{ genset['name'] }}
+                        if(parseInt(result['gensets']['{{ genset['id'] }}']['GR'])){//Genset running = 1
+                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-danger')
+                            $('#genset-status_{{ genset['id'] }}').addClass('badge-success')
+                            $('#genset-status_{{ genset['id'] }}').text('RUNNING')
+                        }
+                        else{
+                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-success')
+                            $('#genset-status_{{ genset['id'] }}').addClass('badge-danger')
+                            $('#genset-status_{{ genset['id'] }}').text('STOP')
+                        }
+
+                        //#### Mise à jour de la Jauge indiquant le niveau de Fuel
+                        fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
+                        if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+                        {% endfor %}
 
                         {% if zone > 0 %}     
                         $("#instPUE").text(result['InstantPUE']);
