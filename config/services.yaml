@@ -6,6 +6,7 @@
 parameters:
     avatar_directory: '%kernel.project_dir%/public/images/uploads/avatar'
     logo_directory: '%kernel.project_dir%/public/images/uploads/logo'
+    app.env: "%env(APP_ENV)%"
 
 services:
     # default configuration for services in *this* file

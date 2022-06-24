@@ -1661,9 +1661,9 @@ class GensetController extends ApplicationController
                 else if ($alarmCode->getType() === 'FUEL') {
                     $data = clone $smartMod->getNoDatetimeData();
                     $fuelStr = $data->getFuelLevel() != null ? ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%' : '';
-                    if ($alarmCode->getCode() === 'GENR') $message = $alarmCode->getLabel() . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
+                    if ($alarmCode->getCode() === 'GENR') $message = $alarmCode->getLabel() . ' ' . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s') . ' avec un niveau de Fuel de ' . $data->getFuelLevel() . '%';
                     else if ($alarmCode->getCode() === 'GENST') {
-                        $message = $alarmCode->getLabel() . $installationName . " survenu le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
+                        $message = $alarmCode->getLabel() . ' ' . $installationName . " survenu le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
                     } else if ($alarmCode->getCode() === 'SFL50' ) {
                         $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène " . $installationName . " détecté le " . $date->format('d/m/Y à H:i:s') . ". Nous vous prions de bien vouloir effectuer une opération de ravitaillement. Niveau de Fuel Actuel : " . $data->getFuelLevel() . '%';
                     } else if ($alarmCode->getCode() === 'SFL20') {
@@ -1672,25 +1672,36 @@ class GensetController extends ApplicationController
                         if ($smartMod->getSite()) $message = $alarmCode->getLabel() . ' ' . $site->getName() . " depuis le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
                         else $message = 'Le Groupe électrogène ' . $smartMod->getName() . " débite depuis le " . $date->format('d/m/Y à H:i:s') . $fuelStr;
                     } else if ($alarmCode->getCode() === 'GNOTL') {
-                        $message = $alarmCode->getLabel() . $installationName . " survenue le " . $date->format('d/m/Y à H:i:s');
+                        $message = $alarmCode->getLabel() . ' ' . $installationName . " survenue le " . $date->format('d/m/Y à H:i:s');
                     } /*else if ($alarmCode->getCode() === 'SFL50' || $alarmCode->getCode() === 'SFL20') {
                         $message = $alarmCode->getLabel() . " dans le réservoir du groupe électrogène " . $installationName . " détecté le " . $date->format('d/m/Y à H:i:s') . ".
 Niveau de Fuel actuel : " . $data->getFuelLevel() . '%';
-                    }*/ else $message = $alarmCode->getLabel() . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
+                    }*/ else $message = $alarmCode->getLabel() . ' ' . $installationName . ' survenu(e) le ' . $date->format('d/m/Y à H:i:s');
                 }
 
-                /*foreach ($site->getContacts() as $contact) {
-                    $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
-                    //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
-                }*/
-
-                //$adminUsers = [];
-                $Users = $manager->getRepository('App:User')->findAll();
-                foreach ($Users as $user) {
-                    if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
-                        //$adminUsers[] = $user;
-                        $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message, 'Email', $alarmCode->getAlerte()));
+                if ($this->getParameter('app.env') === "dev"){
+                    $Users = $manager->getRepository('App:User')->findAll();
+                    foreach ($Users as $user) {
+                        if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                            //$adminUsers[] = $user;
+                            $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message . ". \nEn DEV", 'Email', $alarmCode->getAlerte()));
+                        }
                     }
+                } else{
+                    foreach ($site->getContacts() as $contact) {
+                        $messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, $alarmCode->getMedia(), $alarmCode->getAlerte()));
+                        //$messageBus->dispatch(new UserNotificationMessage($contact->getId(), $message, 'SMS', ''));
+                    }
+
+                    //$adminUsers = [];
+                    $Users = $manager->getRepository('App:User')->findAll();
+                    foreach ($Users as $user) {
+                        if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                            //$adminUsers[] = $user;
+                            $messageBus->dispatch(new UserNotificationMessage($user->getId(), $message, 'Email', $alarmCode->getAlerte()));
+                        }
+                    }
+
                 }
                 //$messageBus->dispatch(new UserNotificationMessage(1, $message, 'Email', $alarmCode->getAlerte()));
                 //$messageBus->dispatch(new UserNotificationMessage(2, $message, 'Email', $alarmCode->getAlerte()));

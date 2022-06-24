@@ -232,14 +232,15 @@ class LoadMeterController extends ApplicationController
                             //dd($oldData);
                             $alert = count($oldData);
                             if (count($oldData) > 0) {
-    //                            return $this->json([
-    //                                'code' => 200,
-    //                                'VA' => $oldData[0]['VA'],
-    //                                'VB' => $oldData[0]['VB'],
-    //                                'VC' => $oldData[0]['VC']
-    //
-    //                            ], 200);
+                                /*return $this->json([
+                                    'code' => 200,
+                                    'VA' => $oldData[0]['VA'],
+                                    'VB' => $oldData[0]['VB'],
+                                    'VC' => $oldData[0]['VC'],
+                                    'app.env' => $this->getParameter('app.env'),
 
+                                ], 200);*/
+                                //dd($this->getParameter('app.env'));
                                 $ABSL1 = "ABSL1"; // 0
                                 $ABSL2 = "ABSL2"; // 1
                                 $ABSL3 = "ABSL3"; // 2
@@ -249,122 +250,141 @@ class LoadMeterController extends ApplicationController
                                 $SRTL1 = "SRTL1"; // 6
                                 $SRTL2 = "SRTL2"; // 7
                                 $SRTL3 = "SRTL3"; // 8
-                                //$CUT = "CUT"; // 9
+                                $CUT = "CUT"; // 9
 
-                                if (array_key_exists("Va", $paramJSON)) {
-                                    if ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) {
-                                        $mess = "{\"code\":\"{$ABSL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                if (array_key_exists("Va", $paramJSON) && array_key_exists("Vb", $paramJSON) && array_key_exists("Vc", $paramJSON)){
+                                    if ( ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) && ($oldData[0]['VB'] > 0.0 && $paramJSON['Vb'] === 0.0) && ($oldData[0]['VC'] > 0.0 && $paramJSON['Vc'] === 0.0) ) {
+                                        $mess = "{\"code\":\"{$CUT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                         //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
                                         $response = $this->forward(
                                             'App\Controller\GensetController::sendToAlarmController',
                                             [
-                                                'mess' => $mess,
+                                                'mess'  => $mess,
                                                 'modId' => $smartMod->getModuleId(),
                                             ]
                                         );
-                                    }
-                                    else if($oldData[0]['VA'] > 209 && $paramJSON['Va'] <= 209) {
-                                        $mess = "{\"code\":\"{$CRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                    else if($oldData[0]['VA'] < 241 && $paramJSON['Va'] >= 241) {
-                                        $mess = "{\"code\":\"{$SRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+                                        if ($this->getParameter('app.env') === "dev") dd($this->getParameter('app.env'));
+                                    }else{
+                                        if (array_key_exists("Va", $paramJSON)) {
+                                            if ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) {
+                                                $mess = "{\"code\":\"{$ABSL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VA'] > 209 && $paramJSON['Va'] <= 209) {
+                                                $mess = "{\"code\":\"{$CRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VA'] < 241 && $paramJSON['Va'] >= 241) {
+                                                $mess = "{\"code\":\"{$SRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                        }
+                                        if (array_key_exists("Vb", $paramJSON)) {
+                                            if ($oldData[0]['VB'] > 0.0 && $paramJSON['Vb'] === 0.0) {
+                                                $mess = "{\"code\":\"{$ABSL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VB'] > 209 && $paramJSON['Vb'] <= 209) {
+                                                $mess = "{\"code\":\"{$CRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VB'] < 241 && $paramJSON['Vb'] >= 241) {
+                                                $mess = "{\"code\":\"{$SRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                        }
+                                        if (array_key_exists("Vc", $paramJSON)) {
+                                            if ($oldData[0]['VC'] > 0.0 && $paramJSON['Vc'] === 0.0) {
+                                                $mess = "{\"code\":\"{$ABSL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VC'] > 209 && $paramJSON['Vc'] <= 209) {
+                                                $mess = "{\"code\":\"{$CRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                            else if($oldData[0]['VC'] < 241 && $paramJSON['Vc'] >= 241) {
+                                                $mess = "{\"code\":\"{$SRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                                //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                                $response = $this->forward(
+                                                    'App\Controller\GensetController::sendToAlarmController',
+                                                    [
+                                                        'mess' => $mess,
+                                                        'modId' => $smartMod->getModuleId(),
+                                                    ]
+                                                );
+                                            }
+                                        }
+                                        if ($this->getParameter('app.env') === "dev") dd('app.env : ' . $this->getParameter('app.env'));
                                     }
                                 }
-                                if (array_key_exists("Vb", $paramJSON)) {
-                                    if ($oldData[0]['VB'] > 0.0 && $paramJSON['Vb'] === 0.0) {
-                                        $mess = "{\"code\":\"{$ABSL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                    else if($oldData[0]['VB'] > 209 && $paramJSON['Vb'] <= 209) {
-                                        $mess = "{\"code\":\"{$CRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                    else if($oldData[0]['VB'] < 241 && $paramJSON['Vb'] >= 241) {
-                                        $mess = "{\"code\":\"{$SRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                }
-                                if (array_key_exists("Vc", $paramJSON)) {
-                                    if ($oldData[0]['VC'] > 0.0 && $paramJSON['Vc'] === 0.0) {
-                                        $mess = "{\"code\":\"{$ABSL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                    else if($oldData[0]['VC'] > 209 && $paramJSON['Vc'] <= 209) {
-                                        $mess = "{\"code\":\"{$CRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                    else if($oldData[0]['VC'] < 241 && $paramJSON['Vc'] >= 241) {
-                                        $mess = "{\"code\":\"{$SRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
-                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
-
-                                        $response = $this->forward(
-                                            'App\Controller\GensetController::sendToAlarmController',
-                                            [
-                                                'mess' => $mess,
-                                                'modId' => $smartMod->getModuleId(),
-                                            ]
-                                        );
-                                    }
-                                }
 
                                 $alert = 'Alerte Ok';
                                 /*dd('alerte ok');
