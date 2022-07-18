@@ -376,7 +376,7 @@
         var wsport = 15675; // port for above 1883
 
         var client = new Paho.MQTT.Client(wsbroker, wsport, "/ws",
-            "admin_{{app.user.id}}");
+            "admin_{{app.user.id}}_" + parseInt(Math.random() * 100, 10) + parseInt(Math.random() * 100, 10));
 
         client.onConnectionLost = function (responseObject) {
             isConnected = false;
@@ -427,7 +427,8 @@
                         isConnected = true;
                         console.log("CONNECTION SUCCESS");
                         //client.subscribe("/#", {qos: 1});
-                        {% if climate %}client.subscribe("/from/raspb/{{climate.name}}", {qos: 1});{%  endif %}
+                        client.subscribe("/from/raspb/#", {qos: 1});
+{#                        {% if climate %}client.subscribe("/from/raspb/{{climate.name}}", {qos: 1});{%  endif %}#}
                     },
                     onFailure: function (message) {
                         console.log("CONNECTION FAILURE - " + message.errorMessage);
