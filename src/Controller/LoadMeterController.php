@@ -78,8 +78,9 @@ class LoadMeterController extends ApplicationController
                 if (array_key_exists("date", $paramJSON)) {
                     //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
 //                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-                    if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-                    else $date = new DateTime('now');
+                    $date = new DateTime('now');
+                    //if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                    //else $date = new DateTime('now');
 
                     //Test si un enregistrement correspond à cette date pour ce module
                     $data = $manager->getRepository('App:LoadDataEnergy')->findOneBy(['dateTime' => $date, 'smartMod' => $smartMod->getId()]);
