@@ -1551,8 +1551,9 @@ class GensetController extends ApplicationController
                 }
                 else {
                     if ($smartMod->getModType() == 'FUEL') {
-                        if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-                        else $date = new DateTime('now');
+//                        if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+//                        else $date = new DateTime('now');
+                        $date = new DateTime('now');
 
                         //Paramétrage des champs de la nouvelle DatetimeData aux valeurs contenues dans la requête du module
                         $datetimeData->setDateTime($date)
