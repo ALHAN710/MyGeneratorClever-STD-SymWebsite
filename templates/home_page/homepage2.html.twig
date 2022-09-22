@@ -490,7 +490,10 @@
                 }
                 //tickAmount: 6,
             },
-            colors: ['#dfa579'],
+            yaxis: {
+                max: 8
+            },
+            tcolors: ['#dfa579'],
             tooltip: {
                 theme: "dark",
                 shared: true,
@@ -570,7 +573,109 @@
             "gensets": gensets
         });
 
-        setTimeout(
+        function updateInterface(result) {
+            var dateLabel = Object.values(result['datePue']);
+            console.log(result);
+
+            {# //Mise à jour des paramètres du générateur
+                                        $('#l1l2').text(String(result['Vcg'][0] + " V"))
+                                        $('#l1l3').text(String(result['Vcg'][1] + " V"))
+                                        $('#l2l3').text(String(result['Vcg'][2] + " V"))
+                                        $('#l1l2M').text(String(result['Vcm'][0] + " V"))
+                                        $('#l1l3M').text(String(result['Vcm'][1] + " V"))
+                                        $('#l2l3M').text(String(result['Vcm'][2] + " V"))
+
+
+                                        if(parseInt(result['CGCR'][0])){//CG = 1
+                                            $('#cg').removeClass('badge-danger')
+                                            $('#cg').addClass('badge-success')
+                                            $('#cg').children("h6").children("span").text('Closed')
+                                            //$('#cgStatus').text('Closed')
+
+                                        }
+                                        else{//CG = 0
+                                            $('#cg').removeClass('badge-success')
+                                            $('#cg').addClass('badge-danger')
+                                            $('#cg').children("h6").children("span").text('Open')
+                                            //$('#cgStatus').text('Open')
+
+                                        }
+
+                                        if(parseInt(result['Gensetrunning'])){//Genset running = 1
+                                            $('#gensetStatus').removeClass('badge-danger')
+                                            $('#gensetStatus').addClass('badge-success')
+                                            $('#gensetStatus').children("h6").text('Running')
+                                        }
+                                        else{
+                                            $('#gensetStatus').removeClass('badge-success')
+                                            $('#gensetStatus').addClass('badge-danger')
+                                            $('#gensetStatus').children("h6").text('Stop')
+                                        }
+
+
+                                        if(parseInt(result['CGCR'][1])){//CR = 1
+                                            $('#cr').removeClass('badge-danger')
+                                            $('#cr').addClass('badge-success')
+                                            $('#cr').children("h6").children("span").text('Closed')
+                                            //$('#crStatus').text('Closed')
+
+                                        }
+                                        else{//CR = 0
+                                            $('#cr').removeClass('badge-success')
+                                            $('#cr').addClass('badge-danger')
+                                            $('#cr').children("h6").children("span").text('Open')
+                                            //$('#crStatus').text('Open')
+
+                                        }
+
+                                        if(parseInt(result['MainsPresence'])){//Mains Presence = 1
+                                            $('#mainsStatus').removeClass('badge-danger')
+                                            $('#mainsStatus').addClass('badge-success')
+                                            $('#mainsStatus').children("h6").text('Present')
+                                        }
+                                        else{
+                                            $('#mainsStatus').removeClass('badge-success')
+                                            $('#mainsStatus').addClass('badge-danger')
+                                            $('#mainsStatus').children("h6").text('Absent')
+                                        } #}
+            if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+            {% if zone > 0 %}
+            $("#instPUE").text(result['InstantPUE']);
+            $("#datacenter_power").text(result['InstantTotal_AP']);
+
+            $('#temp_indoor').text(String(result['Intemp']));
+            $('#temp_outdoor').text(String(result['Outtemp']));
+            $('#hum_indoor').text(String(result['Inhum']));
+            $('#hum_outdoor').text(String(result['Outhum']));
+            // $('#update').text(String( moment( new Date(result['ClimDate']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+            //$("#intPUE").text(result['IntervalPUE']);
+            //console.log(Object.values(result['climateDate']));
+            {# var dataLabel = Object.values(result['date']); #}
+            displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
+            {% endif %}
+
+            {% for genset in gensets %}
+            //Mise à jour des paramètres {{ genset['name'] }}
+            if(parseInt(result['gensets']['{{ genset['id'] }}']['GR'])){//Genset running = 1
+                $('#genset-status_{{ genset['id'] }}').removeClass('badge-danger')
+                $('#genset-status_{{ genset['id'] }}').addClass('badge-success')
+                $('#genset-status_{{ genset['id'] }}').text('RUNNING')
+            }
+            else{
+                $('#genset-status_{{ genset['id'] }}').removeClass('badge-success')
+                $('#genset-status_{{ genset['id'] }}').addClass('badge-danger')
+                $('#genset-status_{{ genset['id'] }}').text('STOP')
+            }
+
+            //#### Mise à jour de la Jauge indiquant le niveau de Fuel
+            fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
+            if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
+            {% endfor %}
+        }
+
+        const timeoutID = setTimeout(
             function(){ 
                 swal.queue([{
                     title: 'Waiting...',
@@ -598,102 +703,14 @@
                                         title: 'The graphs have been updated !',
                                         // html: 'Submitted email: ' + email
                                     });
-                                    setTimeout(function () {
+                                    const id = setTimeout(function () {
                                         resolve()
+                                        clearTimeout(id);
                                     }, 2000);
                                     if( Object.keys(result).length > 0 ){
-                                        var dateLabel = Object.values(result['datePue']);
-                                        console.log(result);
+                                        updateInterface(result);
+                                        runSetInterval();
 
-                                        {# //Mise à jour des paramètres du générateur
-                                        $('#l1l2').text(String(result['Vcg'][0] + " V"))
-                                        $('#l1l3').text(String(result['Vcg'][1] + " V"))
-                                        $('#l2l3').text(String(result['Vcg'][2] + " V"))
-                                        $('#l1l2M').text(String(result['Vcm'][0] + " V"))
-                                        $('#l1l3M').text(String(result['Vcm'][1] + " V"))
-                                        $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                                        
-                                        
-                                        if(parseInt(result['CGCR'][0])){//CG = 1
-                                            $('#cg').removeClass('badge-danger')
-                                            $('#cg').addClass('badge-success')
-                                            $('#cg').children("h6").children("span").text('Closed')
-                                            //$('#cgStatus').text('Closed')
-                                            
-                                        }
-                                        else{//CG = 0
-                                            $('#cg').removeClass('badge-success')
-                                            $('#cg').addClass('badge-danger')
-                                            $('#cg').children("h6").children("span").text('Open')
-                                            //$('#cgStatus').text('Open')
-                                            
-                                        }      
-
-                                        if(parseInt(result['Gensetrunning'])){//Genset running = 1
-                                            $('#gensetStatus').removeClass('badge-danger')
-                                            $('#gensetStatus').addClass('badge-success')
-                                            $('#gensetStatus').children("h6").text('Running')
-                                        }
-                                        else{
-                                            $('#gensetStatus').removeClass('badge-success')
-                                            $('#gensetStatus').addClass('badge-danger')
-                                            $('#gensetStatus').children("h6").text('Stop')
-                                        }
-
-                                        
-                                        if(parseInt(result['CGCR'][1])){//CR = 1
-                                            $('#cr').removeClass('badge-danger')
-                                            $('#cr').addClass('badge-success')
-                                            $('#cr').children("h6").children("span").text('Closed')
-                                            //$('#crStatus').text('Closed')
-                                            
-                                        }
-                                        else{//CR = 0
-                                            $('#cr').removeClass('badge-success')
-                                            $('#cr').addClass('badge-danger')
-                                            $('#cr').children("h6").children("span").text('Open')
-                                            //$('#crStatus').text('Open')
-                                            
-                                        }     
-
-                                        if(parseInt(result['MainsPresence'])){//Mains Presence = 1
-                                            $('#mainsStatus').removeClass('badge-danger')
-                                            $('#mainsStatus').addClass('badge-success')
-                                            $('#mainsStatus').children("h6").text('Present')
-                                        }
-                                        else{
-                                            $('#mainsStatus').removeClass('badge-success')
-                                            $('#mainsStatus').addClass('badge-danger')
-                                            $('#mainsStatus').children("h6").text('Absent')
-                                        } #}
-                                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-
-                                        {% if zone > 0 %}     
-                                        $("#instPUE").text(result['InstantPUE']);
-                                        $("#datacenter_power").text(result['InstantTotal_AP']);
-                                        //$("#intPUE").text(result['IntervalPUE']);
-                                        //console.log(Object.values(result['climateDate']));
-                                        {# var dataLabel = Object.values(result['date']); #}
-                                        displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
-                                        {% endif %}
-
-                                        {% for genset in gensets %}
-                                        //Mise à jour des paramètres {{ genset['name'] }}
-                                        if(parseInt(result['gensets']['{{ genset['id'] }}']['GR'])){//Genset running = 1
-                                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-danger')
-                                            $('#genset-status_{{ genset['id'] }}').addClass('badge-success')
-                                            $('#genset-status_{{ genset['id'] }}').text('RUNNING')
-                                        }
-                                        else{
-                                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-success')
-                                            $('#genset-status_{{ genset['id'] }}').addClass('badge-danger')
-                                            $('#genset-status_{{ genset['id'] }}').text('STOP')
-                                        }
-
-                                        //#### Mise à jour de la Jauge indiquant le niveau de Fuel
-                                        fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
-                                        if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                                        {% endfor %}
                                     }
                                 },
                                 error: function (result) {
@@ -702,9 +719,11 @@
                                     swal('Oops...', 'Something went wrong!', 'error'
                                     // footer: '<a href>Why do I have this issue?</a>'
                                     );
-                                    setTimeout(function () {
+                                    const id = setTimeout(function () {
                                         resolve()
                                     }, 5000);
+                                    clearTimeout(id);
+                                    runSetInterval();
                                 }
                             });
                         })
@@ -712,124 +731,43 @@
                     allowOutsideClick: false
                 }]);
 
+                clearTimeout(timeoutID);
                 $(".swal2-confirm").click();
-                //alert("Hello"); 
-                    
+                //alert("Hello");
             }
         , 500);
 
-        setInterval(function () {
-            $.ajax({
-                type: "POST", // method type
-                contentType: "application/json; charset=utf-8",
-                url: url_, // /Target function that will be return result
-                data: $data_, // parameter pass data is parameter name param is value
-                dataType: "json",
-                timeout: 120000, // 64241
-                success: function (result) {
-                    // $('.fa-sync').removeClass('fa-spin');
-                    console.log(result);
-                    
-                    if( Object.keys(result).length > 0 ){
-                        var dateLabel = Object.values(result['datePue']);
+        function runSetInterval() {
+            const setIntervalID = setInterval(function () {
+                $.ajax({
+                    type: "POST", // method type
+                    contentType: "application/json; charset=utf-8",
+                    url: url_, // /Target function that will be return result
+                    data: $data_, // parameter pass data is parameter name param is value
+                    dataType: "json",
+                    timeout: 120000, // 64241
+                    success: function (result) {
+                        // $('.fa-sync').removeClass('fa-spin');
                         console.log(result);
 
-                        {# //Mise à jour des paramètres du générateur
-                        $('#l1l2').text(String(result['Vcg'][0] + " V"))
-                        $('#l1l3').text(String(result['Vcg'][1] + " V"))
-                        $('#l2l3').text(String(result['Vcg'][2] + " V"))
-                        $('#l1l2M').text(String(result['Vcm'][0] + " V"))
-                        $('#l1l3M').text(String(result['Vcm'][1] + " V"))
-                        $('#l2l3M').text(String(result['Vcm'][2] + " V"))
-                        
-                        if(parseInt(result['CGCR'][0])){//CG = 1
-                            $('#cg').removeClass('badge-danger')
-                            $('#cg').addClass('badge-success')
-                            $('#cg').children("h6").children("span").text('Closed')
-                            //$('#cgStatus').text('Closed')
-                            
-                        }
-                        else{//CG = 0
-                            $('#cg').removeClass('badge-success')
-                            $('#cg').addClass('badge-danger')
-                            $('#cg').children("h6").children("span").text('Open')
-                            //$('#cgStatus').text('Open')
-                            
-                        }      
+                        if( Object.keys(result).length > 0 ){
+                            updateInterface(result);
+                            //clearInterval(setIntervalID);
+                            runSetInterval();
 
-                        if(parseInt(result['Gensetrunning'])){//Genset running = 1
-                            $('#gensetStatus').removeClass('badge-danger')
-                            $('#gensetStatus').addClass('badge-success')
-                            $('#gensetStatus').children("h6").text('Running')
                         }
-                        else{
-                            $('#gensetStatus').removeClass('badge-success')
-                            $('#gensetStatus').addClass('badge-danger')
-                            $('#gensetStatus').children("h6").text('Stop')
-                        }
-                       
-                        if(parseInt(result['CGCR'][1])){//CR = 1
-                            $('#cr').removeClass('badge-danger')
-                            $('#cr').addClass('badge-success')
-                            $('#cr').children("h6").children("span").text('Closed')
-                            //$('#crStatus').text('Closed')
-                            
-                        }
-                        else{//CR = 0
-                            $('#cr').removeClass('badge-success')
-                            $('#cr').addClass('badge-danger')
-                            $('#cr').children("h6").children("span").text('Open')
-                            //$('#crStatus').text('Open')
-                            
-                        }     
-
-                        if(parseInt(result['MainsPresence'])){//Mains Presence = 1
-                            $('#mainsStatus').removeClass('badge-danger')
-                            $('#mainsStatus').addClass('badge-success')
-                            $('#mainsStatus').children("h6").text('Present')
-                        }
-                        else{
-                            $('#mainsStatus').removeClass('badge-success')
-                            $('#mainsStatus').addClass('badge-danger')
-                            $('#mainsStatus').children("h6").text('Absent')
-                        } #}
-                        if(result['Date1'] !== '') $('#update').text(String( moment( new Date(result['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-
-                        {% for genset in gensets %}
-                        //Mise à jour des paramètres {{ genset['name'] }}
-                        if(parseInt(result['gensets']['{{ genset['id'] }}']['GR'])){//Genset running = 1
-                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-danger')
-                            $('#genset-status_{{ genset['id'] }}').addClass('badge-success')
-                            $('#genset-status_{{ genset['id'] }}').text('RUNNING')
-                        }
-                        else{
-                            $('#genset-status_{{ genset['id'] }}').removeClass('badge-success')
-                            $('#genset-status_{{ genset['id'] }}').addClass('badge-danger')
-                            $('#genset-status_{{ genset['id'] }}').text('STOP')
-                        }
-
-                        //#### Mise à jour de la Jauge indiquant le niveau de Fuel
-                        fuel_level_{{ genset['id'] }}.refresh( parseInt(result['gensets']['{{ genset['id'] }}']['FL']) );
-                        if(result['gensets']['{{ genset['id'] }}']['Date1'] !== '') $('#last_update_{{ genset['id'] }}').text(String( moment( new Date(result['gensets']['{{ genset['id'] }}']['Date1']) ).format("DD MMM YYYY HH:mm:ss")) )
-                        {% endfor %}
-
-                        {% if zone > 0 %}     
-                        $("#instPUE").text(result['InstantPUE']);
-                        $("#datacenter_power").text(result['InstantTotal_AP']);
-                        //$("#intPUE").text(result['IntervalPUE']);
-                        //console.log(Object.values(result['climateDate']));
-                        {# var dataLabel = Object.values(result['date']); #}
-                        displayNewData(PUE_Linechart, dateLabel, Object.values(result['PUE']), [], 1, 'day');
-                        {% endif %}
+                    },
+                    error: function (result) {
+                        console.log("Something went wrong!");
+                        // console.log(result);
+                        runSetInterval();
                     }
-                },
-                error: function (result) {
-                    console.log("Something went wrong!");
-                    // console.log(result);
-                }
-            });
-        }, 30000);
-        
+                });
+                clearInterval(setIntervalID);
+            }, 30000);
+
+        }
+
         function displayNewData(chart, label, data, dateopt, multiple, xscale){
             //chart.data.labels = [];
             chart.updateOptions({
