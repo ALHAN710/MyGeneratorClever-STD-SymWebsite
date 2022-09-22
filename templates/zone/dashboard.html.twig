@@ -4249,7 +4249,14 @@
                                             $("#instPUE").text(result['InstantPUE']);
                                             $("#it_power").text(result['InstantIT_AP']);
                                             $("#datacenter_power").text(result['InstantTotal_AP']);
-                                            //$("#intPUE").text(result['IntervalPUE']);
+
+                                            $('#temp_indoor').text(String(result['Intemp']));
+                                            $('#temp_outdoor').text(String(result['Outtemp']));
+                                            $('#hum_indoor').text(String(result['Inhum']));
+                                            $('#hum_outdoor').text(String(result['Outhum']));
+                                            $('#update').text(String( moment( new Date(result['ClimDate']) ).format("DD MMM YYYY HH:mm:ss")) )
+
+                                        //$("#intPUE").text(result['IntervalPUE']);
                                             //console.log(Object.values(result['climateDate']));
                                             var dataLabel = Object.values(result['date']);
                                             displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
@@ -4399,6 +4406,13 @@
                             $("#datacenter_power").text(result['InstantTotal_AP']);
                             //$("#intPUE").text(result['IntervalPUE']);
                             //console.log(Object.values(result['climateDate']));
+
+                            $('#temp_indoor').text(String(result['Intemp']));
+                            $('#temp_outdoor').text(String(result['Outtemp']));
+                            $('#hum_indoor').text(String(result['Inhum']));
+                            $('#hum_outdoor').text(String(result['Outhum']));
+                            $('#update').text(String( moment( new Date(result['ClimDate']) ).format("DD MMM YYYY HH:mm:ss")) )
+
                             displayNewData(Mixed_Pue_Power_Linechart_overview, Object.values(result['dateP']), Object.values(result['PUE']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');
                             displayNewData(Mixed_Climate_Linechart_overview, Object.values(result['climateDate']), Object.values(result['MixedClimate']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 4, 'day');
                             displayNewData(Mixed_Pue_Energy_Linechart_overview, dateLabel, Object.values(result['MixedEnergy']), [moment().format("DD MMM YYYY"), moment().format("DD MMM YYYY")], 3, 'day');

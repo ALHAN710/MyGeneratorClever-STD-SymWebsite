@@ -284,6 +284,12 @@ class HomePageController extends ApplicationController
         $totalAP = [];
         $gensetFL = [];
 
+        $Intemp = 0;
+        $Inhum = 0;
+        $Outtemp = 0;
+        $Outhum = 0;
+        $ClimDate = "";
+
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
         $paramJSON = $this->getJSONRequest($request->getContent());
 
@@ -418,6 +424,7 @@ class HomePageController extends ApplicationController
                                             ")
                     ->setParameters(array(
                         //'selDate'      => $dat,
+//                        'nowDate'    => '2022-03-05%',
                         'nowDate'    => date('Y-m-d') . '%',
                         //'endDate'    => $endDate->format('Y-m-d H:i:s'),
                         //'zoneId'     => $zone->getId(),
@@ -445,6 +452,7 @@ class HomePageController extends ApplicationController
                                             ")
                     ->setParameters(array(
                         //'selDate'      => $dat,
+//                        'nowDate'    => '2022-03-05%',
                         'nowDate'    => date('Y-m-d') . '%',
                         //'endDate'    => $endDate->format('Y-m-d H:i:s'),
                         //'zoneId'     => $zone->getId(),
@@ -468,6 +476,51 @@ class HomePageController extends ApplicationController
                 $instantpue =  array_map(function ($a, $b) {
                     return $b > 0 ? round($a / $b, 2) : 0;
                 }, $totalAP, $productionAP);
+
+                $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime = (SELECT MAX(dd.dateTime) AS ddt FROM App\Entity\ClimateData dd WHERE dd.dateTime LIKE :nowDate)
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Indoor'                                                                                                                                  
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'nowDate'    => date("Y-m-d") . "%",
+//                        'nowDate'    => '2021-10-28%',
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+//                dump($indoorClimateData);
+                if(count($indoorClimateData)){
+                    $ClimDate = $indoorClimateData[0]['dt']->format('Y-m-d H:i:s');
+                    $Intemp = $indoorClimateData[0]['temp'];
+                    $Inhum = $indoorClimateData[0]['hum'];
+                }
+
+                $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime = (SELECT MAX(dd.dateTime) AS ddt FROM App\Entity\ClimateData dd WHERE dd.dateTime LIKE :nowDate)
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Outdoor'                                                                                                                                 
+                                                        ")
+                    ->setParameters(array(
+                        //'selDate'      => $dat,
+                        'nowDate'    => date("Y-m-d") . "%",
+//                        'nowDate'    => '2021-10-28%',
+                        'zoneId'     => $zone->getId()
+                    ))
+                    ->getResult();
+//                dump($outdoorClimateData);
+                if(count($outdoorClimateData)){
+//                    $ClimDate = $outdoorClimateData[0]['dt']->format('Y-m-d H:i:s');
+                    $Outtemp = $outdoorClimateData[0]['temp'];
+                    $Outhum = $outdoorClimateData[0]['hum'];
+                }
+
             }
 
             $noDatetimeData = $manager->getRepository('App:NoDatetimeData')->findOneBy(['id' => $paramJSON['genId']]) ?? new NoDatetimeData();
@@ -484,10 +537,10 @@ class HomePageController extends ApplicationController
                 ];
             }
             return $this->json([
-                'code'    => 200,
+                'code'     => 200,
                 'datePue'  => $datePue,
                 'Date1'    => $lastRecord[0]['dt'] ?? '',
-                'Vcg'     => [$noDatetimeData->getL12G() ?? 0, $noDatetimeData->getL13G() ?? 0, $noDatetimeData->getL23G() ?? 0],
+                'Vcg'      => [$noDatetimeData->getL12G() ?? 0, $noDatetimeData->getL13G() ?? 0, $noDatetimeData->getL23G() ?? 0],
                 //'Vsg'     => [$noDatetimeData->getL1N() ?? 0, $noDatetimeData->getL2N() ?? 0, $noDatetimeData->getL3N() ?? 0],
                 'Vcm'     => [$noDatetimeData->getL12M() ?? 0, $noDatetimeData->getL13M() ?? 0, $noDatetimeData->getL23M() ?? 0],
                 'InstantPUE' => $InstantPUE,
@@ -498,6 +551,11 @@ class HomePageController extends ApplicationController
                 'Gensetrunning' => $noDatetimeData->getGensetRunning() ?? 0,
                 'MainsPresence' => $noDatetimeData->getMainsPresence() ?? 0,
                 'gensets'   => $gensetFL,
+                "Intemp"    => number_format((float)$Intemp, 2, '.', ' '),
+                "Inhum"     => number_format((float)$Inhum, 2, '.', ' '),
+                "Outtemp"   => number_format((float)$Outtemp, 2, '.', ' '),
+                "Outhum"    => number_format((float)$Outhum, 2, '.', ' '),
+                "ClimDate"  => $ClimDate,
 
             ], 200);
         }
