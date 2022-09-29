@@ -73,7 +73,7 @@ class LoadMeterController extends ApplicationController
             // //dump($date);
             //die();
             $alert = '';
-            if ($smartMod->getModType() == 'Load Meter' || $smartMod->getSubType() == 'Central Meter') {
+            if ($smartMod->getModType() == 'Load Meter' && $smartMod->getSubType() == 'Central Meter') {
                 $nbLoad = 2;
                 $config = json_decode($smartMod->getConfiguration(), true);
                 if($config) $nbLoad = array_key_exists("nbLoad", $config) ? $config['nbLoad'] : 2;//Temps en minutes converti en heure
