@@ -359,17 +359,17 @@ class HomePageController extends ApplicationController
                                                             FROM App\Entity\LoadDataEnergy d
                                                             JOIN d.smartMod sm 
                                                             WHERE sm.id IN (:smartMods)
-                                                            AND d.dateTime = :lastDate
+                                                            AND d.dateTime LIKE :lastDate
                                                             AND sm.levelZone = 2
                                                             AND sm.subType = 'Production'                                                                                                                                                
                                                             ")
                     ->setParameters(array(
-                        'lastDate'   => $date->format('Y-m-d H:i:s'),
+                        'lastDate'   => $date->format('Y-m-d H:i') . '%',
                         //'zoneId'     => $zone->getId(),
                         'smartMods'  => $smartMods,
                     ))
                     ->getResult();
-                // dump($InstantProductionEnergy);
+//                dump($InstantProductionActivePower);
 
                 /*$InstantTotalActivePower = $manager->createQuery("SELECT SUM(d.pmoy) AS kW
                                                     FROM App\Entity\LoadDataEnergy d
@@ -382,16 +382,16 @@ class HomePageController extends ApplicationController
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
                                                     WHERE sm.id IN (:smartMods)
-                                                    AND d.dateTime = :lastDate
+                                                    AND d.dateTime LIKE :lastDate
                                                     AND sm.levelZone = 2                                                                                                                                               
                                                     ")
                     ->setParameters(array(
-                        'lastDate'   => $date->format('Y-m-d H:i:s'),
+                        'lastDate'   => $date->format('Y-m-d H:i') . '%',
                         //'zoneId'     => $zone->getId(),
                         'smartMods'  => $smartMods,
                     ))
                     ->getResult();
-                // dump($InstantTotalActivePower);
+//                dump($InstantTotalActivePower);
                 $InstantTotal_AP = $InstantTotalActivePower[0]['kW'] ?? 0;
                 $InstantIT_AP = $InstantProductionActivePower[0]['kW'] ?? 0;
                 $InstantTotal_AP = number_format((float) $InstantTotal_AP, 2, '.', '');
@@ -412,7 +412,7 @@ class HomePageController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")*/
-                $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                $dataProductionActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 16) AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (:smartMods)
@@ -441,7 +441,7 @@ class HomePageController extends ApplicationController
                                                 GROUP BY dt
                                                 ORDER BY dt ASC                                                                                                                                                
                                             ")*/
-                $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                $dataTotalActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 16) AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (:smartMods)
@@ -466,7 +466,7 @@ class HomePageController extends ApplicationController
                     $productionAP[]   = number_format((float) $d['kW'], 2, '.', '');
                 }
 
-                // dump($dataTotalActivePower);
+                //dump($dataTotalActivePower);
                 //die();
                 foreach ($dataTotalActivePower as $d) {
                     //$dateE[] = $d['dt'];

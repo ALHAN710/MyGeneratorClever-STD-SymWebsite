@@ -333,6 +333,12 @@ class ZoneController extends ApplicationController
         $inHumidity = [];
         $outHumidity = [];
 
+        $Intemp = 0;
+        $Inhum = 0;
+        $Outtemp = 0;
+        $Outhum = 0;
+        $ClimDate = "";
+
         $xScale = 'day';
 
         //Récupération et vérification des paramètres au format JSON contenu dans la requête
@@ -471,12 +477,12 @@ class ZoneController extends ApplicationController
                                                             FROM App\Entity\LoadDataEnergy d
                                                             JOIN d.smartMod sm 
                                                             WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                            AND d.dateTime = :lastDate
+                                                            AND d.dateTime LIKE :lastDate
                                                             AND sm.levelZone = 2
                                                             AND sm.subType = 'Production'                                                                                                                                                
                                                             ")
                         ->setParameters(array(
-                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'lastDate'      => $date->format('Y-m-d H:i') . '%',
                             'zoneId'     => $zone->getId()
                         ))
                         ->getResult();
@@ -486,11 +492,11 @@ class ZoneController extends ApplicationController
                                                     FROM App\Entity\LoadDataEnergy d
                                                     JOIN d.smartMod sm 
                                                     WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
-                                                    AND d.dateTime = :lastDate
+                                                    AND d.dateTime LIKE :lastDate
                                                     AND sm.levelZone = 2                                                                                                                                               
                                                     ")
                         ->setParameters(array(
-                            'lastDate'      => $date->format('Y-m-d H:i:s'),
+                            'lastDate'      => $date->format('Y-m-d H:i') . '%',
                             'zoneId'     => $zone->getId()
                         ))
                         ->getResult();
@@ -548,7 +554,6 @@ class ZoneController extends ApplicationController
                                                         AND d.dateTime BETWEEN :startDate AND :endDate
                                                         AND sm.modType = 'Climate' 
                                                         AND sm.subType = 'Indoor'  
-                                                        GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                             
                                                         ")
                         ->setParameters(array(
@@ -574,7 +579,6 @@ class ZoneController extends ApplicationController
                                                         AND d.dateTime BETWEEN :startDate AND :endDate
                                                         AND sm.modType = 'Climate' 
                                                         AND sm.subType = 'Outdoor'   
-                                                        GROUP BY dt
                                                         ORDER BY dt ASC                                                                                                                                            
                                                         ")
                         ->setParameters(array(
@@ -599,7 +603,7 @@ class ZoneController extends ApplicationController
                         $IntervalPUE = number_format((float) $IntervalPUE, 2, '.', '');
                     }*/
                     // dump('IntervalPUE = ' . $IntervalPUE);
-                    $dataProductionActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    $dataProductionActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 16) AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -617,7 +621,7 @@ class ZoneController extends ApplicationController
                         ))
                         ->getResult();
 
-                    $dataTotalActivePower = $manager->createQuery("SELECT d.dateTime AS dt, SUM(d.pmoy) AS kW
+                    $dataTotalActivePower = $manager->createQuery("SELECT SUBSTRING(d.dateTime, 1, 16) AS dt, SUM(d.pmoy) AS kW
                                                 FROM App\Entity\LoadDataEnergy d
                                                 JOIN d.smartMod sm 
                                                 WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
@@ -707,6 +711,49 @@ class ZoneController extends ApplicationController
                     }, $totalEA, $productionEA);
                     // dump($intervalpue);
 
+                    $indoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime = (SELECT MAX(dd.dateTime) AS ddt FROM App\Entity\ClimateData dd WHERE dd.dateTime LIKE :nowDate)
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Indoor'                                                                                                                                  
+                                                        ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'nowDate'    => date("Y-m-d") . "%",
+//                        'nowDate'    => '2021-10-28%',
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+//                dump($indoorClimateData);
+                    if(count($indoorClimateData)){
+                        $ClimDate = $indoorClimateData[0]['dt']->format('Y-m-d H:i:s');
+                        $Intemp = $indoorClimateData[0]['temp'];
+                        $Inhum = $indoorClimateData[0]['hum'];
+                    }
+
+                    $outdoorClimateData = $manager->createQuery("SELECT d.dateTime AS dt, d.temperature AS temp, d.humidity AS hum
+                                                        FROM App\Entity\ClimateData d
+                                                        JOIN d.smartMod sm 
+                                                        WHERE sm.id IN (SELECT stm.id FROM App\Entity\SmartMod stm JOIN stm.zones zn WHERE zn.id = :zoneId)
+                                                        AND d.dateTime = (SELECT MAX(dd.dateTime) AS ddt FROM App\Entity\ClimateData dd WHERE dd.dateTime LIKE :nowDate)
+                                                        AND sm.modType = 'Climate' 
+                                                        AND sm.subType = 'Outdoor'                                                                                                                                 
+                                                        ")
+                        ->setParameters(array(
+                            //'selDate'      => $dat,
+                            'nowDate'    => date("Y-m-d") . "%",
+//                        'nowDate'    => '2021-10-28%',
+                            'zoneId'     => $zone->getId()
+                        ))
+                        ->getResult();
+//                dump($outdoorClimateData);
+                    if(count($outdoorClimateData)){
+//                    $ClimDate = $outdoorClimateData[0]['dt']->format('Y-m-d H:i:s');
+                        $Outtemp = $outdoorClimateData[0]['temp'];
+                        $Outhum = $outdoorClimateData[0]['hum'];
+                    }
 
                     /*$diffEnergy =  array_map(function ($a, $b) {
                         return number_format((float) ($a - $b), 2, '.', '');
@@ -924,6 +971,11 @@ class ZoneController extends ApplicationController
                     'MixedVoltage'        => [$vr, $vs, $vt],
                     'dateVoltage'         => $dateVoltage,
                     'V'                   => [end($vr) ? end($vr) : 0.0, end($vs) ? end($vs) : 0.0, end($vt) ? end($vt) : 0.0],
+                    "Intemp"    => number_format((float)$Intemp, 2, '.', ' '),
+                    "Inhum"     => number_format((float)$Inhum, 2, '.', ' '),
+                    "Outtemp"   => number_format((float)$Outtemp, 2, '.', ' '),
+                    "Outhum"    => number_format((float)$Outhum, 2, '.', ' '),
+                    "ClimDate"  => $ClimDate,
 
                 ], 200);
             }
