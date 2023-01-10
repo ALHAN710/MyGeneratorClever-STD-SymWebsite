@@ -76,7 +76,7 @@ class LoadMeterController extends ApplicationController
             if ($smartMod->getModType() == 'Load Meter' && $smartMod->getSubType() == 'Central Meter') {
                 $nbLoad = 2;
                 $config = json_decode($smartMod->getConfiguration(), true);
-                if($config) $nbLoad = array_key_exists("nbLoad", $config) ? $config['nbLoad'] : 2;//Temps en minutes converti en heure
+                if ($config) $nbLoad = array_key_exists("nbLoad", $config) ? $config['nbLoad'] : 2; //Temps en minutes converti en heure
                 //if ($this->getParameter('app.env') === "dev") dd($nbLoad);
 
                 //Recherche des modules dans la BDD
@@ -91,10 +91,10 @@ class LoadMeterController extends ApplicationController
                 if (array_key_exists("date", $paramJSON)) {
 
                     //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
-//                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                    //                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                     $date = new DateTime('now');
-//                    if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
-//                    else $date = new DateTime('now', new DateTimeZone('Africa/Douala'));
+                    //                    if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                    //                    else $date = new DateTime('now', new DateTimeZone('Africa/Douala'));
 
                     for ($i = 0; $i < $nbLoad; $i++) {
                         $data[$i]->setDateTime($date);
@@ -102,89 +102,58 @@ class LoadMeterController extends ApplicationController
 
                     if ($smartMod->getNbPhases() === 1) {
                         if (array_key_exists("Cosfi", $paramJSON)) {
-                            if (count($paramJSON['Cosfi']) >= 3) {
-                                $firstData->setCosfi($paramJSON['Cosfi'][0]);
-                                $secondData->setCosfi($paramJSON['Cosfi'][1]);
+                            if (count($paramJSON['Cosfi']) >= $nbLoad) {
+
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setCosfi($paramJSON['Cosfi'][$i]);
+                                }
                             }
                         }
-                        if (array_key_exists("Cosfimin", $paramJSON)) {
-                            if (count($paramJSON['Cosfimin']) >= 3) {
-                                $firstData->setCosfimin($paramJSON['Cosfimin'][0]); // En kW
-                                $secondData->setCosfimin($paramJSON['Cosfimin'][1]); // En kW
-                                //$GensetData->setCosfimin($paramJSON['Cosfimin'][1]); // En kW
-                                $loadSiteData->setCosfimin($paramJSON['Cosfimin'][2]); // En kW
-                            }
-                        }
+
                         if (array_key_exists("Va", $paramJSON)) {
-                            if (count($paramJSON['Va']) >= 3) {
-                                $firstData->setVamoy($paramJSON['Va'][0]);
-                                $secondData->setVamoy($paramJSON['Va'][1]);
-                                //// $GensetData->setVamoy($paramJSON['Va'][1]);
-                                $loadSiteData->setVamoy($paramJSON['Va'][2]);
+                            if (count($paramJSON['Va']) >= $nbLoad) {
+
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setVamoy($paramJSON['Va'][$i]);
+                                }
                             }
                         }
 
                         if (array_key_exists("P", $paramJSON)) {
-                            if (count($paramJSON['P']) >= 3) {
-                                $firstData->setPmoy($paramJSON['P'][0]); // En kWatts
-                                $secondData->setPmoy($paramJSON['P'][1]); // En kWatts
-                                //$GensetData->setP($paramJSON['P'][1]); // En kWatts
-                                $loadSiteData->setPmoy($paramJSON['P'][2]); // En kWatts
-//                                dd($smartMod->getSite()->getPowerSubscribed());
-                                if($oldPmoy !== null && $smartMod->getSite()->getPowerSubscribed()){
-                                    $Psous = $smartMod->getSite()->getPowerSubscribed();
-                                    if($paramJSON['P'][2] > $Psous && $oldPmoy < $Psous){
-//                                        dump($paramJSON['P'][2]);
-//                                        dd($oldPmoy);
-                                    }
+                            if (count($paramJSON['P']) >= $nbLoad) {
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setPmoy($paramJSON['P'][$i]); // En kW
+                                }
+                                //                              
+                            }
+                        }
+
+                        if (array_key_exists("S", $paramJSON)) {
+                            if (count($paramJSON['S']) >= $nbLoad) {
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setSmoy($paramJSON['S'][$i]); // En kVA
                                 }
                             }
                         }
-                        if (array_key_exists("Pmax", $paramJSON)) {
-                            if (count($paramJSON['Pmax']) >= 3) {
-                                $firstData->setPmax($paramJSON['Pmax'][0]); // En kW
-                                $secondData->setPmax($paramJSON['Pmax'][1]); // En kW
-                                //$GensetData->setPmax($paramJSON['Pmax'][1]); // En kW
-                                $loadSiteData->setPmax($paramJSON['Pmax'][2]); // En kW
-                            }
-                        }
-                        if (array_key_exists("Q", $paramJSON)) {
-                            if (count($paramJSON['Q']) >= 3) {
-                                $firstData->setQmoy($paramJSON['Q'][0]); // En kVAR
-                                $secondData->setQmoy($paramJSON['Q'][1]); // En kVAR
-                                //// $GensetData->setQmoy($paramJSON['Q'][1]); // En kVAR
-                                $loadSiteData->setQmoy($paramJSON['Q'][2]); // En kVAR
 
-                            }
-                        }
-                        if (array_key_exists("S", $paramJSON)) {
-                            if (count($paramJSON['S']) >= 3) {
-                                $firstData->setSmoy($paramJSON['S'][0]); // En kVA
-                                $secondData->setSmoy($paramJSON['S'][1]); // En kVA
-                                //$GensetData->setSmoy($paramJSON['S'][1]); // En kVA
-                                $loadSiteData->setSmoy($paramJSON['S'][2]); // En kVA
-                            }
-                        }
                         if (array_key_exists("Ea", $paramJSON)) {
-                            if (count($paramJSON['Ea']) >= 3) {
-                                $firstData->setEa($paramJSON['Ea'][0]); // En kWh
-                                $secondData->setEa($paramJSON['Ea'][1]); // En kWh
-                                //$GensetData->setTotalEnergy($paramJSON['Ea'][1]); // En kWh
-                                $loadSiteData->setEa($paramJSON['Ea'][2]); // En kWh
+                            if (count($paramJSON['Ea']) >= $nbLoad) {
 
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setEa($paramJSON['Ea'][$i]); // En kWh
+                                }
                             }
                         }
+
                         if (array_key_exists("Er", $paramJSON)) {
-                            if (count($paramJSON['Er']) >= 3) {
-                                $firstData->setEr($paramJSON['Er'][0]); // En kVARh
-                                $secondData->setEr($paramJSON['Er'][1]); // En kVARh
-                                // $GensetData->setEr($paramJSON['Er'][1]); // En kVARh
-                                $loadSiteData->setEr($paramJSON['Er'][2]); // En kVARh
+                            if (count($paramJSON['Er']) >= $nbLoad) {
 
+                                for ($i = 0; $i < $nbLoad; $i++) {
+                                    $data[$i]->setEr($paramJSON['Er'][$i]); // En kVARh
+                                }
                             }
                         }
-                    }
-                    else if ($smartMod->getNbPhases() === 3) {
+                    } else if ($smartMod->getNbPhases() === 3) {
                         if (array_key_exists("Va", $paramJSON)) {
                             if (count($paramJSON['Va']) >= 6) {
                                 for ($i = 0; $i < $nbLoad; $i++) {
@@ -197,7 +166,6 @@ class LoadMeterController extends ApplicationController
                                 $data3->setVamoy($paramJSON['Va'][3]);
                                 $data4->setVamoy($paramJSON['Va'][4]);
                                 $data5->setVamoy($paramJSON['Va'][5]);*/
-
                             }
                         }
                         if (array_key_exists("Vb", $paramJSON)) {
@@ -212,7 +180,6 @@ class LoadMeterController extends ApplicationController
                                 $data3->setVbmoy($paramJSON['Vb'][3]);
                                 $data4->setVbmoy($paramJSON['Vb'][4]);
                                 $data5->setVbmoy($paramJSON['Vb'][5]);*/
-
                             }
                         }
                         if (array_key_exists("Vc", $paramJSON)) {
@@ -227,7 +194,6 @@ class LoadMeterController extends ApplicationController
                                 $data3->setVcmoy($paramJSON['Vc'][3]);
                                 $data4->setVcmoy($paramJSON['Vc'][4]);
                                 $data5->setVcmoy($paramJSON['Vc'][5]);*/
-
                             }
                         }
                         if (array_key_exists("Pa", $paramJSON)) {
@@ -242,7 +208,6 @@ class LoadMeterController extends ApplicationController
                                 $data3->setPamoy($paramJSON['Pa'][3]); // En kW
                                 $data4->setPamoy($paramJSON['Pa'][4]); // En kW
                                 $data5->setPamoy($paramJSON['Pa'][5]); // En kW*/
-
                             }
                         }
                         if (array_key_exists("Pb", $paramJSON)) {
@@ -257,7 +222,6 @@ class LoadMeterController extends ApplicationController
                                 $data3->setPbmoy($paramJSON['Pb'][3]); // En kW
                                 $data4->setPbmoy($paramJSON['Pb'][4]); // En kW
                                 $data5->setPbmoy($paramJSON['Pb'][5]); // En kW*/
-
                             }
                         }
                         if (array_key_exists("Pc", $paramJSON)) {
@@ -265,7 +229,6 @@ class LoadMeterController extends ApplicationController
                                 for ($i = 0; $i < $nbLoad; $i++) {
                                     $data[$i]->setPcmoy($paramJSON['Pc'][$i]); // En kW
                                 }
-
                             }
                         }
                         if (array_key_exists("P", $paramJSON)) {
@@ -273,7 +236,6 @@ class LoadMeterController extends ApplicationController
                                 for ($i = 0; $i < $nbLoad; $i++) {
                                     $data[$i]->setPmoy($paramJSON['P'][$i]); // En kW
                                 }
-
                             }
                         }
                         /*if (array_key_exists("Pamax", $paramJSON)) {
@@ -312,7 +274,6 @@ class LoadMeterController extends ApplicationController
                                 for ($i = 0; $i < $nbLoad; $i++) {
                                     $data[$i]->setSamoy($paramJSON['Sa'][$i]); // En kVA
                                 }
-
                             }
                         }
                         if (array_key_exists("Sb", $paramJSON)) {
@@ -553,12 +514,11 @@ class LoadMeterController extends ApplicationController
                     'received' => $paramJSON
 
                 ], 200);
-            }
-            else if ($smartMod->getModType() == 'Load Meter' || $smartMod->getModType() == 'AVR') {
+            } else if ($smartMod->getModType() == 'Load Meter' || $smartMod->getModType() == 'AVR') {
                 //Paramétrage des champs de la nouvelle LoadDataEnergy aux valeurs contenues dans la requête du module
                 if (array_key_exists("date", $paramJSON)) {
                     //Récupération de la date dans la requête et transformation en object de type Date au format date SQL
-//                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
+                    //                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                     $date = new DateTime('now');
                     //if($paramJSON['date'] !== '2000-01-01 00:00:00') $date = DateTime::createFromFormat('Y-m-d H:i:s', $paramJSON['date']);
                     //else $date = new DateTime('now');
@@ -602,8 +562,88 @@ class LoadMeterController extends ApplicationController
                         if (array_key_exists("Er", $paramJSON)) {
                             $datetimeData->setEr($paramJSON['Er'] / 1000.0);
                         }
-                    }
-                    else if ($smartMod->getNbPhases() === 3) {
+
+                        /*$oldData = $manager->createQuery("SELECT d.dateTime AS dt, d.vamoy AS VA
+                                                FROM App\Entity\SmartMod sm
+                                                JOIN sm.loadDataEnergies d 
+                                                WHERE sm.id = :smartModId
+                                                AND d.dateTime = (SELECT max(d1.dateTime) FROM App\Entity\LoadDataEnergy d1 WHERE d1.dateTime LIKE :date AND d1.smartMod = :smartModId)                                                                                                                
+                                                ")
+                            ->setParameters(array(
+                                //'selDate'      => $dat,
+                                //                                'date'  => $date->format('Y-m-d H:i:s'),
+                                'date'  => $date->format('Y') . "%",
+                                'smartModId' => $smartMod->getId()
+                            ))
+                            ->getResult();
+                        //dd($oldData);
+                        $alert = count($oldData);
+                        if (count($oldData) > 0) {
+                            
+                            //dd($this->getParameter('app.env'));
+                            $ABSL1 = "ABSL1"; // 0
+                            $CRTL1 = "CRTL1"; // 3
+                            $SRTL1 = "SRTL1"; // 6
+                            $CUT = "CUT"; // 9
+
+                            if (array_key_exists("Va", $paramJSON)) {
+                                if (($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0)) {
+                                    $mess = "{\"code\":\"{$CUT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                    //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                    $response = $this->forward(
+                                        'App\Controller\GensetController::sendToAlarmController',
+                                        [
+                                            'mess'  => $mess,
+                                            'modId' => $smartMod->getModuleId(),
+                                        ]
+                                    );
+                                }
+
+                                if (array_key_exists("Va", $paramJSON)) {
+                                    if ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) {
+                                        $mess = "{\"code\":\"{$ABSL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                        $response = $this->forward(
+                                            'App\Controller\GensetController::sendToAlarmController',
+                                            [
+                                                'mess' => $mess,
+                                                'modId' => $smartMod->getModuleId(),
+                                            ]
+                                        );
+                                    } else if ($oldData[0]['VA'] > 209 && $paramJSON['Va'] <= 209) {
+                                        $mess = "{\"code\":\"{$CRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                        $response = $this->forward(
+                                            'App\Controller\GensetController::sendToAlarmController',
+                                            [
+                                                'mess' => $mess,
+                                                'modId' => $smartMod->getModuleId(),
+                                            ]
+                                        );
+                                    } else if ($oldData[0]['VA'] < 241 && $paramJSON['Va'] >= 241) {
+                                        $mess = "{\"code\":\"{$SRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
+                                        //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
+
+                                        $response = $this->forward(
+                                            'App\Controller\GensetController::sendToAlarmController',
+                                            [
+                                                'mess' => $mess,
+                                                'modId' => $smartMod->getModuleId(),
+                                            ]
+                                        );
+                                    }
+                                }
+                                if ($this->getParameter('app.env') === "dev") dd('app.env : ' . $this->getParameter('app.env'));
+                            }
+
+
+                            $alert = 'Alerte Ok';
+                            
+                        }*/
+                    } else if ($smartMod->getNbPhases() === 3) {
                         if (array_key_exists("Va", $paramJSON)) {
                             $datetimeData->setVamoy($paramJSON['Va']);
                         }
@@ -696,7 +736,7 @@ class LoadMeterController extends ApplicationController
                         }
 
                         //Gestion des alertes
-                        if ($smartMod->getModType() == 'AVR'){
+                        if ($smartMod->getModType() == 'AVR') {
                             $oldData = [];
                             $oldData = $manager->createQuery("SELECT d.dateTime AS dt, d.vamoy AS VA, d.vbmoy AS VB, d.vcmoy AS VC
                                                 FROM App\Entity\SmartMod sm
@@ -706,7 +746,7 @@ class LoadMeterController extends ApplicationController
                                                 ")
                                 ->setParameters(array(
                                     //'selDate'      => $dat,
-    //                                'date'  => $date->format('Y-m-d H:i:s'),
+                                    //                                'date'  => $date->format('Y-m-d H:i:s'),
                                     'date'  => $date->format('Y') . "%",
                                     'smartModId' => $smartMod->getId()
                                 ))
@@ -734,8 +774,8 @@ class LoadMeterController extends ApplicationController
                                 $SRTL3 = "SRTL3"; // 8
                                 $CUT = "CUT"; // 9
 
-                                if (array_key_exists("Va", $paramJSON) && array_key_exists("Vb", $paramJSON) && array_key_exists("Vc", $paramJSON)){
-                                    if ( ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) && ($oldData[0]['VB'] > 0.0 && $paramJSON['Vb'] === 0.0) && ($oldData[0]['VC'] > 0.0 && $paramJSON['Vc'] === 0.0) ) {
+                                if (array_key_exists("Va", $paramJSON) && array_key_exists("Vb", $paramJSON) && array_key_exists("Vc", $paramJSON)) {
+                                    if (($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) && ($oldData[0]['VB'] > 0.0 && $paramJSON['Vb'] === 0.0) && ($oldData[0]['VC'] > 0.0 && $paramJSON['Vc'] === 0.0)) {
                                         $mess = "{\"code\":\"{$CUT}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                         //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -748,7 +788,7 @@ class LoadMeterController extends ApplicationController
                                         );
 
                                         if ($this->getParameter('app.env') === "dev") dd($this->getParameter('app.env'));
-                                    }else{
+                                    } else {
                                         if (array_key_exists("Va", $paramJSON)) {
                                             if ($oldData[0]['VA'] > 0.0 && $paramJSON['Va'] === 0.0) {
                                                 $mess = "{\"code\":\"{$ABSL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
@@ -761,8 +801,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VA'] > 209 && $paramJSON['Va'] <= 209) {
+                                            } else if ($oldData[0]['VA'] > 209 && $paramJSON['Va'] <= 209) {
                                                 $mess = "{\"code\":\"{$CRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -773,8 +812,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VA'] < 241 && $paramJSON['Va'] >= 241) {
+                                            } else if ($oldData[0]['VA'] < 241 && $paramJSON['Va'] >= 241) {
                                                 $mess = "{\"code\":\"{$SRTL1}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -799,8 +837,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VB'] > 209 && $paramJSON['Vb'] <= 209) {
+                                            } else if ($oldData[0]['VB'] > 209 && $paramJSON['Vb'] <= 209) {
                                                 $mess = "{\"code\":\"{$CRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -811,8 +848,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VB'] < 241 && $paramJSON['Vb'] >= 241) {
+                                            } else if ($oldData[0]['VB'] < 241 && $paramJSON['Vb'] >= 241) {
                                                 $mess = "{\"code\":\"{$SRTL2}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -837,8 +873,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VC'] > 209 && $paramJSON['Vc'] <= 209) {
+                                            } else if ($oldData[0]['VC'] > 209 && $paramJSON['Vc'] <= 209) {
                                                 $mess = "{\"code\":\"{$CRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -849,8 +884,7 @@ class LoadMeterController extends ApplicationController
                                                         'modId' => $smartMod->getModuleId(),
                                                     ]
                                                 );
-                                            }
-                                            else if($oldData[0]['VC'] < 241 && $paramJSON['Vc'] >= 241) {
+                                            } else if ($oldData[0]['VC'] < 241 && $paramJSON['Vc'] >= 241) {
                                                 $mess = "{\"code\":\"{$SRTL3}\",\"date\":\"{$date->format('Y-m-d H:i:s')}\"}";
                                                 //$mess = "{\"code\":\"{$MAINPR}\",\"date\":\"{$paramJSON['date1']}\"}";
 
@@ -875,9 +909,7 @@ class LoadMeterController extends ApplicationController
                                     'alerte' => 'Ok'
 
                                 ], 200);*/
-
                             }
-
                         }
                     }
 
@@ -888,7 +920,7 @@ class LoadMeterController extends ApplicationController
                 return $this->json([
                     'code' => 200,
                     'received' => $paramJSON,
-                    'alert'    => $alert
+                    //'alert'    => $alert
 
                 ], 200);
             }
@@ -1228,5 +1260,4 @@ class LoadMeterController extends ApplicationController
             'code' => 200,
         ], 200);
     }
-
 }
